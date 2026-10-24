@@ -37,7 +37,7 @@ This Code of Conduct applies within all community spaces, and also applies when 
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at ale.ripreso@gmail.com, or privately to a moderator on the [StykAnimate Discord](https://discord.gg/WTssQKBaJp). All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the maintainers through this repository's [GitHub issues](https://github.com/dhia336/StykAnimate-App/issues). Do not include sensitive information in a public issue; use [private vulnerability reporting](https://github.com/dhia336/StykAnimate-App/security/advisories/new) for security concerns. Reports will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the reporter of any incident.
 
@@ -82,4 +82,3 @@ For answers to common questions about this code of conduct, see the FAQ at [http
 [Mozilla CoC]: https://github.com/mozilla/diversity
 [FAQ]: https://www.contributor-covenant.org/faq
 [translations]: https://www.contributor-covenant.org/translations
-

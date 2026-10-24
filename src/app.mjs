@@ -4647,7 +4647,6 @@ const actions = {
   "save-as": () => saveNative({ saveAs: true }),
   'check-updates': () => updateNotice?.check(),
   'release-notes': () => releaseSplash.open(),
-  donate: () => desktop?.openDonate(),
   'restart-update': () => finishDocumentAction('restartForUpdate'),
   'save-and-update': () => saveEveryProjectThen('restartForUpdate'),
   "save-and-close": () => saveEveryProjectThen('close'),
@@ -5048,7 +5047,6 @@ const actions = {
   settings: () => editorSettings?.open(),
   privacy: () => privacyUI.open(),
   feedback: () => feedbackUI.open(),
-  website: () => desktop?.openServicePage('home'),
   "builder-static-handles": () =>
     editorSettings.commit({
       builderShowStaticHandles: !state.settings.builderShowStaticHandles,
@@ -5174,8 +5172,6 @@ const polygonSafeActions = new Set([
   "feedback",
   "check-updates",
   "release-notes",
-  "donate",
-  "website",
   "help",
   "about",
   "performance",
@@ -6389,7 +6385,6 @@ async function init() {
     onResetWorkspace: () => workspaceLayout?.reset(),
     onPrivacy: desktop?.getTelemetryState ? () => privacyUI.open() : undefined,
     onFeedback: desktop?.sendTelemetryFeedback ? options => feedbackUI.open(options) : undefined,
-    onDonate: desktop?.openDonate ? () => desktop.openDonate() : undefined,
   });
   state.settings = editorSettings.value;
   // Home shows first, over the editor that goes on starting behind it, unless the launch or the person's setting says otherwise.

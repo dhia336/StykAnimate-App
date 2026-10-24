@@ -15,12 +15,13 @@ const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const output = path.join(appRoot, 'web', 'icons');
 
 const mark = await readFile(path.join(appRoot, 'mark.svg'), 'utf8');
-if (!mark.includes('rx="112"') || !mark.includes('<g transform="translate(91 48) scale(.65)">')) {
+const artwork = '<g transform="rotate(-8 256 256)">';
+if (!mark.includes('rx="112"') || !mark.includes(artwork)) {
   throw new Error('mark.svg changed shape; update the full-bleed variants in scripts/build-web-icons.mjs.');
 }
 // The same drawing on a square with no rounded corners; `inset` shrinks the figure toward the centre.
-const fullBleed = (inset) => mark.replace('rx="112"', 'rx="0"').replace('<g transform="translate(91 48) scale(.65)">',
-  `<g transform="translate(256 256) scale(${inset}) translate(-256 -256)"><g transform="translate(91 48) scale(.65)">`).replace(/<\/g><\/svg>\s*$/, '</g></g></svg>');
+const fullBleed = (inset) => mark.replace('rx="112"', 'rx="0"').replace(artwork,
+  `<g transform="translate(256 256) scale(${inset}) translate(-256 -256)">${artwork}`).replace(/<\/g><\/svg>\s*$/, '</g></g></svg>');
 
 const ICONS = [
   { file: 'icon-192.png', size: 192, svg: mark },

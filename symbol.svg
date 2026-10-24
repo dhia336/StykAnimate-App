@@ -1,30 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="640" viewBox="0 0 512 640" role="img" aria-label="StykAnimate"><title>StykAnimate</title><g fill="#0D99FF" transform="translate(-365 -72)"><circle cx="581" cy="243" r="72"/><path d="M 792 113
-C 772 112 758 128 760 150
-C 764 203 742 251 700 280
-C 674 298 638 302 606 317
-C 578 330 553 354 523 364
-C 494 374 465 371 441 355
-C 427 345 414 342 403 351
-C 389 362 387 381 399 395
-C 414 413 448 416 480 411
-C 518 406 550 391 576 375
-C 590 366 603 362 614 374
-C 636 398 648 430 640 465
-C 631 509 607 548 574 579
-C 551 601 526 613 503 628
-C 485 640 485 656 498 666
-C 515 679 540 665 562 648
-C 598 620 626 588 653 557
-C 681 526 711 499 742 486
-C 759 479 778 477 786 484
-C 796 494 786 521 781 535
-C 775 551 780 565 795 569
-C 811 574 823 564 832 549
-C 849 520 857 487 842 462
-C 827 437 801 429 776 434
-C 748 438 721 451 699 468
-C 710 441 710 412 698 382
-C 691 364 681 347 668 335
-C 695 325 722 317 747 302
-C 798 272 827 215 827 160
-C 828 134 814 114 792 113 Z"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="StykAnimate-Max">
+  <title>StykAnimate-Max</title>
+  <defs>
+    <linearGradient id="figure" x1="158" y1="146" x2="360" y2="371" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9AFFF0"/>
+      <stop offset="1" stop-color="#42CFC4"/>
+    </linearGradient>
+  </defs>
+  <g transform="rotate(-8 256 256)">
+    <path d="M210 346c-19-44-11-94 16-128 23-29 60-44 101-44" fill="none" stroke="#72E4D5" stroke-dasharray="7 17" stroke-linecap="round" stroke-opacity=".48" stroke-width="8"/>
+    <path d="m259 184-17 94m-1-69-54-26m54 26 61-45m-60 114-54 60m54-60 73 50m-127 10-44 22m171-32 42 28" fill="none" stroke="#061224" stroke-linecap="round" stroke-linejoin="round" stroke-opacity=".24" stroke-width="34"/>
+    <path d="m259 184-17 94m-1-69-54-26m54 26 61-45m-60 114-54 60m54-60 73 50m-127 10-44 22m171-32 42 28" fill="none" stroke="url(#figure)" stroke-linecap="round" stroke-linejoin="round" stroke-width="22"/>
+    <circle cx="267" cy="148" r="40" fill="#F5C768" stroke="#FFF0BE" stroke-width="8"/>
+    <circle cx="241" cy="278" r="15" fill="#B7FFF4"/>
+    <circle cx="188" cy="210" r="13" fill="#B7FFF4"/>
+    <circle cx="302" cy="164" r="13" fill="#B7FFF4"/>
+    <circle cx="181" cy="323" r="13" fill="#B7FFF4"/>
+    <circle cx="327" cy="329" r="13" fill="#B7FFF4"/>
+  </g>
+</svg>

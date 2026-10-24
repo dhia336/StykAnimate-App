@@ -815,10 +815,8 @@ Every row again at the tier sizes (1440×900 at 125% and 150% UI scale are 1152�
 | HE-03 | Send feedback / Report a bug… | L | 2 · no | Help (the menubar) | 2 | no | = |
 | HE-04 | Check for updates… | L | 2 · no | Help (the menubar) | 2 | no | = |
 | HE-05 | What's new | L | 2 · no | Help (the menubar) | 2 | no | = |
-| HE-06 | Support development (opens the browser) | L | 2 · no | Help (the menubar) | 2 | no | = |
 | HE-07 | Privacy & diagnostics | L | 2 · no | Help (the menubar) | 2 | no | = |
-| HE-08 | StykAnimate website | L | 2 · no | Help (the menubar) | 2 | no | = |
-| HE-09 | "About StykAnimate" | L | 2 · no | Help › About StykAnimate (a real About); the StykAnimate menu | 2 | no | = |
+| HE-09 | "About StykAnimate-Max" | L | 2 · no | Help › About StykAnimate-Max (a real About); the Community menu | 2 | no | = |
 | HE-10 | Shortcut hints in tooltips and menus, following any rebinding | M | 0 (hover) · on hover | Tooltips | hover | yes | = |
 | NM-01 | macOS menu bar: File (New animation, New window, Open…, Save, Save as…, Save figure…, E… | L | 2 · contextual (macOS; hidden on the frameless Windows window) | Native macOS menu | 2 | ctx | = |
 | BR-01 | 14 commands, duplicated from File / Edit / Help | — | 2 · no | The StykAnimate menu and the menubar (as today's brand menu) | 2 | no | = |

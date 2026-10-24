@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "StykAnimate",
-  "short_name": "StykAnimate",
-  "description": "Free stick figure animation studio that runs in your browser.",
+  "name": "StykAnimate-Max",
+  "short_name": "StykAnimate-Max",
+  "description": "An independently maintained stick animation editor based on the StykAnimate upstream project.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

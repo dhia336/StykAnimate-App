@@ -636,7 +636,7 @@ overlays.addEventListener('open' | 'close' | 'blocking-change', …);
   - A prompt opens only when no blocking overlay is open, after the first rendered frame.
   - The order preserves today's sequence: **release notes, then the privacy first run**.
   - The recovery offer is a non-modal message in the stage slot, shown immediately. It keeps `#restore-recovery` and adds the snapshot time and file name. Recovery has one slot (`getRecovery`/`deleteRecovery` take no id): *Not now* hides the card, and the Document popover offers "Restore last session" only until this session's first backup (`scheduleRecovery`) overwrites the slot.
-  - Update-ready is a persistent message that keeps the "Restart to update" and "Open downloads" names.
+  - This fork does not show update-ready messages until a fork-owned update feed is configured and tested.
   - The first-run hint waits for everything above and is shown once (`hintsSeen.pose`).
 - **Message priority** (one message in the stage's bottom inset at a time): error → recovery → update → toast → first-run hint. `ui-toast.mjs` owns the queue; `experience.md` §4.3 and `components.md` Message use the same list.
 
@@ -1233,7 +1233,7 @@ Every existing member used by tests stays: `editor`, `state`, `actions`, `settin
 | dialog **Keyframe easing**, **Onion skin settings** | – | M5, M7g |
 | button **Undo**, **Redo**, **Play** | 1 | topbar, transport |
 | button **Close color picker**, **Add gradient stop**; combobox **Gradient type**; textbox **Hex color** | 3–5 | color-picker (M7g) |
-| button **Restart to update**, **Open downloads** | 4 / 1 | update (M6) |
+| update status | unavailable until a fork-owned feed is configured | update |
 | searchbox **Search shortcuts**, **Search library**, **Search effects** | 2–4 | M6, M7c, M7d |
 | button **Close feedback**; labels **Title**, **Description**, **Steps to reproduce**, **Expected result**; text **Message sent.** | 3 | support center (unchanged) |
 

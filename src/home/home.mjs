@@ -32,8 +32,8 @@ import {ALL_PROJECTS, PINNED_PROJECTS, HOME_LAYOUTS, HOME_SORTS, folderScope, va
  * other command works on the animation, so Home steps aside before it runs.
  */
 export const HOME_COMMANDS = Object.freeze(new Set([
-  'home', 'tutorials', 'menu', 'command-palette', 'settings', 'privacy', 'feedback', 'check-updates', 'release-notes', 'donate',
-  'website', 'help', 'about', 'performance', 'minimize', 'maximize', 'close', 'new-window', 'open', 'open-recent',
+  'home', 'tutorials', 'menu', 'command-palette', 'settings', 'privacy', 'feedback', 'check-updates', 'release-notes',
+  'help', 'about', 'performance', 'minimize', 'maximize', 'close', 'new-window', 'open', 'open-recent',
   'save', 'save-as', 'save-all', 'save-and-close', 'save-and-update', 'restart-update',
 ]));
 /** The shortcuts that work on Home: its own commands and the ones that bring a project to the front. */

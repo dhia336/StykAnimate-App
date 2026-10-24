@@ -18,9 +18,9 @@ import { _electron as electron } from '../tests/support/playwright.mjs';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const packaged = process.argv.includes('--packaged');
-const unpacked = process.platform === 'win32' ? ['win-unpacked', 'StykAnimate.exe']
-  : process.platform === 'darwin' ? [process.arch === 'arm64' ? 'mac-arm64' : 'mac', 'StykAnimate.app', 'Contents', 'MacOS', 'StykAnimate']
-  : [process.arch === 'arm64' ? 'linux-arm64-unpacked' : 'linux-unpacked', 'stykanimate'];
+const unpacked = process.platform === 'win32' ? ['win-unpacked', 'StykAnimate-Max.exe']
+  : process.platform === 'darwin' ? [process.arch === 'arm64' ? 'mac-arm64' : 'mac', 'StykAnimate-Max.app', 'Contents', 'MacOS', 'StykAnimate-Max']
+  : [process.arch === 'arm64' ? 'linux-arm64-unpacked' : 'linux-unpacked', 'stykanimate-max'];
 const executablePath = packaged ? process.env.STYK_PACKAGED_EXECUTABLE || path.join(appRoot, 'release', ...unpacked) : undefined;
 
 const profile = await mkdtemp(path.join(os.tmpdir(), 'styk-boot-'));
@@ -59,6 +59,16 @@ try {
   expect('Installed Windows codecs are offered only on Windows', process.platform === 'win32' || facts.vfw === false);
   expect('The update service starts without an error', facts.updates !== 'error', facts.updates);
   if (!packaged) expect('Source builds do not update', facts.updates === 'unavailable', facts.updates);
+  await page.evaluate(() => window.styk.actions.about());
+  const about = page.locator('.about-identity');
+  await about.waitFor({ state: 'visible' });
+  const aboutFacts = await about.evaluate(element => ({
+    text: element.innerText,
+    logoLoaded: element.querySelector('img')?.naturalWidth === 512,
+  }));
+  expect('About credits Dhia and identifies this as a fork', /Dhia/.test(aboutFacts.text) && /fork/i.test(aboutFacts.text), aboutFacts.text);
+  expect('About displays the new logo', aboutFacts.logoLoaded);
+  await page.keyboard.press('Escape');
   if (packaged && process.platform === 'linux' && executablePath?.endsWith('.AppImage')) {
     expect('The Linux AppImage enables updates', facts.updates !== 'unavailable', facts.updates);
   }

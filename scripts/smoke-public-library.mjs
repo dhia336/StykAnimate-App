@@ -130,10 +130,10 @@ try {
   check('the saved assets appear in My library, the movieclip as a movieclip', await page.locator('[data-library-path="Box.stkz"] img').count() === 1 && await page.locator('.library-card.movieclip[data-library-path="Walk cycle.stykmov"]').count() === 1);
 
   await page.evaluate(() => { document.querySelector('.library-content').scrollTop = 0; });
-  await app.evaluate(({app}) => app.emit('second-instance', {}, ['StykAnimate.exe', 'stykanimate://library/cubecube12']));
+  await app.evaluate(({app}) => app.emit('second-instance', {}, ['StykAnimate-Max.exe', 'stykanimate://library/cubecube12']));
   await page.waitForFunction(() => window.styk.library.source === 'public' && document.activeElement?.dataset.publicId === 'cubecube12');
   check('a stykanimate://library link opens the asset selected in the community library', await page.locator('[data-public-id="cubecube12"][aria-selected="true"]').isVisible());
-  await app.evaluate(({app}) => app.emit('second-instance', {}, ['StykAnimate.exe', 'stykanimate://library/..%2Fsecret']));
+  await app.evaluate(({app}) => app.emit('second-instance', {}, ['StykAnimate-Max.exe', 'stykanimate://library/..%2Fsecret']));
   await page.waitForTimeout(300);
   check('malformed library links are ignored', await page.evaluate(() => window.styk.library.publicSelected) === 'cubecube12');
 

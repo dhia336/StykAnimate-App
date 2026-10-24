@@ -22,7 +22,6 @@ export class UpdateUI {
       this.action.disabled = true;
       try {
         if (this.state.status === 'ready') await onRestart?.();
-        else if (this.state.status === 'unavailable') await desktop.openUpdateReleases();
         else await this.check();
       } catch { this.render({ ...this.state, status: 'error', message: interfaceText("updateUi.theUpdateCouldNotBeCompletedPleaseTry"), messageKey: "updateUi.theUpdateCouldNotBeCompletedPleaseTry" }); }
       finally { this.action.disabled = false; }
@@ -48,7 +47,7 @@ export class UpdateUI {
     if (status === 'idle') this.element.hidden = true;
     const labels = {
       checking: messageTuple([interfaceText("updateUi.checkingForUpdates"), `Installed version ${currentVersion}`], {1:{key:"updateUi.installedVersion",params:{version:currentVersion}},0: {key: "updateUi.checkingForUpdates", params: {}}}),
-      downloading: messageTuple([`Downloading StykAnimate ${version}`, ''], {
+      downloading: messageTuple([`Downloading StykAnimate-Max ${version}`, ''], {
         0: {key: 'updateUi.downloadingVersion', params: {version}},
         1: {
           key: state.total ? 'updateUi.downloadingProgressWithSize' : 'updateUi.downloadingProgress',
@@ -59,9 +58,9 @@ export class UpdateUI {
           },
         },
       }),
-      ready: messageTuple([`StykAnimate ${version} is ready`, interfaceText("updateUi.restartToInstallTheUpdateYouCanSave")], {0:{key:"updateUi.versionReady",params:{version}},1: {key: "updateUi.restartToInstallTheUpdateYouCanSave", params: {}}}),
+      ready: messageTuple([`StykAnimate-Max ${version} is ready`, interfaceText("updateUi.restartToInstallTheUpdateYouCanSave")], {0:{key:"updateUi.versionReady",params:{version}},1: {key: "updateUi.restartToInstallTheUpdateYouCanSave", params: {}}}),
       restarting: messageTuple([interfaceText("updateUi.restartingStykanimate"), interfaceText("updateUi.installingTheDownloadedUpdate")],{0:{key:"updateUi.restartingStykanimate"},1:{key:"updateUi.installingTheDownloadedUpdate"}}),
-      current: messageTuple([interfaceText("updateUi.youReUpToDate"), `StykAnimate ${currentVersion}`], {0: {key: "updateUi.youReUpToDate", params: {}}}),
+      current: messageTuple([interfaceText("updateUi.youReUpToDate"), `StykAnimate-Max ${currentVersion}`], {0: {key: "updateUi.youReUpToDate", params: {}}}),
       unavailable: messageTuple([interfaceText("updateUi.automaticUpdates"), message], {0: {key: "updateUi.automaticUpdates", params: {}}}),
       error: messageTuple([interfaceText("updateUi.updateInterrupted"), message], {0: {key: "updateUi.updateInterrupted", params: {}}}),
     };
@@ -69,8 +68,8 @@ export class UpdateUI {
     [this.title,this.detail].forEach((element,index)=>{const binding=bindings[index]||(index===1&&state.messageKey?{key:state.messageKey,params:state.messageParams}:null);if(binding)localizedText(element,binding.key,binding.params);else{clearTranslation(element);element.textContent=row[index]||'';}});
     this.progress.hidden = status !== 'downloading';
     this.progress.value = state.percent || 0;
-    this.action.hidden = !['ready', 'error', 'unavailable'].includes(status);
-    localizedText(this.action, (status === 'ready' ? "updateUi.restartToUpdate" : (status === 'unavailable' ? "updateUi.openDownloads" : "updateUi.tryAgain")), (status === 'ready' ? {} : (status === 'unavailable' ? {} : {})));
+    this.action.hidden = !['ready', 'error'].includes(status);
+    localizedText(this.action, (status === 'ready' ? "updateUi.restartToUpdate" : "updateUi.tryAgain"), {});
     this.dismiss.hidden = status === 'restarting';
     localizedText(this.dismiss, (status === 'ready' || status === 'downloading' ? "updateUi.later" : "updateUi.dismiss"), (status === 'ready' || status === 'downloading' ? {} : {}));
   }

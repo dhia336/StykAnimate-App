@@ -2,6 +2,7 @@
 
 The editor also runs as a static website. It is the same code as the desktop app
 plus an in-browser Pivot codec; nothing about a project is sent to a server.
+This fork does not have an official hosted editor domain.
 
 ```bash
 npm ci
@@ -13,12 +14,11 @@ npm run test:web        # end to end in a real browser, under the production hea
 
 ## Deploying
 
-The editor is its own Cloudflare Worker, `stykanimate-app` (`web/wrangler.jsonc`), separate
-from the public site's Worker (`stykanimate`), so the two deploy and roll back independently.
-Cloudflare serves the built files; the Worker script (`web/worker.js`) runs only for
-`/community/*` (see [The community library window](#the-community-library-window)).
-It is served at `https://app.stykanimate.com` (a custom domain on the site's zone) and at
-`stykanimate-app.<account>.workers.dev`.
+The fork's Cloudflare Worker is named `stykanimate-max` (`web/wrangler.jsonc`).
+No custom domain is configured. If a maintainer chooses to deploy it, deployment goes
+to the Cloudflare account selected by Wrangler and its workers.dev hostname. The Worker
+script (`web/worker.js`) runs only for `/community/*` and proxies the upstream public
+community-library service (see [The community library window](#the-community-library-window)).
 
 ```bash
 npm ci --prefix web                   # once: installs the pinned wrangler
@@ -33,9 +33,10 @@ npx --prefix web wrangler rollback --config web/wrangler.jsonc   # go back to th
 the working tree: build from a clean checkout of the commit you mean to publish. Cloudflare
 applies `web/_headers` to every static response.
 
-The active marketing site lives in the separate `StykAnimate-Site` repository. Its launch links point to the browser editor. Static app
-pages allow indexing; `/community/*` API responses remain `noindex` and excluded
-in `robots.txt`. Deploy the verified editor before deploying the site's launch links.
+The original project's marketing site and community-library service are maintained
+upstream and are not this fork's hosting or release destination. Static app pages
+allow indexing; `/community/*` API responses remain `noindex` and excluded
+in `robots.txt`.
 
 The reusable `web-verify.yml` workflow builds and tests the production files on
 Windows and Linux. Windows must export real MP4/AAC sound; Linux verifies a clear
@@ -157,8 +158,8 @@ indexes and requires the same answers.
 
 ## The community library window
 
-The site's API sends no CORS headers, so a browser on `app.stykanimate.com` cannot read it.
-Rather than loosen the production site, the editor asks its own origin and `web/worker.js` passes
+The upstream library API sends no CORS headers, so a browser cannot read it directly.
+Rather than loosen that service, the editor asks its own origin and `web/worker.js` passes
 on exactly three shapes of request, GET only, and refuses everything else:
 
 | Request | Goes to |

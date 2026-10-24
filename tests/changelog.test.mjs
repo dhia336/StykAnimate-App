@@ -42,6 +42,7 @@ test('generates only the newest release, is idempotent, and catches partial/stal
   await prepareReleaseNotes(directory, { env: {} });
   const notes = await readFile(path.join(directory, 'release-notes.md'), 'utf8');
   assert.match(notes, /New feature/);
+  assert.match(notes, /# StykAnimate-Max 0\.10\.0/);
   assert.doesNotMatch(notes, /Pending fix|Old fix/);
   const info = JSON.parse(await readFile(path.join(directory, 'desktop/release-info.json'), 'utf8'));
   assert.deepEqual(info, { version: '0.10.0', title: 'Current release', notes: ['New feature.'], groups: [{name:'Added',notes:['New feature.']}] });
@@ -56,6 +57,18 @@ test('generates only the newest release, is idempotent, and catches partial/stal
   await prepareReleaseNotes(directory, { env: {} });
   assert.ok(!(await readdir(directory)).some(file => file.endsWith('.tmp')));
   assert.ok(!(await readdir(path.join(directory, 'desktop'))).some(file => file.endsWith('.tmp')));
+});
+
+test('fork-generated notes omit the upstream-only AppImage updater claim and promotions', async t => {
+  const directory = await fixture(t);
+  const original = history.replace('- New feature.', '- Automatic updates for the Linux AppImage, with a prompt to save your work before restarting.\n- New feature.');
+  await writeFile(path.join(directory, 'CHANGELOG.md'), original);
+  await prepareReleaseNotes(directory, { env: {} });
+  const notes = await readFile(path.join(directory, 'release-notes.md'), 'utf8');
+  const info = JSON.parse(await readFile(path.join(directory, 'desktop/release-info.json'), 'utf8'));
+  assert.doesNotMatch(notes, /Linux AppImage|Ko-fi|donation|Open downloads/);
+  assert.doesNotMatch(JSON.stringify(info), /Linux AppImage/);
+  assert.equal(await readFile(path.join(directory, 'CHANGELOG.md'), 'utf8'), original);
 });
 
 test('invalid history cannot overwrite saved notes', async t => {
@@ -97,4 +110,3 @@ test('rolling pending changes into a new version preserves history and exports o
   const info = JSON.parse(await readFile(path.join(directory, 'desktop/release-info.json'), 'utf8'));
   assert.deepEqual(info, { version: '0.11.0', title: 'Next release', notes: ['Pending fix.'], groups: [{name:'Fixed',notes:['Pending fix.']}] });
 });
-

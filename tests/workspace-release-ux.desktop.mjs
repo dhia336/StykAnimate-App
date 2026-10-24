@@ -11,7 +11,7 @@ const out = path.join(root, "artifacts", "workspace-release-ux");
 await mkdir(out, { recursive: true });
 const executablePath = packaged
   ? process.env.STYK_PACKAGED_EXECUTABLE ||
-    path.join(root, "release", "win-unpacked", "StykAnimate.exe")
+    path.join(root, "release", "win-unpacked", "StykAnimate-Max.exe")
   : undefined;
 const sourceFiles = [
   "index.html",

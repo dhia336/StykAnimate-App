@@ -216,15 +216,13 @@ as in its tab, and Escape clears the search before it closes Settings.
 Shortcut state and binding validation stay in `hotkey-settings.mjs` /
 `hotkeys.mjs`, with persistence owned by `EditorSettings`. The Feedback page's
 tiles forward their category to the shared `FeedbackUI` draft and *My reports*
-opens its inbox; the sidebar Donate action uses the existing `openDonate`
-desktop bridge. Neither is part of tab navigation. `FeedbackUI` applies only the
+opens its inbox. Neither is part of tab navigation. `FeedbackUI` applies only the
 newest open's options once the support center has started, so reopening with
 another type while the first open is still loading never ends on the older one.
 `node tests/settings.component.browser.mjs` covers the rows and the search;
 `node tests/settings-tabs.desktop.mjs` verifies shortcut editing, canvas
-controls, feedback categories and the inbox, the donation callback, and
-responsive light/dark layouts without submitting feedback or visiting payment
-pages.
+controls, feedback categories and the inbox, and responsive light/dark layouts
+without submitting feedback.
 
 ### Construction gestures
 

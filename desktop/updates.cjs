@@ -4,18 +4,13 @@ const { messageError } = require('./localization.cjs');
 
 // Keep the release feed and filesystem access in the main process. The renderer
 // receives only status, never installer paths or a configurable download URL.
-function updateAvailabilityDetails({ packaged, platform, portable, installed, appImage }) {
-  if (!packaged) return {message: 'Updates are available in the installed app. Development copies do not update.', messageKey: 'desktop.updates.developmentUnavailable'};
-  if (platform === 'linux') {
-    if (!appImage) return {message: 'Run the Linux AppImage to enable automatic updates.', messageKey: 'desktop.updates.linuxAppImageRequired'};
-    try { require('./appimage-updater.cjs').writableAppImage(appImage); return {message: ''}; }
-    catch { return {message: 'Move the AppImage to a writable folder, such as Applications in your home folder, and reopen it to enable automatic updates.', messageKey: 'desktop.updates.writableAppImageRequired'}; }
-  }
-  if (platform !== 'win32') return {message: 'Automatic updates require the Windows installer or Linux AppImage.', messageKey: 'desktop.updates.supportedInstallerRequired'};
-  if (portable || !installed) return {message: 'Install StykAnimate using the Windows Setup installer to enable automatic updates.', messageKey: 'desktop.updates.windowsSetupRequired'};
-  return {message: ''};
+function updateAvailabilityDetails() {
+  return {
+    message: 'Automatic updates are not configured for StykAnimate-Max.',
+    messageKey: 'desktop.updates.forkUpdatesNotConfigured',
+  };
 }
-function updateAvailability(options) { return updateAvailabilityDetails(options).message; }
+function updateAvailability() { return updateAvailabilityDetails().message; }
 
 class UpdateService {
   constructor({ updater, currentVersion, unavailable = '', unavailableMessageKey, onState = () => {} }) {

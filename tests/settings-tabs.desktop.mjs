@@ -40,8 +40,7 @@ try{
  await page.locator('[data-settings-feedback="inbox"]').click();
  check('My reports opens the private inbox list',await page.locator('.styk-feedback[open] .support-center[data-view="inbox"]').isVisible());
  await page.getByRole('button',{name:'Close feedback',exact:true}).click();await page.evaluate(()=>styk.settingsUI.open('feedback'));
- check('Donate action is available outside the tablist',await page.locator('.styk-settings-actions [data-settings-donate]').isVisible()&&await page.locator('[role="tablist"] [data-settings-donate]').count()===0);
- await page.evaluate(()=>{window.donationCalls=0;styk.settingsUI.onDonate=()=>{donationCalls++};});await page.locator('[data-settings-donate]').click();check('Donate invokes its callback once',await page.evaluate(()=>donationCalls===1));
+ check('No upstream donation action is shown',await page.locator('[data-settings-donate]').count()===0);
  await page.evaluate(()=>{styk.settingsUI.commit({theme:'dark',uiScale:150});});
  for(const tab of ['shortcuts','canvas','feedback']){
   await page.evaluate(tab=>styk.settingsUI.open(tab),tab);await screenshot(tab+'-150-dark');

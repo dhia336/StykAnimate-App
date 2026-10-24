@@ -45,6 +45,10 @@
   .performance-activity > li { min-inline-size: 0; overflow-wrap: anywhere; }
   .performance-activity time { margin-inline-end: var(--space-1); color: var(--text-3); font-variant-numeric: tabular-nums; }
   .performance-activity > [data-tone="error"] { color: var(--danger-text); }
+  .about-identity { display: grid; grid-template-columns: 80px minmax(0, 1fr); align-items: start; gap: var(--space-4); }
+  .about-identity > img { display: block; inline-size: 80px; block-size: 80px; border-radius: 20px; box-shadow: 0 0 0 1px var(--line-1); }
+  .about-identity-copy { display: grid; gap: var(--space-2); min-inline-size: 0; }
+  .about-identity-copy p { margin: 0; }
   /* ---- Privacy (privacy-ui.mjs) and What's new (support-ui.mjs), the desktop app's first-run dialogs ---- */
   /* The title takes the focus for screen readers only: it is not a control, so it shows no ring. */
   .styk-privacy h2:focus { outline: none; }

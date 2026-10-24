@@ -1,4 +1,4 @@
-/** The community library for the browser build: what people share on stykanimate.com.
+/** The shared upstream community library for the browser build.
  *
  * This is the browser twin of desktop/public-library.cjs and follows the same contract, rules
  * and messages: the site's content document names the current index, the index lists every
@@ -12,7 +12,7 @@
  */
 const MB = 1024 * 1024;
 export const LIMITS = Object.freeze({content: 256 * 1024, index: 4 * MB, poster: 512 * 1024});
-// Figures and movieclips are what the app can insert. Full projects stay on the website.
+// Figures and movieclips are what the app can insert. Full projects stay on the upstream site.
 export const KINDS = Object.freeze({figure: {extension: 'stkz', maxBytes: 8 * MB}, movieclip: {extension: 'stykmov', maxBytes: 12 * MB}});
 // The order the website lists its categories in; a category it adds later follows these.
 const CATEGORY_ORDER = ['characters', 'effects', 'moves', 'props', 'backgrounds', 'animations', 'other'];
@@ -141,7 +141,7 @@ export class DownloadLedger {
 }
 
 /** The ledger's home in the browser: one small localStorage entry. */
-export function localStorageLedgerStorage(storage, key = 'stykanimate-community-downloads') {
+export function localStorageLedgerStorage(storage, key = 'stykanimate-max-downloads') {
   // Reading localStorage itself can throw when the browser blocks site data; the ledger then lasts for the session.
   const store = () => storage ?? globalThis.localStorage;
   return {

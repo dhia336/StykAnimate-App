@@ -41,22 +41,19 @@ test('a failed or cancelled download never offers installation and can retry', a
   assert.equal(service.snapshot().status, 'ready');
   assert.equal(service.snapshot().messageKey, undefined);
 });
-test('update availability transports display identity while preserving original strings and installer guards', async () => {
-  const installed = {packaged:true,platform:'win32',portable:false,installed:true};
-  for (const [options,key] of [
-    [{...installed,packaged:false},'desktop.updates.developmentUnavailable'],
-    [{...installed,platform:'linux'},'desktop.updates.linuxAppImageRequired'],
-    [{...installed,platform:'linux',appImage:'/missing-styk-localization-appimage'},'desktop.updates.writableAppImageRequired'],
-    [{...installed,platform:'darwin'},'desktop.updates.supportedInstallerRequired'],
-    [{...installed,portable:true},'desktop.updates.windowsSetupRequired'],
-    [{...installed,installed:false},'desktop.updates.windowsSetupRequired'],
-  ]) {
-    const detail=updateAvailabilityDetails(options);
-    assert.equal(detail.messageKey,key);assert.equal(detail.message,english[key]);assert.equal(updateAvailability(options),detail.message);
-    const service=new UpdateService({currentVersion:'1.2.0',unavailable:detail.message,unavailableMessageKey:detail.messageKey});
-    assert.equal((await service.check()).status,'unavailable');assert.equal(service.snapshot().messageKey,key);
-  }
-  assert.deepEqual(updateAvailabilityDetails(installed),{message:''});
+test('fork automatic updates stay disabled until a fork-owned feed is configured', async () => {
+  let checks = 0;
+  const updater = new EventEmitter();
+  updater.checkForUpdates = async () => { checks++; return {}; };
+  const detail = updateAvailabilityDetails();
+  assert.equal(detail.messageKey, 'desktop.updates.forkUpdatesNotConfigured');
+  assert.equal(detail.message, english[detail.messageKey]);
+  assert.equal(updateAvailability(), detail.message);
+  const service = new UpdateService({ updater, currentVersion: '1.2.5', unavailable: detail.message, unavailableMessageKey: detail.messageKey });
+  assert.equal((await service.check()).status, 'unavailable');
+  service.start();
+  assert.equal(checks, 0);
+  assert.equal(service.timer, undefined);
 });
 test('repeated requests do not duplicate downloads or installers', async () => {
   const { updater, service } = fixture();
@@ -80,20 +77,6 @@ test('install failure restores application close protection', async () => {
   assert.equal(await service.restart(async () => true, () => { restored = true; }), false);
   assert.equal(restored, true);
   assert.equal(service.snapshot().status, 'error');
-});
-test('current, development, portable and unsupported copies report the correct state', async () => {
-  const { updater, service } = fixture();
-  updater.checkForUpdates = async () => { updater.emit('update-not-available'); return {}; };
-  await service.check(); assert.equal(service.snapshot().status, 'current');
-  const installed = { packaged: true, platform: 'win32', portable: false, installed: true };
-  assert.equal(updateAvailability(installed), '');
-  for (const overrides of [{ packaged: false }, { portable: true }, { installed: false }, { platform: 'darwin' }]) {
-    const unavailable = updateAvailability({ ...installed, ...overrides });
-    assert.ok(unavailable);
-    const disabled = new UpdateService({ currentVersion: '0.5.0', unavailable });
-    assert.equal((await disabled.check()).status, 'unavailable');
-    disabled.start(); assert.equal(disabled.timer, undefined);
-  }
 });
 test('checks after startup and every hour, without duplicate timers', t => {
   t.mock.timers.enable({ apis: ['setTimeout', 'setInterval'] });

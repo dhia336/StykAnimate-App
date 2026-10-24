@@ -329,8 +329,6 @@ group('help', [
   ['feedback', english["commands.feedback"], 'message', {labelKey: "commands.feedback", requires: ['desktop:feedback'], keywords: ['feedback', 'support', 'bug']}],
   ['performance', english["menu.performance"], 'activity', {labelKey: 'menu.performance', keywords: ['fps', 'renderer', 'diagnostics']}],
   ['privacy', english["commands.privacy"], 'lock', {labelKey: "commands.privacy", requires: ['desktop:telemetry'], keywords: ['telemetry']}],
-  ['donate', english["commands.donate"], 'heart', {labelKey: "commands.donate", requires: ['desktop:updates'], keywords: ['donate']}],
-  ['website', english["commands.website"], 'link', {labelKey: "commands.website", requires: ['desktop:telemetry']}],
 ]);
 group('app', [
   ['menu', english["commands.menu"], 'more', {...internal, labelKey: "commands.menu"}],

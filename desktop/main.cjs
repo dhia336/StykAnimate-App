@@ -6,7 +6,7 @@ const { app, BrowserWindow, Menu, dialog, ipcMain, shell, session, clipboard, co
 const path = require('node:path');
 const os = require('node:os');
 const fs = require('node:fs/promises');
-const { mkdirSync, existsSync } = require('node:fs');
+const { mkdirSync } = require('node:fs');
 const { startDesktopHost } = require('./web-host.cjs');
 const { applyGpuSwitches, relaunchOnX11 } = require('./gpu-switches.cjs');
 const { RecoveryStore, atomicWrite } = require('./recovery.cjs');
@@ -28,11 +28,10 @@ const { LibraryStore } = require('./library-store.cjs');
 const { PublicLibrary, DownloadLedger, isPublicId } = require('./public-library.cjs');
 const { TelemetryService } = require('./telemetry.cjs');
 const { UpdateService, updateAvailabilityDetails } = require('./updates.cjs');
+const { migrateLegacyProfileFiles } = require('./profile-migration.cjs');
 const releaseInfo = require('./release-info.json');
-const getReleaseHistory = require('./release-history.cjs').createReleaseHistory();
 let telemetryBuild = {};
 try { telemetryBuild = require('./telemetry-build.json'); } catch { /* Unpackaged/older source has unknown build metadata. */ }
-const { RELEASES_URL, DONATE_URL } = require('./release-links.cjs');
 
 // On Wayland the window cannot show WebGPU content, and Chromium picks its display
 // backend before this file runs, so start again under XWayland (gpu-switches.cjs).
@@ -94,13 +93,24 @@ let pendingFiles = process.argv.slice(app.isPackaged ? 1 : 2).filter((arg) => /\
 // Vulkan WebGPU opt-in to reach the GPU; see gpu-switches.cjs.
 applyGpuSwitches(app.commandLine);
 
-app.setName('StykAnimate');
+app.setName('StykAnimate-Max');
 const profileDirectory = process.env.STYK_USER_DATA_DIR || (!app.isPackaged ? path.join(APP_ROOT, '.desktop-data') : null);
 if (profileDirectory) {
   mkdirSync(profileDirectory, { recursive: true });
   app.setPath('userData', profileDirectory);
   app.setPath('sessionData', profileDirectory);
   app.setPath('crashDumps', path.join(profileDirectory, 'crashes'));
+}
+const previousForkProfileDirectory = path.join(app.getPath('appData'), 'StykAnimate Community');
+const legacyProfileDirectory = path.join(app.getPath('appData'), 'StykAnimate');
+const legacyProfileMigrated = path.join(app.getPath('userData'), '.legacy-profile-migrated');
+async function migrateLegacyProfile() {
+  await migrateLegacyProfileFiles({
+    sources: [previousForkProfileDirectory, legacyProfileDirectory],
+    destination: app.getPath('userData'),
+    marker: legacyProfileMigrated,
+    enabled: app.isPackaged && !process.env.STYK_USER_DATA_DIR,
+  });
 }
 const primaryInstance = app.requestSingleInstanceLock();
 const instanceDirectory = primaryInstance ? app.getPath('userData') : workspaceDirectory(app.getPath('userData'));
@@ -186,7 +196,7 @@ function nativeMenu() {
       item(t('desktop.main.fitCanvas'), 'zoom-reset'), { type: 'separator' }, { role: 'togglefullscreen', accelerator: '' },
       ...(!app.isPackaged ? [{ role: 'toggleDevTools', accelerator: '' }] : []),
     ] },
-    { label: t('desktop.main.help'), submenu: [item(t('menu.shortcuts'), 'help'), item(t('desktop.main.checkForUpdates'), 'check-updates'), item(t('desktop.main.whatSNew'), 'release-notes'), item(t('desktop.main.supportDevelopment'), 'donate'), item(t('desktop.main.aboutStykAnimate'), 'about')] },
+    { label: t('desktop.main.help'), submenu: [item(t('menu.shortcuts'), 'help'), item(t('desktop.main.checkForUpdates'), 'check-updates'), item(t('desktop.main.whatSNew'), 'release-notes'), item(t('desktop.main.aboutStykAnimate'), 'about')] },
   ];
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
@@ -264,9 +274,6 @@ function unsavedPrompt({ restart = false } = {}) {
 function registerIpc() {
   handle('styk:update-state', event => { trusted(event); return updates.snapshot(); });
   handle('styk:update-check', event => { trusted(event); void updates.check(); return updates.snapshot(); });
-  handle('styk:update-releases', event => { trusted(event); return shell.openExternal(RELEASES_URL); });
-  handle('styk:donate', event => { trusted(event); return shell.openExternal(DONATE_URL); });
-  handle('styk:release-history', event => { trusted(event); return getReleaseHistory(); });
   handle('styk:release-info', (event, startup = false) => {
     trusted(event);
     if (startup && startupShown) return null;
@@ -324,7 +331,7 @@ function registerIpc() {
   handle('styk:telemetry-delete', withTelemetry(() => telemetry.deleteData()));
   handle('styk:telemetry-feedback', withTelemetry(value => telemetry.feedback(value)));
   handle('styk:telemetry-export', withTelemetry(async () => {
-    const result = await dialog.showSaveDialog(window, { title: t('desktop.main.saveOptionalTelemetryReport'), defaultPath: 'StykAnimate-telemetry.json', filters: [{ name: t('desktop.main.jsonReport'), extensions: ['json'] }] });
+    const result = await dialog.showSaveDialog(window, { title: t('desktop.main.saveOptionalTelemetryReport'), defaultPath: 'StykAnimate-Max-telemetry.json', filters: [{ name: t('desktop.main.jsonReport'), extensions: ['json'] }] });
     if (result.canceled || !result.filePath) return { saved: false };
     await fs.writeFile(result.filePath, JSON.stringify(telemetry.preview(), null, 2), 'utf8'); return { saved: true };
   }));
@@ -343,7 +350,7 @@ function registerIpc() {
       await contentTracing.startRecording({ included_categories: ['v8.execute', 'disabled-by-default-v8.cpu_profiler', 'devtools.timeline'], recording_mode: 'record-until-full', trace_buffer_size_in_kb: 16384 });
       await new Promise(resolve => setTimeout(resolve, !app.isPackaged && process.env.STYK_TRACE_TEST === '1' ? 2000 : 30000));
       temporary = await contentTracing.stopRecording();
-      const result = await dialog.showSaveDialog(window, { title: t('desktop.main.saveLocalPerformanceTraceReviewBeforeSharing'), defaultPath: 'StykAnimate-performance-trace.json', filters: [{ name: t('desktop.main.chromePerfettoTrace'), extensions: ['json'] }] });
+      const result = await dialog.showSaveDialog(window, { title: t('desktop.main.saveLocalPerformanceTraceReviewBeforeSharing'), defaultPath: 'StykAnimate-Max-performance-trace.json', filters: [{ name: t('desktop.main.chromePerfettoTrace'), extensions: ['json'] }] });
       if (result.canceled || !result.filePath) return { saved: false };
       await fs.copyFile(temporary, result.filePath); return { saved: true };
     } finally { traceRunning = false; if (temporary) await fs.unlink(temporary).catch(() => {}); }
@@ -736,7 +743,7 @@ function registerIpc() {
     documentState = { name, dirty, revision: String(state?.revision || '').slice(0, 160), unsaved,
       unsavedName: String(state?.unsavedName || name).slice(0, 180) };
     // The title names the project in front; its dot is that project's own.
-    window.setTitle(`${(state?.activeDirty ?? dirty) ? '• ' : ''}${name} — StykAnimate`);
+    window.setTitle(`${(state?.activeDirty ?? dirty) ? '• ' : ''}${name} — StykAnimate-Max`);
     window.setDocumentEdited(dirty);
   });
 }
@@ -757,7 +764,7 @@ async function createWindow() {
   window = new BrowserWindow({
     width: 1560, height: 1000, minWidth: 1000, minHeight: 680,
     backgroundColor: '#0a0b0f', show: false,
-    title: 'StykAnimate',
+    title: 'StykAnimate-Max',
     icon: path.join(__dirname, 'assets', 'stykanimate.png'),
     frame: process.platform === 'darwin',
     ...(process.platform === 'darwin' ? { titleBarStyle: 'hidden', trafficLightPosition: { x: 14, y: 16 } } : {}),
@@ -847,17 +854,12 @@ async function createWindow() {
 }
 
 async function start() {
+  await migrateLegacyProfile();
   const saved = await new WorkspacePreferences(app.getPath('userData'), {filename: 'editor-settings.json'}).get();
   localization.setLocale(normalizeLocale(saved.locale));
-  const availability = updateAvailabilityDetails({ packaged: app.isPackaged, platform: process.platform,
-    appImage: process.env.APPIMAGE,
-    portable: Boolean(process.env.PORTABLE_EXECUTABLE_DIR), installed: existsSync(path.join(path.dirname(process.execPath), 'Uninstall StykAnimate.exe')) });
+  const availability = updateAvailabilityDetails();
   const unavailable = availability.message;
-  const updater = unavailable ? null : process.platform === 'linux'
-    ? new (require('./appimage-updater.cjs').LinuxAppImageUpdater)()
-    : require('electron-updater').autoUpdater;
-  if (updater && process.platform === 'win32') updater.installDirectory = path.dirname(process.execPath);
-  updates = new UpdateService({ updater,
+  updates = new UpdateService({ updater: null,
     currentVersion: app.getVersion(), unavailable, unavailableMessageKey: availability.messageKey,
     onState: value => { if (value.status === 'error') quitting = false; if (window && !window.isDestroyed()) window.webContents.send('styk:update-state-changed', value); },
   });

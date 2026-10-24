@@ -4,8 +4,8 @@ const { messageError } = require('./localization.cjs');
 
 const {createHash} = require('node:crypto');
 
-// The community library is a service of the website (worker/library.js in the
-// site's repository). /api/v1/content says which index is current and where the
+// This fork reads the original project's community library (worker/library.js
+// in the upstream site's repository). /api/v1/content says which index is current and where the
 // public files live, the index lists every approved item, and the index, the
 // posters and the files are immutable objects. Only stykanimate.com (and the
 // file host the site names, when that is a subdomain of it) is contacted,

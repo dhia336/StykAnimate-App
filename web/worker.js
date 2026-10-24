@@ -17,6 +17,7 @@ const LIMITS = {content: 256 * 1024, index: 4 * MB, poster: 512 * 1024, file: 16
 const ID = /^[a-z0-9]{10}$/;
 const INDEX_KEY = /^index\/[0-9]{1,16}\.json$/;
 const OBJECT_KEY = /^i\/[a-z0-9]{10}\/[\w.-]{1,120}$/;
+// Shared read-only catalog service maintained by the original upstream project.
 const DEFAULTS = {SITE_URL: 'https://stykanimate.com', FILES_URL: 'https://files.stykanimate.com'};
 const IMMUTABLE = 'public, max-age=31536000, immutable';
 

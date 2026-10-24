@@ -67,13 +67,11 @@ The desktop entry registers the document types (`.styk`, `.stkz`, `.stykmov`,
 and `StartupWMClass=stykanimate` groups the window under its launcher.
 Passing a document path on the command line opens it.
 
-The coordinated release workflow publishes the AppImage and `latest-linux.yml`
-alongside the Windows files. Starting with the next release after 1.2.0, a writable
-AppImage checks for updates, downloads them and offers **Restart to update** with
-the usual save/cancel prompt. Keep it in a writable folder such as `~/Applications`.
-Updates replace the same filename atomically, so existing launchers still work.
-Projects and preferences live outside the AppImage. Version 1.2.0 users need one
-manual download of the first updater-enabled release. See [updates](UPDATES.md).
+The Community workflow builds the AppImage and retains it as a workflow artifact;
+it does not publish a release or an update feed. Automatic updates are disabled,
+so future builds must be installed manually if a fork maintainer makes them
+available. Projects and preferences live outside the AppImage. See
+[updates](UPDATES.md).
 
 ## Testing on Linux
 

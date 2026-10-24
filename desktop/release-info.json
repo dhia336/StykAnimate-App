@@ -4,7 +4,6 @@
   "notes": [
     "Layer folders with quick creation and a searchable filter to organize your timeline.",
     "Playback ranges to loop a chosen section of your animation.",
-    "Automatic updates for the Linux AppImage, with a prompt to save your work before restarting.",
     "Move a layer up or down from its menu in the timeline.",
     "Auto key in the Advanced timeline: turn it on (K) and every change you make adds a keyframe at the playhead.",
     "Camera follow: right-click figures and choose Follow with camera to keep them in frame, with smooth catch-up, look ahead, a dead zone and auto zoom. Projects that use it need this version or newer.",
@@ -55,7 +54,6 @@
       "notes": [
         "Layer folders with quick creation and a searchable filter to organize your timeline.",
         "Playback ranges to loop a chosen section of your animation.",
-        "Automatic updates for the Linux AppImage, with a prompt to save your work before restarting.",
         "Move a layer up or down from its menu in the timeline.",
         "Auto key in the Advanced timeline: turn it on (K) and every change you make adds a keyframe at the playhead.",
         "Camera follow: right-click figures and choose Follow with camera to keep them in frame, with smooth catch-up, look ahead, a dead zone and auto zoom. Projects that use it need this version or newer."
