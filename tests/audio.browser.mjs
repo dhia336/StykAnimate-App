@@ -9,7 +9,7 @@ const browser=await chromium.launch({channel:'chrome',headless:true,args:['--aut
 page.on('pageerror',error=>errors.push(error.message));
 const settle=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
 try {
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831'); await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831'); await page.waitForFunction(()=>window.styk?.ready);
   await page.getByRole('button',{name:'Audio',exact:true}).click();
   assert.equal(await page.getByRole('button',{name:'Import audio',exact:true}).count(),1);
   assert.ok((await page.locator('body').innerText()).includes('Untitled animation'));
@@ -97,7 +97,7 @@ try {
   await page.evaluate(()=>{styk.audioEngine.decode=window.audioDecodeOriginal;window.audioDecodeRelease();});
   await page.waitForFunction(()=>!styk.timeline.audio.importController);
   assert.equal(await page.evaluate(()=>JSON.stringify(styk.editor.serialize())),empty);
-  if(process.env.STYK_AUDIO_MP3){await page.getByLabel('Choose audio recording').setInputFiles(process.env.STYK_AUDIO_MP3);await page.waitForFunction(()=>styk.editor.report._styk.audio?.tracks.length===1);}
+  if(process.env.TWIGANIMATE_AUDIO_MP3){await page.getByLabel('Choose audio recording').setInputFiles(process.env.TWIGANIMATE_AUDIO_MP3);await page.waitForFunction(()=>styk.editor.report._styk.audio?.tracks.length===1);}
   assert.deepEqual(errors,[]);await writeFile(`${out}/browser.json`,JSON.stringify({persistence,sync,loopSync,held,errors},null,2));
   console.log('PASS audio UI, isolated undo, properties, split, mute, both timelines, native persistence, cold playback and synchronization',persistence,sync);
 } catch(error) { await page.screenshot({path:`${out}/failure.png`});throw error; }

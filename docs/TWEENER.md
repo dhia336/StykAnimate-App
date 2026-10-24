@@ -83,7 +83,7 @@ npm run check
 ```
 
 The browser test uses the running local app on port 47831 (override with
-`STYK_URL`) and captures light, dark and compact layouts under `artifacts/tweener`.
+`TWIGANIMATE_URL`) and captures light, dark and compact layouts under `artifacts/tweener`.
 Unit coverage includes cancellation, drift-free input, strict neighbors, held
 and unchanged-pose key insertion, independent layers, shortest-angle rotation,
 selection isolation, undo/redo and project reopening. A synthetic 500-figure,

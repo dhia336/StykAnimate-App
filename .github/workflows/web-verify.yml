@@ -17,10 +17,10 @@ jobs:
     timeout-minutes: 30
     env:
       ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
-      STYK_WEB_DIR: build/web
+      TWIGANIMATE_WEB_DIR: build/web
       # Windows must exercise a real AAC soundtrack; Linux verifies the clear
       # unsupported response as well as real Opus export.
-      STYK_REQUIRE_AAC: ${{ matrix.os == 'windows-latest' && '1' || '0' }}
+      TWIGANIMATE_REQUIRE_AAC: ${{ matrix.os == 'windows-latest' && '1' || '0' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -42,8 +42,8 @@ jobs:
       - name: Firefox and WebKit storage and editor checks
         if: runner.os == 'Linux'
         run: |
-          STYK_BROWSER=firefox npm run test:web:browsers
-          STYK_BROWSER=webkit npm run test:web:browsers
+          TWIGANIMATE_BROWSER=firefox npm run test:web:browsers
+          TWIGANIMATE_BROWSER=webkit npm run test:web:browsers
       - name: Verify browser Cloudflare configuration
         if: runner.os == 'Linux'
         run: |

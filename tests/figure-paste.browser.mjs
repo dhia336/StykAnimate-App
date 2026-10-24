@@ -12,7 +12,7 @@ const settle=async()=>{
   await page.evaluate(()=>styk.state.renderer.device?.queue.onSubmittedWorkDone());
 };
 try {
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   for(const mode of ['simple','advanced']){
     await page.evaluate(async mode=>{
       const {emptyDocument,createFrame,createObject}=await import('/src/demo.mjs');

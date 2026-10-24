@@ -1,7 +1,7 @@
 import {interfaceLocalization} from '../localization.mjs';
 import {replaceLocalized, appendLocalized, localizedText, localizedAttribute, clearTranslation} from '../localization-bindings.mjs';
 import {errorText} from '../error-presentation.mjs';
-import {messageError, errorMessageData} from '../localized-error.mjs';
+import {errorMessageData} from '../localized-error.mjs';
 
 /**
  * Messages: the stage's one message slot. A toast is a short white pill with
@@ -429,7 +429,7 @@ export function createToasts({host = null, overlays = null, icon = null, area = 
       if (confirmCancel && (await confirmCancel()) === false) return;
       if (finished) return;
       end();
-      controller.abort(messageError(new DOMException('', 'AbortError'), "errors.supportMedia.cancelled", {}));
+      controller.abort(new DOMException('', 'AbortError'));
       onCancel?.();
     };
     if (signal?.aborted) finished = true;

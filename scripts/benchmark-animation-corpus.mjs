@@ -6,9 +6,9 @@ import path from 'node:path';
 
 const base=path.resolve('artifacts/animation-corpus-60');
 const inventory=JSON.parse(await readFile(path.join(base,'inventory.json'),'utf8'));
-const label=process.env.STYK_CORPUS_LABEL||'exact-baseline',output=path.join(base,label);
-const sourceRoot=process.env.STYK_CORPUS_SOURCE?path.resolve(process.env.STYK_CORPUS_SOURCE):null;
-const filter=process.env.STYK_CORPUS_FILTER;
+const label=process.env.TWIGANIMATE_CORPUS_LABEL||'exact-baseline',output=path.join(base,label);
+const sourceRoot=process.env.TWIGANIMATE_CORPUS_SOURCE?path.resolve(process.env.TWIGANIMATE_CORPUS_SOURCE):null;
+const filter=process.env.TWIGANIMATE_CORPUS_FILTER;
 await mkdir(output,{recursive:true});
 const unique=[...new Map(inventory.files.map(f=>[f.sha256,f])).values()].filter(f=>!filter||f.relative.toLowerCase().includes(filter.toLowerCase()));
 // Start with complete animations, then asset packs. Preserve every inventory row.
@@ -24,7 +24,7 @@ for(const [index,file] of unique.entries()){
     const started=Date.now();
     console.log(JSON.stringify({event:'start',index:index+1,total:unique.length,file:file.relative,mb:file.bytes/1e6}));
     try{
-      app=await electron.launch({args:[process.cwd()],env:{...process.env,STYK_USER_DATA_DIR:path.join(dir,'profile')},timeout:60000});
+      app=await electron.launch({args:[process.cwd()],env:{...process.env,TWIGANIMATE_USER_DATA_DIR:path.join(dir,'profile')},timeout:60000});
       const page=await app.firstWindow(),errors=[];
       page.on('pageerror',e=>errors.push(e.message));
       page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
@@ -77,8 +77,8 @@ for(const [index,file] of unique.entries()){
       const sampledTicks=info.keyframes===1&&info.ticks>3600?600:info.ticks;
       info.coverage=sampledTicks===info.ticks?'all-ticks':'sustained-single-keyframe-hold';info.sampledTicks=sampledTicks;
       let profiler;
-      if(process.env.STYK_CORPUS_PROFILE){profiler=await page.context().newCDPSession(page);await profiler.send('Profiler.enable');await profiler.send('Profiler.start');}
-      if(process.env.STYK_CORPUS_IMAGES)await (await import('./probe-preview-images.mjs')).probePreviewImages(page);
+      if(process.env.TWIGANIMATE_CORPUS_PROFILE){profiler=await page.context().newCDPSession(page);await profiler.send('Profiler.enable');await profiler.send('Profiler.start');}
+      if(process.env.TWIGANIMATE_CORPUS_IMAGES)await (await import('./probe-preview-images.mjs')).probePreviewImages(page);
       await page.evaluate(()=>{corpusProbe.playAt=performance.now();styk.actions.play();});
       let complete=false,lastProgress=0;
       const deadline=Date.now()+Math.max(180000,info.ticks/60*1000*12);

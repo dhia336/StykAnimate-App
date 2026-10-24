@@ -21,7 +21,7 @@ try {
     const row = {file, samples: [], errors}; results.push(row);
     console.log('Opening', file);
     try {
-      await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831');
+      await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831');
       await page.waitForFunction(() => window.styk?.ready);
       const started = Date.now();
       await page.locator('#file-input').setInputFiles(file);

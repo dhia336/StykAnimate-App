@@ -8,7 +8,7 @@ const snapshot=()=>page.evaluate(()=>JSON.stringify(styk.editor.serialize()));
 const set=async(selector,value)=>{const field=page.locator(selector);await field.fill(String(value));await field.press('Tab');await settle();};
 const gallery=async()=>{await page.evaluate(()=>styk.actions['rig-examples']());await page.locator('[data-rig-thumbnail="solid-gem-3d"]').scrollIntoViewIfNeeded();await page.locator('[data-rig-thumbnail="solid-gem-3d"][data-ready]').waitFor();};
 try{
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47851');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47851');await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(async()=>{const {rigExampleDocument}=await import('/src/rig-examples.mjs');styk.editor.load(rigExampleDocument('sliding-carriage'));styk.editor.select(1,0);});await settle();
   const before=await snapshot();await gallery();assert.equal(await page.locator('.rig-example-item p').count(),0);await page.screenshot({path:`${out}/gallery.png`});
   for(const id of ['solid-box-3d','solid-cylinder-3d','solid-wedge-3d','solid-pyramid-3d','solid-gem-3d']){

@@ -4,7 +4,7 @@ import {mkdir,writeFile} from 'node:fs/promises';
 const browser=await chromium.launch({channel:'chrome',headless:true});
 try {
   const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');
   const result=await page.evaluate(async()=>{
     const {decodePreview,imageInfo}=await import('/src/preview-image.mjs');
     const {PreviewImages}=await import('/src/preview-images.mjs');

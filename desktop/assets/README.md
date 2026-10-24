@@ -1,15 +1,17 @@
 # Native brand assets
 
-Generated from `assets/brand/svg/stykanimate-app-icon-blue.svg` using the checked-in
+Generated from `assets/brand/svg/twiganimate-app-icon.svg` using the checked-in
 resvg WASM renderer. Run `npm run build:brand`; packaging regenerates these assets.
+The current source artwork is an intentionally temporary placeholder and must be
+replaced before distributing a branded build.
 
-- `stykanimate.png`: 512px window/Linux icon.
-- `stykanimate-1024.png`: high-resolution source raster.
-- `stykanimate.ico`: 16, 20, 24, 32, 40, 48, 64, 128, and 256px; 32-bit alpha DIBs
+- `twiganimate.png`: 512px window/Linux icon.
+- `twiganimate-1024.png`: high-resolution source raster.
+- `twiganimate.ico`: 16, 20, 24, 32, 40, 48, 64, 128, and 256px; 32-bit alpha DIBs
   with transparency masks at smaller sizes and lossless PNG at 256px.
-- `stykanimate.icns`: PNG representations from 16 to 1024px, including Retina types.
+- `twiganimate.icns`: PNG representations from 16 to 1024px, including Retina types.
 
-All blue tiles have transparent corners. Standalone in-app marks use the transparent
+All app-icon tiles have transparent corners. Standalone in-app marks use the transparent
 root `symbol.svg`, while the browser favicon uses the root `mark.svg` tile.
 
 `win.signExecutable: false` intentionally leaves these beta builds unsigned while

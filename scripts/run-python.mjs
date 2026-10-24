@@ -41,8 +41,8 @@ export function resolvePython({ root = appRoot, env = process.env, platform = pr
   }
   const venv = venvInterpreter(root, platform);
   if (venv && !candidates.some((item) => item.command === venv)) {
-    // An explicit STYK_PYTHON stays first; the repository environment beats PATH.
-    const explicit = env.STYK_PYTHON ? 1 : 0;
+    // An explicit TWIGANIMATE_PYTHON stays first; the repository environment beats PATH.
+    const explicit = env.TWIGANIMATE_PYTHON ? 1 : 0;
     candidates.splice(explicit, 0, { command: venv, args: [] });
   }
   return candidates.find((candidate) => probe(candidate.command, candidate.args)) ?? null;
@@ -53,7 +53,7 @@ function main() {
   if (!script) { console.error('Usage: node scripts/run-python.mjs <script.py> [args...]'); return 2; }
   const python = resolvePython();
   if (!python) {
-    console.error('Python 3.11 or newer was not found. Install it, or set STYK_PYTHON to its executable.');
+    console.error('Python 3.11 or newer was not found. Install it, or set TWIGANIMATE_PYTHON to its executable.');
     return 1;
   }
   const result = spawnSync(python.command, [...python.args, script, ...rest], { stdio: 'inherit', cwd: appRoot, windowsHide: true });

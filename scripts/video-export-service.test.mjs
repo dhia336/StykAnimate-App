@@ -21,7 +21,7 @@ const {
   MAX_CHUNK_BYTES,
 } = createRequire(import.meta.url)("../desktop/video-export-service.cjs");
 const encoderPath = path.resolve(
-  process.env.STYK_FFMPEG ||
+  process.env.TWIGANIMATE_FFMPEG ||
     `build/video-encoder/ffmpeg${process.platform === "win32" ? ".exe" : ""}`,
 );
 const defaults = {

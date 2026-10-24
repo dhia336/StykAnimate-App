@@ -16,7 +16,7 @@ const closeSettings = async () => {await page.getByRole('button',{name:'Close se
 const row = id => page.locator(`[data-hotkey-id="${id}"]`);
 const rebind = async (id,key) => {await row(id).locator('[data-hotkey-record]').first().click(); await page.keyboard.press(key);};
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(()=>styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(()=>styk?.ready);
   await page.evaluate(async()=>{
     const {emptyDocument,createFrame,createObject}=await import('/src/demo.mjs'); const report=emptyDocument();
     report.keyframes=[0,40].map(x=>createFrame([createObject(report.figure_types[0],1,200+x,250)],12));

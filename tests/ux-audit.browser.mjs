@@ -13,7 +13,7 @@ page.on('response',r=>{const name=new URL(r.url()).pathname;if(!['/src/app.mjs',
 const settle=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
 async function record(name,detail){observations.push({name,detail});console.log(JSON.stringify({name,detail}));}
 try{
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(async()=>{
     const {emptyDocument,createObject,createFrame}=await import('/src/demo.mjs'),d=emptyDocument();d.canvas_width=800;d.canvas_height=450;
     d.keyframes=[0,1,2].map(i=>createFrame([createObject(d.figure_types[0],1,200+i*100,300,{scale:.65}),createObject(d.figure_types[0],2,600,300,{scale:.65})],1));

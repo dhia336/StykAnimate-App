@@ -7,7 +7,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  BROWSER_LAYOUT_KEY, LEGACY_LAYOUT_KEYS, createLayoutStore, desktopLayoutBackend, mergeLayouts, storageLayoutBackend,
+  BROWSER_LAYOUT_KEY, createLayoutStore, desktopLayoutBackend, mergeLayouts, storageLayoutBackend,
 } from '../src/shell/layout-store.mjs';
 import {
   LAYOUT_FILE_LIMIT_BYTES, applyPreset, defaultLayout, deletePreset, layoutBytes, migrateLayout, movePanel,
@@ -443,22 +443,22 @@ test('stamps mark only what changed, and a deleted layout gets a tombstone', asy
   assert.equal(store.update(layout => setSharedSize(layout, 'right', 300)), store.layout, 'a destroyed store ignores updates');
 });
 
-test('the browser backend uses localStorage and reads the older keys once', async () => {
+test('the browser backend uses only the TwigAnimate localStorage key without migrating old keys', async () => {
   const items = new Map();
   const storage = {getItem: key => items.get(key) ?? null, setItem: (key, value) => items.set(key, String(value))};
   const backend = storageLayoutBackend(storage);
   assert.equal(await backend.read(), null);
-  items.set(LEGACY_LAYOUT_KEYS[1], JSON.stringify({left: 300, right: 280}));
-  assert.deepEqual(await backend.read(), {left: 300, right: 280});
-  items.set(LEGACY_LAYOUT_KEYS[0], JSON.stringify({studioVersion: 1, right: 330}));
-  assert.deepEqual(await backend.read(), {studioVersion: 1, right: 330});
+  items.set('stykanimate.studio-layout.v1', JSON.stringify({studioVersion: 1, right: 330}));
+  items.set('stykanimate.workspace.v1', JSON.stringify({left: 300, right: 280}));
+  assert.equal(await backend.read(), null);
   const store = createLayoutStore({...backend, setTimer: () => 0, clearTimer: () => {}});
   await store.load();
-  assert.equal(store.source, 'v1');
+  assert.equal(store.source, 'empty');
   store.update(layout => setSharedSize(layout, 'right', 350));
   await store.flush();
-  assert.equal(JSON.parse(items.get(BROWSER_LAYOUT_KEY)).right, 350);
-  assert.equal(items.get(LEGACY_LAYOUT_KEYS[0]), JSON.stringify({studioVersion: 1, right: 330}), 'older keys are left alone');
+  assert.equal(JSON.parse(items.get(BROWSER_LAYOUT_KEY)).shared.sizes.right, 350);
+  assert.equal(items.get('stykanimate.studio-layout.v1'), JSON.stringify({studioVersion: 1, right: 330}), 'older keys are left alone');
+  assert.equal(items.get('stykanimate.workspace.v1'), JSON.stringify({left: 300, right: 280}), 'older keys are not copied');
   assert.equal((await backend.read()).layoutVersion, 2);
   items.set(BROWSER_LAYOUT_KEY, '{broken');
   assert.equal(migrateLayout(await backend.read()).source, 'invalid');

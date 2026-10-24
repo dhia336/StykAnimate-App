@@ -3,9 +3,8 @@
 //
 //   node scripts/build-web-icons.mjs
 //
-// "any" icons keep the mark's rounded square. The maskable icon and the Apple
-// touch icon are full-bleed (the platform applies its own mask or corners), with
-// the figure inside the maskable safe zone (the centred 80% circle).
+// "any" icons keep the mark's rounded square. Maskable and Apple icons use a
+// full-bleed background so platform masks do not reveal transparent corners.
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,18 +14,15 @@ const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const output = path.join(appRoot, 'web', 'icons');
 
 const mark = await readFile(path.join(appRoot, 'mark.svg'), 'utf8');
-if (!mark.includes('rx="112"') || !mark.includes('<g transform="translate(91 48) scale(.65)">')) {
-  throw new Error('mark.svg changed shape; update the full-bleed variants in scripts/build-web-icons.mjs.');
-}
-// The same drawing on a square with no rounded corners; `inset` shrinks the figure toward the centre.
-const fullBleed = (inset) => mark.replace('rx="112"', 'rx="0"').replace('<g transform="translate(91 48) scale(.65)">',
-  `<g transform="translate(256 256) scale(${inset}) translate(-256 -256)"><g transform="translate(91 48) scale(.65)">`).replace(/<\/g><\/svg>\s*$/, '</g></g></svg>');
+const fullBleed = mark.replace(/<rect x="16" y="16" width="480" height="480" rx="112" fill="#172B4D"\s*\/>/,
+  '<rect width="512" height="512" fill="#172B4D"/>');
+if (fullBleed === mark) throw new Error('mark.svg must contain the expected TwigAnimate app-icon background.');
 
 const ICONS = [
   { file: 'icon-192.png', size: 192, svg: mark },
   { file: 'icon-512.png', size: 512, svg: mark },
-  { file: 'icon-maskable-512.png', size: 512, svg: fullBleed(0.86) },
-  { file: 'apple-touch-icon.png', size: 180, svg: fullBleed(1) },
+  { file: 'icon-maskable-512.png', size: 512, svg: fullBleed },
+  { file: 'apple-touch-icon.png', size: 180, svg: fullBleed },
 ];
 
 await mkdir(output, { recursive: true });

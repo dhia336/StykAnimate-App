@@ -2,12 +2,12 @@ import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 
-const output=process.env.STYK_SELECTION_ARTIFACTS||'artifacts/drawing-selection';await mkdir(output,{recursive:true});
+const output=process.env.TWIGANIMATE_SELECTION_ARTIFACTS||'artifacts/drawing-selection';await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[],checks=[];
 page.on('pageerror',e=>errors.push(e.message));
 const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('PASS',name);};
 try{
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
   await page.locator('[data-workspace-mode="draw"]').click();
   await page.evaluate(async()=>{
     const {emptyDocument}=await import('/src/demo.mjs');

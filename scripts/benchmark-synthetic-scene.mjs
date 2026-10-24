@@ -5,7 +5,7 @@
 //   node scripts/benchmark-synthetic-scene.mjs [--figures 300] [--seconds 4] [--runs 3]
 //
 // Each run launches the app twice: with its default renderer (WebGPU where the
-// platform enables it) and forced to Canvas 2D (STYK_GPU_UNSAFE=0). While the
+// platform enables it) and forced to Canvas 2D (TWIGANIMATE_GPU_UNSAFE=0). While the
 // canvas zooms in and out through the app's own Ctrl+wheel handler, so every frame
 // redraws the whole scene, it measures achieved frames per second, the 95th
 // percentile and worst frame interval, and how many intervals exceeded 25 ms, from
@@ -27,8 +27,8 @@ const median = (values) => [...values].sort((a, b) => a - b)[Math.floor(values.l
 async function measure(mode) {
   const profile = await mkdtemp(path.join(os.tmpdir(), 'styk-bench-'));
   await writeFile(path.join(profile, 'telemetry-state.json'), JSON.stringify({ decided: true, consent: { analytics: false, diagnostics: false, policyVersion: '2026-09-10', updatedAt: Date.now() } }));
-  const env = { ...process.env, STYK_USER_DATA_DIR: profile };
-  if (mode === 'canvas2d') env.STYK_GPU_UNSAFE = '0';
+  const env = { ...process.env, TWIGANIMATE_USER_DATA_DIR: profile };
+  if (mode === 'canvas2d') env.TWIGANIMATE_GPU_UNSAFE = '0';
   const app = await electron.launch({ args: [root], cwd: root, timeout: 60000, env });
   try {
     const page = await app.firstWindow({ timeout: 60000 });

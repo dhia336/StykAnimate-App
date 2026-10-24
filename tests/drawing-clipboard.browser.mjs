@@ -2,17 +2,17 @@ import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
-const output=process.env.STYK_PIXEL_CLIPBOARD_ARTIFACTS||'artifacts/drawing-clipboard';await mkdir(output,{recursive:true});
+const output=process.env.TWIGANIMATE_PIXEL_CLIPBOARD_ARTIFACTS||'artifacts/drawing-clipboard';await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[],checks=[];
 page.on('pageerror',error=>errors.push(error.message));
 const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('PASS',name);};
 try{
-  const baseline=process.env.STYK_PIXEL_CLIPBOARD_BASELINE;
+  const baseline=process.env.TWIGANIMATE_PIXEL_CLIPBOARD_BASELINE;
   if(baseline)for(const name of ['drawing-png','drawing-tile-codec','native-container']){
     const body=execFileSync('git',['show',`${baseline}:src/${name}.mjs`],{encoding:'utf8'});
     await page.context().route(`**/src/${name}.mjs`,route=>route.fulfill({contentType:'text/javascript',body}));
   }
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
   await page.locator('[data-workspace-mode="draw"]').click();
   await page.evaluate(async()=>{
     const {emptyDocument}=await import('/src/demo.mjs'),{SharedClipboard}=await import('/src/shared-clipboard.mjs');

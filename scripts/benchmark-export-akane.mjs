@@ -1,5 +1,5 @@
 /** Actual Electron export, source hashes, decoded frame counts and process memory.
- * Run before/after with unchanged source and identical STYK_BENCH_CASES/TICKS. */
+ * Run before/after with unchanged source and identical TWIGANIMATE_BENCH_CASES/TICKS. */
 import {_electron as electron} from '../tests/support/playwright.mjs';
 import {mkdir, readFile, writeFile, stat} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
@@ -8,20 +8,20 @@ import path from 'node:path';
 import os from 'node:os';
 import assert from 'node:assert/strict';
 import {corpusPath} from '../tests/support/corpus.mjs';
-const source = process.env.STYK_BENCH_SOURCE || corpusPath('Desktop/Folder/16 Akane vs Akato Segundo round (3).piv');
+const source = process.env.TWIGANIMATE_BENCH_SOURCE || corpusPath('Desktop/Folder/16 Akane vs Akato Segundo round (3).piv');
 const label = process.argv[2] || 'after';
 assert.match(label, /^[a-z0-9-]+$/);
 const output = path.resolve('artifacts/export-akane', label);
 await mkdir(output, {recursive:true});
 const digest = async file => createHash('sha256').update(await readFile(file)).digest('hex');
 const sourceHash = await digest(source);
-const ticks = (process.env.STYK_BENCH_TICKS || '0,1,535,536,1824,1825,1826,1827,1828,1829,1836,1871').split(',').map(Number);
-const cases = (process.env.STYK_BENCH_CASES || '1080-edges,2160-edges,2160-sprites').split(',');
+const ticks = (process.env.TWIGANIMATE_BENCH_TICKS || '0,1,535,536,1824,1825,1826,1827,1828,1829,1836,1871').split(',').map(Number);
+const cases = (process.env.TWIGANIMATE_BENCH_CASES || '1080-edges,2160-edges,2160-sprites').split(',');
 const ffmpeg = path.resolve('build/video-encoder/ffmpeg.exe');
 const sourceHashes = {};
 for (const file of ['src/export-frame-core.mjs','src/export-frame-worker.mjs','src/export-frame-renderer.mjs','src/native-video-export.mjs','desktop/video-export-service.cjs','src/pivot/geometry.mjs','src/playback-resources.mjs','src/export-memory.mjs','src/app.mjs']) sourceHashes[file] = await digest(file);
 const app = await electron.launch({args:[process.cwd()],cwd:process.cwd(),timeout:60000,
-  env:{...process.env, STYK_USER_DATA_DIR:path.join(output,`profile-${Date.now()}`)}});
+  env:{...process.env, TWIGANIMATE_USER_DATA_DIR:path.join(output,`profile-${Date.now()}`)}});
 const result = {label,date:new Date().toISOString(),source,sourceHash,sourceHashes,cpu:os.cpus()[0].model,ramBytes:os.totalmem(),node:process.version,ticks,runs:[],errors:[]};
 let timer, phase='prepare';
 try {
@@ -78,7 +78,7 @@ try {
         if(styk.editor.report!==report||styk.editor.revision!==revision)throw new Error('Document changed');
         return {name,width,height,smoothing,loadMs,encodeMs,samples,documentPreserved:true};
       }finally{renderer.dispose();}
-    },{name,width,height,smoothing,ticks,sampleReferences:process.env.STYK_BENCH_REFERENCES==='sample'});
+    },{name,width,height,smoothing,ticks,sampleReferences:process.env.TWIGANIMATE_BENCH_REFERENCES==='sample'});
     clearInterval(timer);timer=null;
     run.memory=memory;run.bytes=(await stat(destination)).size;
     const decoded=spawnSync(ffmpeg,['-hide_banner','-loglevel','error','-threads','1','-i',destination,'-map','0:v:0','-fps_mode','passthrough','-f','framehash','-'],{windowsHide:true,maxBuffer:4*1024*1024});

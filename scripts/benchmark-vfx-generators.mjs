@@ -2,7 +2,7 @@
 // the heaviest styles together: per-frame batch building (sequential
 // playback and after an edit), WebGPU and Canvas rendering with and without
 // effects, and playback packet compilation. Requires `npm run serve`;
-// STYK_TEST_URL overrides http://127.0.0.1:47832. Writes
+// TWIGANIMATE_TEST_URL overrides http://127.0.0.1:47832. Writes
 // artifacts/vfx-generators/benchmark.json. Timings are one machine's CPU
 // submission plus GPU completion; they are not display latency.
 import {chromium} from '../tests/support/playwright.mjs';
@@ -11,7 +11,7 @@ import fs from 'node:fs/promises';
 const browser=await chromium.launch({channel:'chrome',headless:true});
 const page=await browser.newPage({viewport:{width:1440,height:1000}});
 try{
- await page.goto(process.env.STYK_TEST_URL||'http://127.0.0.1:47832');await page.waitForFunction(()=>window.styk?.ready,null,{timeout:60000});
+ await page.goto(process.env.TWIGANIMATE_TEST_URL||'http://127.0.0.1:47832');await page.waitForFunction(()=>window.styk?.ready,null,{timeout:60000});
  const results=await page.evaluate(async()=>{
   const {emptyDocument,createObject,createFrame}=await import('/src/demo.mjs'),{initializeLayerSheet}=await import('/src/editor-layer-sheet.mjs');
   const {createRenderer}=await import('/src/renderer.mjs'),{generatorBatchFor,generatorAnchorStats,INTERACTIVE_SAMPLING_MS}=await import('/src/vfx-generator-frame.mjs'),{compilePlaybackPacket}=await import('/src/playback-worker.mjs');

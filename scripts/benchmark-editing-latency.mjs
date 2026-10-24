@@ -6,16 +6,16 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 const source=process.argv[2];if(!source)throw new Error('Provide a PIV animation.');
-const output=path.resolve('artifacts/editing-latency',process.env.STYK_PROBE_LABEL||'current');await mkdir(output,{recursive:true});
-const app=await electron.launch({args:[process.cwd()],env:{...process.env,STYK_USER_DATA_DIR:path.join(output,'profile')}});
+const output=path.resolve('artifacts/editing-latency',process.env.TWIGANIMATE_PROBE_LABEL||'current');await mkdir(output,{recursive:true});
+const app=await electron.launch({args:[process.cwd()],env:{...process.env,TWIGANIMATE_USER_DATA_DIR:path.join(output,'profile')}});
 try {
   const page=await app.firstWindow(),errors=[];page.on('pageerror',e=>errors.push(e.message));
   await app.evaluate(({BrowserWindow})=>{const w=BrowserWindow.getAllWindows()[0];w.webContents.setBackgroundThrottling(false);w.setIgnoreMouseEvents(true);w.setFocusable(false);w.showInactive();});
   await page.waitForFunction(()=>window.styk?.ready);
-  if(process.env.STYK_BASELINE_REF){
+  if(process.env.TWIGANIMATE_BASELINE_REF){
     // Extract the ref's sources once; one git process per request can exceed
     // the reload timeout on a busy machine.
-    const ref=execFileSync('git',['rev-parse','--short',process.env.STYK_BASELINE_REF]).toString().trim(),tree=path.resolve('artifacts/editing-latency',`.source-${ref}`);
+    const ref=execFileSync('git',['rev-parse','--short',process.env.TWIGANIMATE_BASELINE_REF]).toString().trim(),tree=path.resolve('artifacts/editing-latency',`.source-${ref}`);
     if(!existsSync(path.join(tree,'complete'))){
       const names=execFileSync('git',['ls-tree','-r','--name-only',ref,'src'],{maxBuffer:64*1024*1024}).toString().split('\n').filter(Boolean);
       const batch=execFileSync('git',['cat-file','--batch'],{input:names.map(name=>`${ref}:${name}`).join('\n')+'\n',maxBuffer:1024*1024*1024});
@@ -35,8 +35,8 @@ try {
     });
     await page.reload();await page.waitForFunction(()=>window.styk?.ready);
   }
-  if(process.env.STYK_BASELINE_DIRECTORY){
-    const directory=path.resolve(process.env.STYK_BASELINE_DIRECTORY);
+  if(process.env.TWIGANIMATE_BASELINE_DIRECTORY){
+    const directory=path.resolve(process.env.TWIGANIMATE_BASELINE_DIRECTORY);
     for(const name of ['playback-worker.mjs','renderer.mjs','renderer-geometry.mjs','playback.mjs'])await page.route(`**/src/${name}`,async route=>route.fulfill({contentType:'text/javascript',body:await readFile(path.join(directory,name))}));
     await page.reload();await page.waitForFunction(()=>window.styk?.ready);
   }

@@ -14,7 +14,7 @@ const curve=key=>graph.locator(`[data-motion-curve="${key}"]`);
 const points=key=>curve(key).getAttribute('points');
 const state=()=>page.evaluate(()=>({clip:styk.editor.getCameraMotions()[0],undo:styk.editor._undo.length,tick:styk.editor.tick,rows:styk.timeline.tracks.map(t=>({id:t.id,kind:t.kind,clip:t.motions?.[0],lanes:t.laneCount})),motionSize:styk.timeline.tracks.some(t=>t.kind==='motion')?styk.timeline.layout.size(1):0,audioTop:styk.timeline.audioTop}));
 try{
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(()=>{const e=styk.editor;e.newDocument();e.addFigure();styk.settingsUI.commit({timelineMode:'advanced',theme:'light',onionCount:0});const id=e.addCameraMotion('wobble',{duration:48});styk.timeline._selectMotion(id);e.seek(12);});
   await curve('x').waitFor();
   check('Move shows separate X/Y curves with frame labels',await curve('y').count()===1&&await graph.locator('.motion-graph-axis').textContent().then(s=>s.includes('48')));

@@ -6,7 +6,7 @@ const browser=await chromium.launch({channel:'chrome',headless:true});
 try{
  const page=await browser.newPage({viewport:{width:1100,height:800}}),errors=[];
  page.on('pageerror',error=>errors.push(error.message));
- await page.goto(process.env.STYK_TEST_URL||'http://127.0.0.1:47832');await page.waitForFunction(()=>window.styk?.ready);
+ await page.goto(process.env.TWIGANIMATE_TEST_URL||'http://127.0.0.1:47832');await page.waitForFunction(()=>window.styk?.ready);
  assert.ok(await page.locator('body').innerText());
  const result=await page.evaluate(async()=>{
   const {emptyDocument,createObject,createFrame}=await import('/src/demo.mjs'),{buildGeometry,drawGeometry}=await import('/src/pivot/geometry.mjs'),

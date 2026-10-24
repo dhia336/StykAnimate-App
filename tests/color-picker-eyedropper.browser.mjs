@@ -10,7 +10,7 @@ try {
     page.setDefaultTimeout(15000);
     page.on('pageerror',error=>errors.push(error.message));
     if(backend==='canvas')await page.addInitScript(()=>Object.defineProperty(navigator,'gpu',{value:undefined}));
-    await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831');
+    await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831');
     await page.waitForFunction(()=>window.styk?.ready);
     await page.evaluate(async()=>{
       const {emptyDocument,createFrame,createObject}=await import('/src/demo.mjs');

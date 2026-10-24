@@ -10,7 +10,7 @@ const errors = [], runs = [];
 try {
   const page = await browser.newPage({viewport: {width: 1280, height: 850}});
   page.on('pageerror', error => errors.push(error.message));
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831');
   await page.waitForFunction(() => window.styk?.ready);
   await page.evaluate(async () => {
     const {emptyDocument, createFrame, createObject} = await import('/src/demo.mjs');

@@ -9,7 +9,7 @@ import {chooseExport, exportDialogClosed, openEncoding} from './helpers/export-d
 
 const root = path.resolve(import.meta.dirname, '..'), output = path.join(root, 'artifacts', 'vfw-renderer');
 await mkdir(output, {recursive: true});
-const app = await electron.launch({args: [root], cwd: root, timeout: 45000, env: {...process.env, STYK_USER_DATA_DIR: path.join(output, `profile-${Date.now()}`)}});
+const app = await electron.launch({args: [root], cwd: root, timeout: 45000, env: {...process.env, TWIGANIMATE_USER_DATA_DIR: path.join(output, `profile-${Date.now()}`)}});
 try {
   const page = await app.firstWindow(), errors = []; page.on('pageerror', error => errors.push(error.message));
   await page.waitForFunction(() => window.styk?.ready && window.stykDesktop?.beginVfwExport, undefined, {timeout: 30000});
@@ -19,12 +19,12 @@ try {
     dismiss(); new MutationObserver(dismiss).observe(document.body, {subtree: true, childList: true, attributes: true, attributeFilter: ['open']});
   });
   await app.evaluate(({ipcMain}) => {
-    const original = ipcMain._invokeHandlers.get('styk:vfw-begin'); globalThis.__vfwTestRequests = [];
-    ipcMain.removeHandler('styk:vfw-begin');
-    ipcMain.handle('styk:vfw-begin', (event, options) => { globalThis.__vfwTestRequests.push({...options}); return original(event, options); });
-    const configure = ipcMain._invokeHandlers.get('styk:vfw-configure'); globalThis.__vfwConfiguration = {status: 'idle'};
-    ipcMain.removeHandler('styk:vfw-configure');
-    ipcMain.handle('styk:vfw-configure', async (event, options) => { globalThis.__vfwConfiguration = {status: 'started', options}; try { const result = await configure(event, options); globalThis.__vfwConfiguration = {status: 'complete', result}; return result; } catch (error) { globalThis.__vfwConfiguration = {status: 'error', message: error.message}; throw error; } });
+    const original = ipcMain._invokeHandlers.get('twiganimate:vfw-begin'); globalThis.__vfwTestRequests = [];
+    ipcMain.removeHandler('twiganimate:vfw-begin');
+    ipcMain.handle('twiganimate:vfw-begin', (event, options) => { globalThis.__vfwTestRequests.push({...options}); return original(event, options); });
+    const configure = ipcMain._invokeHandlers.get('twiganimate:vfw-configure'); globalThis.__vfwConfiguration = {status: 'idle'};
+    ipcMain.removeHandler('twiganimate:vfw-configure');
+    ipcMain.handle('twiganimate:vfw-configure', async (event, options) => { globalThis.__vfwConfiguration = {status: 'started', options}; try { const result = await configure(event, options); globalThis.__vfwConfiguration = {status: 'complete', result}; return result; } catch (error) { globalThis.__vfwConfiguration = {status: 'error', message: error.message}; throw error; } });
   });
   const result = await page.evaluate(async () => {
     const {getVfwCapabilities, encodeVfwVideo} = await import('/src/vfw-video-export.mjs');

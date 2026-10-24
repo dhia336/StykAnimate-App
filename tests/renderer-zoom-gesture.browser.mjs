@@ -5,7 +5,7 @@ import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import path from 'node:path';
 
-const output=path.resolve(process.env.STYK_ZOOM_GESTURE_OUTPUT??'artifacts/zoom-gesture');
+const output=path.resolve(process.env.TWIGANIMATE_ZOOM_GESTURE_OUTPUT??'artifacts/zoom-gesture');
 const stateOnly=process.argv.includes('--state-only');
 const refinementSmall=process.argv.includes('--refinement-small');
 const drawingCPUOnly=process.argv.includes('--drawing-cpu-only');
@@ -15,7 +15,7 @@ const cameraGPUOnly=process.argv.includes('--camera-gpu-only');
 const sceneCPUOnly=process.argv.includes('--scene-cpu-only');
 const sceneDrawingCaptureOnly=process.argv.includes('--scene-drawing-capture-only');
 const sceneCaptureOnly=sceneCPUOnly||sceneDrawingCaptureOnly||process.argv.includes('--scene-capture-only');
-const drawingReferenceURL=process.env.STYK_ZOOM_GESTURE_REFERENCE_URL;
+const drawingReferenceURL=process.env.TWIGANIMATE_ZOOM_GESTURE_REFERENCE_URL;
 const withDeadline=async(promise,milliseconds)=>{
   let timer;
   try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Browser fixture exceeded its bounded deadline.')),milliseconds);})]);}
@@ -39,8 +39,8 @@ if(drawingReferenceURL){
   files.push(...['renderer.mjs','pivot/geometry.mjs','vfx.mjs','vfx-canvas.mjs','vfx-gpu.mjs','vfx-webgpu.mjs','vfx-cpu.mjs'].map(file=>path.join(referenceRoot,file)));
 }
 const fingerprints=async()=>Object.fromEntries(await Promise.all(files.map(async file=>[file,createHash('sha256').update(await readFile(file)).digest('hex')])));
-const sources=await fingerprints(),service=process.env.STYK_ZOOM_GESTURE_ORIGIN
-  ?{origin:process.env.STYK_ZOOM_GESTURE_ORIGIN,stop(){}}
+const sources=await fingerprints(),service=process.env.TWIGANIMATE_ZOOM_GESTURE_ORIGIN
+  ?{origin:process.env.TWIGANIMATE_ZOOM_GESTURE_ORIGIN,stop(){}}
   :await backend.startBackend({appRoot:process.cwd()});
 let browser;
 const errors=[],networkFailures=[],progress=[];

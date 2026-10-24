@@ -7,9 +7,7 @@ import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import path from 'node:path';
-import { Readable } from 'node:stream';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { handle as community } from '../web/worker.js';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const TYPES = {
@@ -50,20 +48,12 @@ export function headersFor(rules, pathname) {
   return [...merged.values()];
 }
 
-/** Answers /community/* with web/worker.js, the same code Cloudflare runs. `upstream` names the site to read (the real one by default). */
-async function serveCommunity(request, response, url, upstream) {
-  const answer = await community(new Request(url, { method: request.method, headers: { accept: request.headers.accept ?? '*/*' } }), upstream);
-  response.writeHead(answer.status, Object.fromEntries(answer.headers));
-  if (!answer.body || request.method === 'HEAD') response.end(); else Readable.fromWeb(answer.body).on('error', () => response.destroy()).pipe(response);
-}
-
-export async function startWebServer({ root = path.join(appRoot, 'build', 'web'), port = 0, host = '127.0.0.1', upstream = {} } = {}) {
+export async function startWebServer({ root = path.join(appRoot, 'build', 'web'), port = 0, host = '127.0.0.1' } = {}) {
   let rules = [];
   try { rules = parseHeaders(await readFile(path.join(root, '_headers'), 'utf8')); } catch (error) { if (error.code !== 'ENOENT') throw error; }
   const server = createServer(async (request, response) => {
     try {
       const url = new URL(request.url, `http://${host}`);
-      if (url.pathname.startsWith('/community/')) { await serveCommunity(request, response, url, upstream); return; }
       let pathname = decodeURIComponent(url.pathname);
       if (pathname.endsWith('/')) pathname += 'index.html';
       const file = path.join(root, pathname);
@@ -87,5 +77,5 @@ export async function startWebServer({ root = path.join(appRoot, 'build', 'web')
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const option = (name, fallback) => { const index = process.argv.indexOf(name); return index >= 0 ? process.argv[index + 1] : fallback; };
   const { origin } = await startWebServer({ root: path.resolve(option('--dir', path.join(appRoot, 'build', 'web'))), port: Number(option('--port', 47850)) });
-  console.log(`StykAnimate web build is served at ${origin}`);
+  console.log(`TwigAnimate web build is served at ${origin}`);
 }

@@ -8,7 +8,7 @@ page.on('pageerror', error => errors.push(error.message));
 const focus = () => page.locator('#viewport').focus();
 const count = () => page.evaluate(() => styk.editor.figure.segments.length);
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47849');
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47849');
   await page.waitForFunction(() => window.styk?.ready);
   await page.locator('[data-workspace-mode="rig"]').click();
   await page.evaluate(() => styk.editor.select(styk.editor.selectedUid, 0));

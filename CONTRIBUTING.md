@@ -1,13 +1,11 @@
-# Contributing to StykAnimate
+# Contributing to TwigAnimate
 
-Thanks for helping make StykAnimate better. This guide covers how to report problems, suggest ideas and send changes.
+Thanks for helping improve TwigAnimate. This guide covers how to report problems, suggest ideas and send changes.
 
 ## Ask, report or suggest
 
-- **Questions and showing your work:** the [StykAnimate Discord](https://discord.gg/WTssQKBaJp).
-- **Bugs:** open a [bug report](https://github.com/filippocalippo/StykAnimate-App/issues/new?template=bug_report.yml). Include your StykAnimate version, operating system (or browser), the steps to reproduce, and what you expected. A small `.styk` or `.piv` file that shows the problem helps a lot; only share files you are allowed to share.
-- **Ideas:** open a [feature request](https://github.com/filippocalippo/StykAnimate-App/issues/new?template=feature_request.yml) describing the problem you want solved, not only the solution.
-- **Security problems:** never in a public issue; see [SECURITY.md](SECURITY.md).
+- **Questions, bugs and ideas:** contact the maintainer at `<MY_CONTACT>`. Include your app version, operating system (or browser), steps to reproduce, and expected result. A small `.styk` or `.piv` file that shows the problem helps; only share files you are allowed to share.
+- **Security problems:** never in a public issue; contact `<MY_CONTACT>` and see [SECURITY.md](SECURITY.md).
 
 ## Development setup
 
@@ -44,8 +42,8 @@ Interface strings live in `src/locales/`. See [docs/TRANSLATING.md](docs/TRANSLA
 
 ## AI coding assistants
 
-[AGENTS.md](AGENTS.md) holds the working rules for coding agents. They are the same expectations as above, written for tools. You are responsible for any pull request you open, including code an assistant wrote: review and test it yourself.
+Review your changes and test them before opening a pull request.
 
 ## License of contributions
 
-StykAnimate is licensed under the [GNU GPL, version 3 or later](LICENSE). By submitting a contribution, you agree that it is licensed under the same terms, and you confirm you have the right to submit it. Don't include code, artwork, figures, fonts or sounds you don't have the rights to share under the GPL.
+TwigAnimate is licensed under the [GNU GPL, version 3 or later](LICENSE). By submitting a contribution, you agree that it is licensed under the same terms, and you confirm you have the right to submit it. Don't include code, artwork, figures, fonts or sounds you don't have the rights to share under the GPL.

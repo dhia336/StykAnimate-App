@@ -1,7 +1,7 @@
 // Generated effects in the real app: live WebGPU and Canvas rendering, prepared
 // GPU and software playback packets, export, determinism and the editing UI
 // (catalogue previews, style suggestions, Shuffle and beam picking).
-// Requires `npm run serve` (STYK_TEST_URL overrides http://127.0.0.1:47832).
+// Requires `npm run serve` (TWIGANIMATE_TEST_URL overrides http://127.0.0.1:47832).
 import {chromium} from './support/playwright.mjs';
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
@@ -11,7 +11,7 @@ const browser=await chromium.launch({channel:'chrome',headless:true});
 const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
 page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
 try{
- await page.goto(process.env.STYK_TEST_URL||'http://127.0.0.1:47832');await page.waitForFunction(()=>window.styk?.ready,null,{timeout:60000});
+ await page.goto(process.env.TWIGANIMATE_TEST_URL||'http://127.0.0.1:47832');await page.waitForFunction(()=>window.styk?.ready,null,{timeout:60000});
  const report=await page.evaluate(async()=>{
   const {emptyDocument,createObject,createFrame}=await import('/src/demo.mjs'),{initializeLayerSheet}=await import('/src/editor-layer-sheet.mjs');
   const {compilePlaybackPacket}=await import('/src/playback-worker.mjs'),{createRenderer}=await import('/src/renderer.mjs'),{ExportFrameRenderer}=await import('/src/export-frame-renderer.mjs');

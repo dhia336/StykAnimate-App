@@ -6,7 +6,7 @@ import {mkdir} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
-const url = process.env.STYK_URL || 'http://127.0.0.1:47831';
+const url = process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831';
 const out = path.resolve('artifacts/tutorials-browser');
 await mkdir(out, {recursive: true});
 const browser = await chromium.launch({channel: 'chrome', headless: true});

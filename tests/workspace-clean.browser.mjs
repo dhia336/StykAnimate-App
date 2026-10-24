@@ -7,7 +7,7 @@ const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[],c
 page.on('pageerror',e=>errors.push(e.message));
 const check=(name,result)=>{assert.ok(result,name);checks.push(name);console.log('PASS',name);};
 try {
- await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+ await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
  await page.screenshot({path:`${out}/light.png`});
  check('History quick actions live in the band, not the stage header',await page.locator('.titlebar [aria-label="Edit history"] button').count()===2&&await page.locator('.stage-head [data-action="undo"], .stage-head [data-action="redo"]').count()===0);
  check('Canvas view controls remain accessible in the stage header',await page.locator('.stage-head [data-slot="stage-end"] #zoom-label').isVisible());

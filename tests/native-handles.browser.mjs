@@ -43,7 +43,7 @@ async function drag(uid,id,target,{keys=[],button='left',cancel=false,name='drag
   for(const key of [...keys].reverse())await page.keyboard.up(key); await settle(); return route;
 }
 try {
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>styk?.ready);
   await setup();
   const route=await drag(1,1,{x:420,y:260},{name:'joined-parent'});
   check('Joined child selection routes shared node to parent pose',route.kind==='pose'&&route.uid===1&&route.joint===0);
@@ -86,7 +86,7 @@ try {
   const rightR=await drag(1,1,{x:432,y:236},{keys:['r','Shift'],button:'right',name:'R-shift-right-bend'});
   check('R plus Shift + right drag repositions with tangent-preserving bend mode',rightR.kind==='handle-edit'&&await page.evaluate(()=>styk.editor.frame.objects[0].bend_flag===1));
   await page.screenshot({path:path.join(out,'small-handle-edit.png')});
-  if(process.env.STYK_SKIP_AKANE!=='1') {
+  if(process.env.TWIGANIMATE_SKIP_AKANE!=='1') {
     await page.evaluate(()=>styk.editor.markSaved());
     await page.locator('#file-input').setInputFiles(corpusPath('Downloads/16 Akane vs Akato Segundo round (3).piv'));
     await page.waitForFunction(()=>styk.editor.report.keyframes.length===1479&&!styk.state.importing,null,{timeout:180000});

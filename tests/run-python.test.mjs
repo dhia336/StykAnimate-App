@@ -23,20 +23,20 @@ test('Windows falls back to the py launcher when python is the Store stub or abs
 });
 
 test('explicit environments still come before PATH on Windows', () => {
-  const found = resolvePython({root: '/nowhere', env: {STYK_PYTHON: 'C:\\tools\\python.exe'}, platform: 'win32', probe: () => true});
+  const found = resolvePython({root: '/nowhere', env: {TWIGANIMATE_PYTHON: 'C:\\tools\\python.exe'}, platform: 'win32', probe: () => true});
   assert.equal(found.command, 'C:\\tools\\python.exe');
 });
 
-test('an explicit STYK_PYTHON wins, and an unusable one is skipped', () => {
-  assert.equal(resolvePython({root: '/nowhere', env: {STYK_PYTHON: '/opt/py/bin/python'}, platform: 'linux', probe: only('/opt/py/bin/python', 'python3')}).command, '/opt/py/bin/python');
-  assert.equal(resolvePython({root: '/nowhere', env: {STYK_PYTHON: '/broken'}, platform: 'linux', probe: only('python3')}).command, 'python3');
+test('an explicit TWIGANIMATE_PYTHON wins, and an unusable one is skipped', () => {
+  assert.equal(resolvePython({root: '/nowhere', env: {TWIGANIMATE_PYTHON: '/opt/py/bin/python'}, platform: 'linux', probe: only('/opt/py/bin/python', 'python3')}).command, '/opt/py/bin/python');
+  assert.equal(resolvePython({root: '/nowhere', env: {TWIGANIMATE_PYTHON: '/broken'}, platform: 'linux', probe: only('python3')}).command, 'python3');
 });
 
 test('no usable interpreter is reported as null, not thrown', () => {
   assert.equal(resolvePython({root: '/nowhere', env: {}, platform: 'linux', probe: () => false}), null);
 });
 
-test('the repository virtual environment beats PATH but not STYK_PYTHON', async t => {
+test('the repository virtual environment beats PATH but not TWIGANIMATE_PYTHON', async t => {
   const root = await mkdtemp(path.join(os.tmpdir(), 'styk-venv-'));
   t.after(() => rm(root, {recursive: true, force: true}));
   await mkdir(path.join(root, '.venv', 'bin'), {recursive: true});
@@ -44,6 +44,6 @@ test('the repository virtual environment beats PATH but not STYK_PYTHON', async 
   const venv = venvInterpreter(root, 'linux');
   assert.equal(venv, path.join(root, '.venv', 'bin', 'python'));
   assert.equal(resolvePython({root, env: {}, platform: 'linux', probe: () => true}).command, venv);
-  assert.equal(resolvePython({root, env: {STYK_PYTHON: '/x/python'}, platform: 'linux', probe: () => true}).command, '/x/python');
+  assert.equal(resolvePython({root, env: {TWIGANIMATE_PYTHON: '/x/python'}, platform: 'linux', probe: () => true}).command, '/x/python');
   assert.equal(venvInterpreter(path.join(root, 'missing'), 'linux'), null);
 });

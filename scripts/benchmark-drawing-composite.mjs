@@ -1,11 +1,11 @@
 import {chromium} from '../tests/support/playwright.mjs';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
-const output=process.env.STYK_COMPOSITE_BENCHMARK||'artifacts/drawing-worker-composite';await mkdir(output,{recursive:true});
+const output=process.env.TWIGANIMATE_COMPOSITE_BENCHMARK||'artifacts/drawing-worker-composite';await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true}),results=[];
 try{
   for(let round=0;round<3;round++)for(const mode of round%2?['worker','main']:['main','worker']){
-    const page=await browser.newPage();await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+    const page=await browser.newPage();await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
     const result=await page.evaluate(async mode=>{
       const {drawGeometry,releaseGeometryResources}=await import('/src/pivot/geometry.mjs'),{DrawingResources}=await import('/src/drawing-resources.mjs'),{sendDrawingComposite}=await import('/src/drawing-composite-transport.mjs');
       const obj={unique_id:1,scale:1},fig={figure_type_id:1},seg={segment_kind:'line'},drawables=[],bounds={x:0,y:0,width:3840,height:2160};

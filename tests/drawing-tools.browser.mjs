@@ -6,7 +6,7 @@ import path from 'node:path';
 // fills, magic wand, fill selection, symmetry, straight lines, colour picking,
 // brush resizing, view flipping, blend modes and alpha lock — driven through
 // real pointer and keyboard input.
-const output=path.resolve(process.env.STYK_TOOLS_ARTIFACTS||'artifacts/drawing-tools'),url=process.env.STYK_URL||'http://127.0.0.1:47839';
+const output=path.resolve(process.env.TWIGANIMATE_TOOLS_ARTIFACTS||'artifacts/drawing-tools'),url=process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839';
 await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true});
 const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[],checks=[];

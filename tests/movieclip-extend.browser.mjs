@@ -5,7 +5,7 @@ const browser=await chromium.launch({channel:'chrome',headless:true});
 try{
  const page=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[];
  page.on('pageerror',error=>errors.push(error.message));page.on('console',message=>{if(message.type()==='error')errors.push(message.text());});
- await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+ await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
  await page.evaluate(async()=>{
  const {emptyDocument,createFrame,createObject,defaultFigure}=await import('/src/demo.mjs');
  const {movieclipFigure}=await import('/src/movieclips.mjs');const {presencePlayback}=await import('/src/movieclip-presence.mjs');

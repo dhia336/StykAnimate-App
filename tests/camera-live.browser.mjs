@@ -9,7 +9,7 @@ const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('
 const snapshot=()=>page.evaluate(()=>({camera:{...styk.editor.evaluatedFrame.camera},undo:styk.editor._undo.length,
  x:Number(document.querySelector('[data-property="camera_x"]')?.value),monitor:document.querySelector('[data-camera-monitor]')?.toDataURL(),draws:styk.state.drawCalls}));
 try{
- await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+ await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
  await page.evaluate(()=>{styk.editor.newDocument();styk.editor.addFigure();styk.fit();styk.settingsUI.commit({showCamera:true,onionCount:0});styk.state.onion=false;});
  check('Camera and Scene tracks are always in the layer list',await page.getByRole('button',{name:'Select layer Camera',exact:true}).isVisible()&&await page.getByRole('button',{name:'Select layer Scene',exact:true}).isVisible());
  check('Fixed tracks have distinct colors and exclusive icons',await page.evaluate(()=>{const a=document.querySelector('[data-layer-id="camera"]'),b=document.querySelector('[data-layer-id="scene"]'),c=document.querySelector('[data-layer-id="layer-1"]');return getComputedStyle(a).backgroundColor!==getComputedStyle(b).backgroundColor&&a.querySelector('svg').innerHTML!==b.querySelector('svg').innerHTML&&b.querySelector('svg').innerHTML!==c.querySelector('svg').innerHTML;}));

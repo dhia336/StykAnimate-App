@@ -9,14 +9,14 @@ const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const output = path.join(appRoot, 'artifacts');
 await mkdir(output, { recursive: true });
 const packaged = process.argv.includes('--packaged');
-const defaultPackagedPath = process.platform === 'win32' ? ['win-unpacked', 'StykAnimate.exe']
-  : process.platform === 'darwin' ? [process.arch === 'arm64' ? 'mac-arm64' : 'mac', 'StykAnimate.app', 'Contents', 'MacOS', 'StykAnimate']
-  : [process.arch === 'arm64' ? 'linux-arm64-unpacked' : 'linux-unpacked', 'stykanimate'];
-const executablePath = packaged ? process.env.STYK_PACKAGED_EXECUTABLE || path.join(appRoot, 'release', ...defaultPackagedPath) : undefined;
+const defaultPackagedPath = process.platform === 'win32' ? ['win-unpacked', 'TwigAnimate.exe']
+  : process.platform === 'darwin' ? [process.arch === 'arm64' ? 'mac-arm64' : 'mac', 'TwigAnimate.app', 'Contents', 'MacOS', 'TwigAnimate']
+  : [process.arch === 'arm64' ? 'linux-arm64-unpacked' : 'linux-unpacked', 'twiganimate'];
+const executablePath = packaged ? process.env.TWIGANIMATE_PACKAGED_EXECUTABLE || path.join(appRoot, 'release', ...defaultPackagedPath) : undefined;
 const profilePath = path.join(output, `${packaged ? 'packaged' : 'desktop'}-profile-${Date.now()}`);
 await mkdir(profilePath, {recursive:true});
 await writeFile(path.join(profilePath,'telemetry-state.json'),JSON.stringify({decided:true,consent:{analytics:false,diagnostics:false,policyVersion:'2026-09-10',updatedAt:Date.now()}}));
-const app = await electron.launch({ executablePath, args: packaged ? [] : [appRoot], cwd: appRoot, timeout: 45000, env: { ...process.env, STYK_DEBUG: '1', STYK_USER_DATA_DIR: profilePath } });
+const app = await electron.launch({ executablePath, args: packaged ? [] : [appRoot], cwd: appRoot, timeout: 45000, env: { ...process.env, TWIGANIMATE_DEBUG: '1', TWIGANIMATE_USER_DATA_DIR: profilePath } });
 const errors = [];
 let appClosed = false;
 app.on('close', () => { appClosed = true; });

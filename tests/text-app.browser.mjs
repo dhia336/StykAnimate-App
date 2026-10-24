@@ -63,7 +63,7 @@ const renderPixels = (target) =>
   });
 await installProjectSavePicker(page);
 try {
-  const url = process.env.STYK_URL || "http://127.0.0.1:47831";
+  const url = process.env.TWIGANIMATE_URL || "http://127.0.0.1:47831";
   await page.goto(url);
   await page.waitForFunction(() => window.styk?.ready);
   check(

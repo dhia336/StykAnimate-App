@@ -2,10 +2,10 @@ import {_electron as electron,chromium} from './support/playwright.mjs';
 import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 const root=process.cwd(),output=path.join(root,'artifacts',`artwork-gpu-${Date.now()}`);await mkdir(output,{recursive:true});
-const browser=process.env.STYK_BROWSER_URL?await chromium.launch({channel:'chrome',headless:true}):null;
-const app=browser?null:await electron.launch({args:[root],cwd:root,env:{...process.env,STYK_USER_DATA_DIR:path.join(output,'profile')}});
+const browser=process.env.TWIGANIMATE_BROWSER_URL?await chromium.launch({channel:'chrome',headless:true}):null;
+const app=browser?null:await electron.launch({args:[root],cwd:root,env:{...process.env,TWIGANIMATE_USER_DATA_DIR:path.join(output,'profile')}});
 try{
-  const page=browser?await browser.newPage():await app.firstWindow();if(browser)await page.goto(process.env.STYK_BROWSER_URL);await page.waitForFunction(()=>window.styk?.ready);
+  const page=browser?await browser.newPage():await app.firstWindow();if(browser)await page.goto(process.env.TWIGANIMATE_BROWSER_URL);await page.waitForFunction(()=>window.styk?.ready);
   const result=await page.evaluate(async()=>{
     const {createRenderer}=await import('/src/renderer.mjs');
     const make=async sharedArtwork=>{const c=document.createElement('canvas');c.width=256;c.height=128;document.body.append(c);const r=await createRenderer(c,{sharedArtwork});r.resize(256,128,1);return{r,c};};

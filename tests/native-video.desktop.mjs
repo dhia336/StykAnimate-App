@@ -11,7 +11,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), o
 await mkdir(output, {recursive: true});
 const ffmpeg = path.join(root, 'build', 'video-encoder', process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg');
 const app = await electron.launch({args: [root], cwd: root, timeout: 45000,
-  env: {...process.env, STYK_USER_DATA_DIR: path.join(output, `profile-${Date.now()}`)}});
+  env: {...process.env, TWIGANIMATE_USER_DATA_DIR: path.join(output, `profile-${Date.now()}`)}});
 let result;
 try {
   const page = await app.firstWindow(), errors = [];

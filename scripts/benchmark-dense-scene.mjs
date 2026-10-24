@@ -9,8 +9,8 @@ import {scaleBenchmarkScene} from './dense-scene-scale.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = path.resolve(process.argv[2] || path.join(os.homedir(), 'Desktop/testreallydense.piv'));
-const mode = process.env.STYK_DENSE_MODE || 'baseline';
-if(!['probe','baseline','diagnostic','micro','stress','fps-ui','interactions','drag','drag-cpu','playback-input','inbetweens','timing'].includes(mode))throw new Error('Unknown STYK_DENSE_MODE.');
+const mode = process.env.TWIGANIMATE_DENSE_MODE || 'baseline';
+if(!['probe','baseline','diagnostic','micro','stress','fps-ui','interactions','drag','drag-cpu','playback-input','inbetweens','timing'].includes(mode))throw new Error('Unknown TWIGANIMATE_DENSE_MODE.');
 const output = path.join(root, 'artifacts', 'dense-scene', `${mode}-${Date.now()}`);
 await mkdir(output, {recursive:true});
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -25,7 +25,7 @@ for(const name of (await readdir(path.join(root,'src'),{recursive:true})).filter
 console.log('OUTPUT',output);
 await mkdir(path.join(output,'profile'),{recursive:true});
 await writeFile(path.join(output,'profile','telemetry-state.json'),JSON.stringify({decided:true,consent:{analytics:false,diagnostics:false,policyVersion:'2026-09-10',updatedAt:Date.now()}}));
-const app = await electron.launch({args:[root],cwd:root,timeout:60000,env:{...process.env,STYK_USER_DATA_DIR:path.join(output,'profile')}});
+const app = await electron.launch({args:[root],cwd:root,timeout:60000,env:{...process.env,TWIGANIMATE_USER_DATA_DIR:path.join(output,'profile')}});
 try {
   const page=await app.firstWindow({timeout:60000});
   page.setDefaultTimeout(60000);
@@ -47,8 +47,8 @@ try {
     w.setIgnoreMouseEvents(true);w.setFocusable(false);w.showInactive();
   });
   result.environment.backgroundThrottling=false;
-  const cpuThrottleRate = Number(process.env.STYK_BENCHMARK_CPU_RATE || 1);
-  if (!Number.isFinite(cpuThrottleRate) || cpuThrottleRate < 1 || cpuThrottleRate > 20) throw new Error('STYK_BENCHMARK_CPU_RATE must be between 1 and 20.');
+  const cpuThrottleRate = Number(process.env.TWIGANIMATE_BENCHMARK_CPU_RATE || 1);
+  if (!Number.isFinite(cpuThrottleRate) || cpuThrottleRate < 1 || cpuThrottleRate > 20) throw new Error('TWIGANIMATE_BENCHMARK_CPU_RATE must be between 1 and 20.');
   const throttleSession = await page.context().newCDPSession(page);
   await throttleSession.send('Emulation.setCPUThrottlingRate', {rate:cpuThrottleRate});
   result.environment.cpuThrottleRate = cpuThrottleRate;
@@ -74,11 +74,11 @@ try {
   await page.locator('#file-input').setInputFiles(source);
   await page.waitForFunction(name=>styk.editor.name===name&&!styk.state.importing,path.basename(source,'.piv'),{timeout:180000});
   result.importWallMs=Date.now()-importStart;
-  result.sceneMultiplier=Number(process.env.STYK_DENSE_MULTIPLIER||1);
+  result.sceneMultiplier=Number(process.env.TWIGANIMATE_DENSE_MULTIPLIER||1);
   await scaleBenchmarkScene(page);
-  if(process.env.STYK_BENCHMARK_FPS){
-    const fps=Number(process.env.STYK_BENCHMARK_FPS);
-    if(!Number.isInteger(fps)||fps<1||fps>1000)throw new Error('STYK_BENCHMARK_FPS must be an integer from 1 to 1000.');
+  if(process.env.TWIGANIMATE_BENCHMARK_FPS){
+    const fps=Number(process.env.TWIGANIMATE_BENCHMARK_FPS);
+    if(!Number.isInteger(fps)||fps<1||fps>1000)throw new Error('TWIGANIMATE_BENCHMARK_FPS must be an integer from 1 to 1000.');
     await page.evaluate(fps=>{styk.editor.setFPS(fps);styk.editor.markSaved();},fps);
     result.fpsOverride=fps;
   }
@@ -191,7 +191,7 @@ async function benchmark(page,app,result,output,mode) {
     return;
   }
   if(mode==='playback-input'||mode==='inbetweens'){
-    const pauseTicks=process.env.STYK_BENCHMARK_PAUSE_TICKS?.split(',').map(Number);let pauseIndex=0;
+    const pauseTicks=process.env.TWIGANIMATE_BENCHMARK_PAUSE_TICKS?.split(',').map(Number);let pauseIndex=0;
     if(pauseTicks?.some(tick=>!Number.isInteger(tick)||tick<0))throw new Error('Pause ticks must be nonnegative integers.');
     result.pauseTicks=pauseTicks;
     const stopPlayback=async()=>{
@@ -233,17 +233,17 @@ async function benchmark(page,app,result,output,mode) {
         return {prepareWallMs:performance.now()-started,target,ready:styk.state.renderer.preparedFrames.frames.size,complete:styk.state.renderer.preparedFrames.frames.size>=target};
       });
     };
-    result.playbackScale=Number(process.env.STYK_BENCHMARK_SCALE||1);
-    if(!Number.isFinite(result.playbackScale)||result.playbackScale<=0)throw new Error('STYK_BENCHMARK_SCALE must be positive.');
+    result.playbackScale=Number(process.env.TWIGANIMATE_BENCHMARK_SCALE||1);
+    if(!Number.isFinite(result.playbackScale)||result.playbackScale<=0)throw new Error('TWIGANIMATE_BENCHMARK_SCALE must be positive.');
     await page.evaluate(scale=>{styk.state.loop=true;styk.state.loopRange=null;styk.editor.seek(0);styk.state.view.scale=scale;window.dispatchEvent(new Event('resize'));},result.playbackScale);
     if(mode==='inbetweens'){
-      const ticks=Number(process.env.STYK_BENCHMARK_INBETWEENS||8);
+      const ticks=Number(process.env.TWIGANIMATE_BENCHMARK_INBETWEENS||8);
       await phase('add-inbetween-exposure',()=>page.evaluate(ticks=>{
         const e=styk.editor,start=performance.now();e.setFramesDuration([0,1,2],ticks);const commandMs=performance.now()-start;e.seek(0);
         return {commandMs,historyBytes:e._undo.at(-1)?.bytes,totalTicks:e.totalTicks,frames:e.report.keyframes.length,durations:e.report.keyframes.map(f=>f.duration_raw)};
       },ticks));
     }
-    result.coldStart=process.env.STYK_BENCHMARK_COLD==='1';
+    result.coldStart=process.env.TWIGANIMATE_BENCHMARK_COLD==='1';
     if(result.coldStart&&!await page.evaluate(()=>Boolean(__dense.cache))){
       // Capture the existing controller when no idle prefetch has run since
       // instrumentation. The measured phase then discards every warmed cache.
@@ -331,8 +331,8 @@ async function benchmark(page,app,result,output,mode) {
     });return;
   }
   if(mode==='stress'){
-    const scales=(process.env.STYK_BENCHMARK_SCALES||'1,1.01,2,4').split(',').map(Number);
-    if(scales.some(scale=>!Number.isFinite(scale)||scale<=0))throw new Error('Invalid STYK_BENCHMARK_SCALES.');
+    const scales=(process.env.TWIGANIMATE_BENCHMARK_SCALES||'1,1.01,2,4').split(',').map(Number);
+    if(scales.some(scale=>!Number.isFinite(scale)||scale<=0))throw new Error('Invalid TWIGANIMATE_BENCHMARK_SCALES.');
     for(const scale of scales){
       await page.evaluate(scale=>{styk.state.view.scale=scale;styk.state.dirtyRender=true;window.dispatchEvent(new Event('resize'));styk.editor.seek(0);styk.state.loop=true;},scale);
       await page.waitForTimeout(1200);

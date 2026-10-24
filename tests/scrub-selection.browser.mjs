@@ -4,7 +4,7 @@ const browser=await chromium.launch({channel:'chrome',headless:true});
 const page=await browser.newPage({viewport:{width:1560,height:1000}});
 const errors=[];page.on('pageerror',e=>errors.push(e.message));
 try {
- await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(()=>window.styk?.ready);
+ await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(()=>window.styk?.ready);
  await page.evaluate(()=>{
   const {editor,state}=styk;editor.selectMany([1,2]);state.onion=true;
   state.view={x:300,y:160,scale:0.55};

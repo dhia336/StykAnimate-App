@@ -47,7 +47,7 @@ try {
   await page.route("**/src/app.mjs", (route) =>
     route.fulfill({ contentType: "text/javascript", body: "" }),
   );
-  await page.goto(process.env.STYK_URL || "http://127.0.0.1:47831");
+  await page.goto(process.env.TWIGANIMATE_URL || "http://127.0.0.1:47831");
   await page.evaluate(async () => {
     const { TextDialog } = await import("/src/text-dialog.mjs");
     const { Editor } = await import("/src/editor.mjs");

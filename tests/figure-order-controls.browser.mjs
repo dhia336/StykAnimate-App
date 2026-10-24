@@ -25,7 +25,7 @@ async function reset(selection = [1]) {
 }
 try {
   await mkdir(out, {recursive: true});
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831');
   await page.waitForFunction(() => window.styk?.ready);
   for (const [action, selection, expected] of [
     ['layer-up', [1], [2, 1, 3, 4]], ['layer-down', [4], [1, 2, 4, 3]],

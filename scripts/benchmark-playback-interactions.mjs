@@ -4,20 +4,20 @@ import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 const source=process.argv[2];if(!source)throw new Error('Provide a PIV project.');
-const label=process.env.STYK_PROBE_LABEL||'current',fps=Number(process.env.STYK_PROBE_FPS||120);
+const label=process.env.TWIGANIMATE_PROBE_LABEL||'current',fps=Number(process.env.TWIGANIMATE_PROBE_FPS||120);
 const output=path.resolve('artifacts/playback-interactions',label);await mkdir(output,{recursive:true});
-const desktop=process.env.STYK_PROBE_DESKTOP==='1';
-const host=desktop?await electron.launch({args:[process.cwd()],cwd:process.cwd(),env:{...process.env,STYK_USER_DATA_DIR:path.join(output,'profile')}}):await chromium.launch({channel:'chrome',headless:true});
+const desktop=process.env.TWIGANIMATE_PROBE_DESKTOP==='1';
+const host=desktop?await electron.launch({args:[process.cwd()],cwd:process.cwd(),env:{...process.env,TWIGANIMATE_USER_DATA_DIR:path.join(output,'profile')}}):await chromium.launch({channel:'chrome',headless:true});
 const page=desktop?await host.firstWindow():await host.newPage({viewport:{width:1600,height:1000}});
 if(desktop)await host.evaluate(({BrowserWindow})=>{
   const w=BrowserWindow.getAllWindows()[0];w.webContents.setBackgroundThrottling(false);
   w.setIgnoreMouseEvents(true);w.setFocusable(false);w.showInactive();
 });
-if(process.env.STYK_PROBE_MEMORY_GIB)await page.addInitScript(value=>Object.defineProperty(navigator,'deviceMemory',{get:()=>value}),Number(process.env.STYK_PROBE_MEMORY_GIB));
+if(process.env.TWIGANIMATE_PROBE_MEMORY_GIB)await page.addInitScript(value=>Object.defineProperty(navigator,'deviceMemory',{get:()=>value}),Number(process.env.TWIGANIMATE_PROBE_MEMORY_GIB));
 const errors=[];page.on('pageerror',e=>errors.push(e.message));
 try {
-  if(process.env.STYK_BASELINE_CLIENT){
-    const ref=process.env.STYK_BASELINE_CLIENT,files=new Map();
+  if(process.env.TWIGANIMATE_BASELINE_CLIENT){
+    const ref=process.env.TWIGANIMATE_BASELINE_CLIENT,files=new Map();
     if(desktop)await page.waitForFunction(()=>window.styk?.ready);
     await page.context().route(url=>url.pathname==='/'||url.pathname==='/index.html'||url.pathname.startsWith('/src/'),async route=>{
       const pathname=new URL(route.request().url()).pathname,file=pathname==='/'?'index.html':pathname.slice(1);
@@ -26,16 +26,16 @@ try {
     });
     if(desktop)await page.reload();
   }
-  if(process.env.STYK_BASELINE_WORKER)await page.route('**/src/playback-worker.mjs',async route=>route.fulfill({contentType:'text/javascript',body:await readFile(process.env.STYK_BASELINE_WORKER,'utf8')}));
-  if(!desktop)await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');
+  if(process.env.TWIGANIMATE_BASELINE_WORKER)await page.route('**/src/playback-worker.mjs',async route=>route.fulfill({contentType:'text/javascript',body:await readFile(process.env.TWIGANIMATE_BASELINE_WORKER,'utf8')}));
+  if(!desktop)await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');
   await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(()=>{for(const d of document.querySelectorAll('dialog[open]'))d.close();styk.editor.markSaved();});
   await page.locator('#file-input').setInputFiles(source);
   await page.waitForFunction(name=>!styk.state.importing&&styk.editor.name===name,path.basename(source,'.piv'),{timeout:180000});
   console.log('IMPORTED');
-  const playbackProfiler=process.env.STYK_PROBE_PROFILE==='1'?await page.context().newCDPSession(page):null;
+  const playbackProfiler=process.env.TWIGANIMATE_PROBE_PROFILE==='1'?await page.context().newCDPSession(page):null;
   if(playbackProfiler){await playbackProfiler.send('Profiler.enable');await playbackProfiler.send('Profiler.start');}
-  if(process.env.STYK_PROBE_GPU_CACHE_MIB)await page.evaluate(bytes=>{const cache=styk.state.renderer.preparedFrames;if(!cache)throw new Error('GPU cache override requires WebGPU.');cache.maxBytes=bytes;cache.stats.maxBytes=bytes;},Number(process.env.STYK_PROBE_GPU_CACHE_MIB)*1024*1024);
+  if(process.env.TWIGANIMATE_PROBE_GPU_CACHE_MIB)await page.evaluate(bytes=>{const cache=styk.state.renderer.preparedFrames;if(!cache)throw new Error('GPU cache override requires WebGPU.');cache.maxBytes=bytes;cache.stats.maxBytes=bytes;},Number(process.env.TWIGANIMATE_PROBE_GPU_CACHE_MIB)*1024*1024);
   await page.evaluate(async fps=>{
     const {PlaybackCache}=await import('/src/playback.mjs'),s=styk.state,e=styk.editor;
     e.setFPS(fps);e.markSaved();s.loop=false;e.seek(0);styk.fit();
@@ -48,7 +48,7 @@ try {
     new PerformanceObserver(list=>{for(const e of list.getEntries())probe.longTasks.push({at:e.startTime,ms:e.duration});}).observe({entryTypes:['longtask']});
     styk.actions.play();
   },fps);
-  const deadline=Date.now()+Number(process.env.STYK_PROBE_SECONDS||180)*1000;
+  const deadline=Date.now()+Number(process.env.TWIGANIMATE_PROBE_SECONDS||180)*1000;
   let nextLog=0,complete=false;
   while(Date.now()<deadline){
     await page.waitForTimeout(500);

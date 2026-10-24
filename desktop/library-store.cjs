@@ -88,14 +88,6 @@ class LibraryStore {
     this.pending.set(transfer.token, {destination, png, kind: kind === 'set' ? 'set' : extension === '.stykmov' ? 'movieclip' : 'figure'});
     return {...transfer, path: this.relative(destination)};
   }); }
-  /** Saves bytes already in the main process (a public library asset) through the same exclusive, staged commit. */
-  async saveBytes({folder = '', name, extension, kind, thumbnail, bytes}) {
-    const transfer = await this.beginSave({folder, name: safeName(name), extension, kind, thumbnail, size: bytes.length});
-    try {
-      for (let offset = 0; offset < bytes.length; offset += transfer.maxChunkBytes) await this.write(transfer.token, bytes.subarray(offset, offset + transfer.maxChunkBytes));
-      return await this.finish(transfer.token);
-    } catch (error) { await this.cancel(transfer.token).catch(() => {}); throw error; }
-  }
   write(token, bytes) { return this.streams.write(token, bytes); }
   finish(token) { return this.serial(async () => {
     const item = this.pending.get(token); if (!item) throw messageError(new Error(''), 'desktop.libraryStore.errors.librarySaveIsNoLongerActive', {});

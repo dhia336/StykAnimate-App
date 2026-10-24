@@ -2,7 +2,7 @@ import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 const browser=await chromium.launch({channel:'chrome',headless:true});
 try {
-  const page=await browser.newPage();await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');
+  const page=await browser.newPage();await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');
   const result=await page.evaluate(async()=>{
     const {emptyDocument,createFrame,createObject}=await import('/src/demo.mjs');
     const {compilePlaybackPacket,PlaybackResources}=await import('/src/playback-worker.mjs');

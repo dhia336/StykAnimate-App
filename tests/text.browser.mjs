@@ -1,4 +1,4 @@
-/** Portable text authoring and binary round trips. Requires STYK_URL (default :47831). */
+/** Portable text authoring and binary round trips. Requires TWIGANIMATE_URL (default :47831). */
 import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir, writeFile} from 'node:fs/promises';
@@ -7,7 +7,7 @@ import {fileURLToPath} from 'node:url';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const output = path.join(appRoot, 'artifacts');
-const origin = process.env.STYK_URL || 'http://127.0.0.1:47831';
+const origin = process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831';
 await mkdir(output, {recursive: true});
 const browser = await chromium.launch({channel: 'chrome', headless: true});
 const context = await browser.newContext({viewport: {width: 1400, height: 1040}});

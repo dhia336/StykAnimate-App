@@ -6,7 +6,7 @@ import path from "node:path";
 import { chooseExport, exportDialogClosed } from "./helpers/export-dialog.mjs";
 
 const out = path.resolve("artifacts"),
-  url = process.env.STYK_URL || "http://127.0.0.1:47831";
+  url = process.env.TWIGANIMATE_URL || "http://127.0.0.1:47831";
 await mkdir(out, { recursive: true });
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 const page = await browser.newPage({

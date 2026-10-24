@@ -8,7 +8,7 @@ import path from "node:path";
 import backend from "../desktop/backend.cjs";
 const output = path.resolve("artifacts/camera-bake-authored");
 await mkdir(output, { recursive: true });
-const service = process.env.STYK_URL
+const service = process.env.TWIGANIMATE_URL
   ? null
   : await backend.startBackend({ appRoot: process.cwd() });
 const browser = await chromium.launch({ channel: "chrome", headless: true });
@@ -29,7 +29,7 @@ async function download(action, name) {
 }
 await installProjectSavePicker(page);
 try {
-  await page.goto(process.env.STYK_URL || service.origin);
+  await page.goto(process.env.TWIGANIMATE_URL || service.origin);
   await page.waitForFunction(() => window.styk?.ready);
   await page.evaluate(async () => {
     const { cameraBakeFixture } = await import(

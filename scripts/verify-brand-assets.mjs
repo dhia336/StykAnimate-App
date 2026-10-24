@@ -8,7 +8,7 @@ import {Data, Resource, NtExecutable, NtExecutableResource} from 'resedit';
 import {Resvg, initWasm} from '../vendor/resvg/index.mjs';
 
 const root = path.resolve(import.meta.dirname, '..'), assets = path.join(root, 'desktop/assets');
-const evidence = path.resolve(process.env.STYK_BRAND_EVIDENCE || path.join(root, 'artifacts/branding'));
+const evidence = path.resolve(process.env.TWIGANIMATE_BRAND_EVIDENCE || path.join(root, 'artifacts/branding'));
 const hash = bytes => createHash('sha256').update(Buffer.from(bytes)).digest('hex');
 const result = {assets: [], executables: [], platformBuildsVerified: ['win32-x64']};
 await initWasm(await readFile(path.join(root, 'vendor/resvg/index_bg.wasm')));
@@ -20,32 +20,32 @@ function verifyPNG(bytes, width) {
   assert.ok(pixels.some((value, index) => index % 4 === 3 && value > 0 && value < 255));
   rendered.free(); renderer.free();
 }
-for (const [file, width] of [['stykanimate.png', 512], ['stykanimate-1024.png', 1024]]) {verifyPNG(await readFile(path.join(assets, file)), width); result.assets.push({file, width, alpha: true});}
-const ico = Data.IconFile.from(await readFile(path.join(assets, 'stykanimate.ico')));
+for (const [file, width] of [['twiganimate.png', 512], ['twiganimate-1024.png', 1024]]) {verifyPNG(await readFile(path.join(assets, file)), width); result.assets.push({file, width, alpha: true});}
+const ico = Data.IconFile.from(await readFile(path.join(assets, 'twiganimate.ico')));
 const iconHash = item => hash(item.isRaw() ? item.bin : item.generate());
 const expectedHashes = ico.icons.map(({data}) => iconHash(data));
 for (const {data} of ico.icons) {
   const width = data.width || data.bitmapInfo.width;
   if (data.isRaw()) verifyPNG(Buffer.from(data.bin), width);
   else {const pixels = Buffer.from(data.pixels); assert.equal(pixels[3], 0); assert.ok(pixels.some((value, index) => index % 4 === 3 && value > 0 && value < 255));}
-  result.assets.push({file: 'stykanimate.ico', width, alpha: true});
+  result.assets.push({file: 'twiganimate.ico', width, alpha: true});
 }
-const icns = await readFile(path.join(assets, 'stykanimate.icns'));
+const icns = await readFile(path.join(assets, 'twiganimate.icns'));
 assert.equal(icns.toString('ascii', 0, 4), 'icns'); assert.equal(icns.readUInt32BE(4), icns.length);
 for (let offset = 8; offset < icns.length;) {
   const type = icns.toString('ascii', offset, offset + 4), length = icns.readUInt32BE(offset + 4), png = icns.subarray(offset + 8, offset + length), width = png.readUInt32BE(16);
-  verifyPNG(png, width); result.assets.push({file: 'stykanimate.icns', type, width, alpha: true}); offset += length;
+  verifyPNG(png, width); result.assets.push({file: 'twiganimate.icns', type, width, alpha: true}); offset += length;
 }
 const metadata = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 assert.equal(metadata.build.win.signExecutable, false); assert.notEqual(metadata.build.win.signAndEditExecutable, false);
-assert.equal(await readFile(path.join(root, 'mark.svg'), 'utf8'), await readFile(path.join(root, 'assets/brand/svg/stykanimate-app-icon-blue.svg'), 'utf8'));
-assert.equal(await readFile(path.join(root, 'symbol.svg'), 'utf8'), await readFile(path.join(root, 'assets/brand/svg/stykanimate-symbol-blue.svg'), 'utf8'));
+assert.equal(await readFile(path.join(root, 'mark.svg'), 'utf8'), await readFile(path.join(root, 'assets/brand/svg/twiganimate-app-icon.svg'), 'utf8'));
+assert.equal(await readFile(path.join(root, 'symbol.svg'), 'utf8'), await readFile(path.join(root, 'assets/brand/svg/twiganimate-symbol.svg'), 'utf8'));
 if (!process.argv.includes('--assets-only')) {
-  const output = path.resolve(process.env.STYK_BRAND_BUILD || path.join(root, 'artifacts/rebrand-release'));
+  const output = path.resolve(process.env.TWIGANIMATE_BRAND_BUILD || path.join(root, 'artifacts/rebrand-release'));
   const asar = createRequire(import.meta.url)('@electron/asar');
-  for (const file of ['stykanimate.png', 'stykanimate.ico', 'stykanimate.icns']) assert.equal(hash(asar.extractFile(path.join(output, 'win-unpacked/resources/app.asar'), path.join('desktop', 'assets', file))), hash(await readFile(path.join(assets, file))));
+  for (const file of ['twiganimate.png', 'twiganimate.ico', 'twiganimate.icns']) assert.equal(hash(asar.extractFile(path.join(output, 'win-unpacked/resources/app.asar'), path.join('desktop', 'assets', file))), hash(await readFile(path.join(assets, file))));
   for (const file of ['mark.svg', 'symbol.svg']) assert.equal(hash(await readFile(path.join(output, 'win-unpacked/resources/web', file))), hash(await readFile(path.join(root, file))));
-  const files = [path.join(output, 'win-unpacked/StykAnimate.exe'), path.join(output, `StykAnimate-${metadata.version}-Setup-x64.exe`), path.join(output, `StykAnimate-${metadata.version}-Portable-x64.exe`), path.join(evidence, 'StykAnimate-uninstaller.exe')];
+  const files = [path.join(output, 'win-unpacked/TwigAnimate.exe'), path.join(output, `TwigAnimate-${metadata.version}-Setup-x64.exe`), path.join(output, `TwigAnimate-${metadata.version}-Portable-x64.exe`), path.join(evidence, 'TwigAnimate-uninstaller.exe')];
   for (const file of files) {
     const buffer = await readFile(file), executable = NtExecutable.from(buffer), entries = NtExecutableResource.from(executable).entries;
     const groups = Resource.IconGroupEntry.fromEntries(entries);

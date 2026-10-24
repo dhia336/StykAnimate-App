@@ -10,10 +10,10 @@ const output = path.join(appRoot, 'artifacts');
 const runDirectory = path.join(output, `native-project-${Date.now()}`);
 const profile = path.join(runDirectory, 'profile');
 await mkdir(runDirectory, { recursive: true });
-const paths = { first: path.join(runDirectory, 'First.styk'), second: path.join(runDirectory, 'Save As.styk'), aborted: path.join(runDirectory, 'Aborted.styk'), pivotSave: path.join(runDirectory, 'Pivot converted.styk'), piv: process.env.STYK_PROJECT_PIV_SAMPLE ? path.resolve(process.env.STYK_PROJECT_PIV_SAMPLE) : path.join(appRoot, '..', 'Goku_Broly_Movie_by_Killer1.piv') };
+const paths = { first: path.join(runDirectory, 'First.styk'), second: path.join(runDirectory, 'Save As.styk'), aborted: path.join(runDirectory, 'Aborted.styk'), pivotSave: path.join(runDirectory, 'Pivot converted.styk'), piv: process.env.TWIGANIMATE_PROJECT_PIV_SAMPLE ? path.resolve(process.env.TWIGANIMATE_PROJECT_PIV_SAMPLE) : path.join(appRoot, '..', 'Goku_Broly_Movie_by_Killer1.piv') };
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const pivotHash = hash(await readFile(paths.piv));
-const launch = () => electron.launch({ args: [appRoot], cwd: appRoot, timeout: 45000, env: { ...process.env, STYK_USER_DATA_DIR: profile } });
+const launch = () => electron.launch({ args: [appRoot], cwd: appRoot, timeout: 45000, env: { ...process.env, TWIGANIMATE_USER_DATA_DIR: profile } });
 const applications = [];
 const checks = [];
 try {

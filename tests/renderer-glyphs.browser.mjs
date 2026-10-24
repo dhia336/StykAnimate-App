@@ -3,11 +3,11 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 const output=path.resolve('artifacts/renderer-glyphs');await mkdir(output,{recursive:true});
-const source=process.argv[2],desktop=Boolean(source)||process.env.STYK_DESKTOP==='1';
-const host=desktop?await electron.launch({args:[process.cwd()],env:{...process.env,STYK_USER_DATA_DIR:path.join(output,'profile')}}):await chromium.launch({channel:'chrome',headless:true});
+const source=process.argv[2],desktop=Boolean(source)||process.env.TWIGANIMATE_DESKTOP==='1';
+const host=desktop?await electron.launch({args:[process.cwd()],env:{...process.env,TWIGANIMATE_USER_DATA_DIR:path.join(output,'profile')}}):await chromium.launch({channel:'chrome',headless:true});
 try {
   const page=desktop?await host.firstWindow():await host.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  if(!desktop)await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');
+  if(!desktop)await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');
   await page.waitForFunction(()=>window.styk?.ready);
   if(source){
     await page.evaluate(()=>{for(const d of document.querySelectorAll('dialog[open]'))d.close();styk.editor.markSaved();});

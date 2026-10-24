@@ -6,9 +6,9 @@ import {createHash} from 'node:crypto';
 import path from 'node:path';
 import os from 'node:os';
 
-const origin=process.env.STYK_URL||'http://127.0.0.1:47831';
-const output=path.resolve(process.env.STYK_COMPAT_OUTPUT||'artifacts/compatibility-improvements/paired.json');
-const baseline=process.env.STYK_COMPAT_BASELINE||'/__compat_baseline__/src';
+const origin=process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831';
+const output=path.resolve(process.env.TWIGANIMATE_COMPAT_OUTPUT||'artifacts/compatibility-improvements/paired.json');
+const baseline=process.env.TWIGANIMATE_COMPAT_BASELINE||'/__compat_baseline__/src';
 const samples=await Promise.all(process.argv.slice(2).map(async argument=>{
   const [sample,tick]=argument.split('::'),local=(await stat(sample).catch(()=>null))?.isFile();
   return {sample,tick:Number(tick)||0,local,sha256:local?digest(await readFile(sample)):undefined};

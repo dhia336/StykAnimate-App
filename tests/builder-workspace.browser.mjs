@@ -7,7 +7,7 @@ const output='artifacts/builder-workspace';await mkdir(output,{recursive:true});
 page.on('pageerror',e=>errors.push(e.message));
 const settle=()=>page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47841');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47841');await page.waitForFunction(()=>window.styk?.ready);
   const enter=()=>page.locator('[data-workspace-mode="rig"]').click();
   await enter();await settle();
   // Structure starts folded to its strip; docked, it keeps its tree, its foot and its splitter.

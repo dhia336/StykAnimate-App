@@ -6,7 +6,7 @@ page.on('pageerror', error=>errors.push(error.message));
 const settle=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
 const snapshot=()=>page.evaluate(()=>JSON.stringify(styk.editor.serialize()));
 try {
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');
   await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(async()=>{
     const {emptyDocument,createFrame,createObject}=await import('/src/demo.mjs'),r=emptyDocument();

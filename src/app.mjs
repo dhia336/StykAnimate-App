@@ -63,8 +63,6 @@ import {createTutorials} from './tutorials/tutorials.mjs';
 import {installProjectTabs} from './shell/project-tabs-view.mjs';
 import {createProjectSwitcher} from './shell/project-switcher.mjs';
 import {sessionProject} from './editor-sessions.mjs';
-import { PrivacyUI } from './privacy-ui.mjs';
-import { FeedbackUI } from './feedback-ui.mjs';
 import { UpdateUI } from './update-ui.mjs';
 import { ReleaseSplash } from './support-ui.mjs';
 import { EditableScenePreparation } from './editable-scene-preparation.mjs';
@@ -109,7 +107,6 @@ import {syncCameraControls, drawCameraMonitor} from './camera-monitor.mjs';
 import { AssetLibrary } from "./asset-library.mjs";
 import { UserLibrary } from './user-library.mjs';
 import { LocalLibrary, createBrowserLibraryApi } from './web-library.mjs';
-import { CommunityLibrary, DownloadLedger, localStorageLedgerStorage } from './community-library.mjs';
 import { installLibraryDrag, installLibraryDrop } from './library-drag.mjs';
 import { SharedClipboard } from './shared-clipboard.mjs';
 import { PropertyControls } from "./property-controls.mjs";
@@ -388,9 +385,7 @@ const toasts = createToasts({
   area: () => (state.home ? $("home") : viewport).getBoundingClientRect(),
   topInset: () => bandBottom(document),
   t: (key, params) => appLocalization?.t(key, params),
-  feedback: desktop?.sendTelemetryFeedback
-    ? { label: interfaceText("app.sendFeedback"), labelKey: "app.sendFeedback", run: () => feedbackUI.open({ category: "bug" }) }
-    : null,
+  feedback: null,
 });
 let drawingController, timelineUI, timelineHost,
   studioShell,
@@ -453,9 +448,7 @@ function recordPlaybackPresentation() {
 function coarseGPUFamily(value = '') {
   return ['nvidia', 'amd', 'intel', 'apple', 'qualcomm', 'software'].find(name => String(value).toLowerCase().includes(name)) || 'unknown';
 }
-const feedbackUI = new FeedbackUI(desktop);
 importer.diagnostics=telemetry.performance;
-const privacyUI = new PrivacyUI(desktop, telemetry, feedbackUI);
 const releaseSplash = new ReleaseSplash(desktop);
 let updateNotice;
 const telemetryInit = telemetry.init().catch(() => null);
@@ -4004,7 +3997,7 @@ async function performNativeSave({saveAs}) {
               documentToken,
               saveAs,
               defaultPath: `${name || "Untitled"}.styk`,
-              filters: [{ name: "StykAnimate project", extensions: ["styk"] }],
+              filters: [{ name: "TwigAnimate project", extensions: ["styk"] }],
             });
         if (desktop) return exportFlow.saveBlob(blob, `${name || "Untitled"}.styk`, signal);
         if (sink.streamed) {
@@ -4647,7 +4640,6 @@ const actions = {
   "save-as": () => saveNative({ saveAs: true }),
   'check-updates': () => updateNotice?.check(),
   'release-notes': () => releaseSplash.open(),
-  donate: () => desktop?.openDonate(),
   'restart-update': () => finishDocumentAction('restartForUpdate'),
   'save-and-update': () => saveEveryProjectThen('restartForUpdate'),
   "save-and-close": () => saveEveryProjectThen('close'),
@@ -5046,9 +5038,6 @@ const actions = {
     if (shell?.presentation("properties") === "sheet") shell.showPanel("properties", { focus: false });
   },
   settings: () => editorSettings?.open(),
-  privacy: () => privacyUI.open(),
-  feedback: () => feedbackUI.open(),
-  website: () => desktop?.openServicePage('home'),
   "builder-static-handles": () =>
     editorSettings.commit({
       builderShowStaticHandles: !state.settings.builderShowStaticHandles,
@@ -5170,12 +5159,8 @@ const polygonSafeActions = new Set([
   "menu",
   "command-palette",
   "settings",
-  "privacy",
-  "feedback",
   "check-updates",
   "release-notes",
-  "donate",
-  "website",
   "help",
   "about",
   "performance",
@@ -5592,8 +5577,6 @@ const commandRequirements = {
   "desktop:newWindow": () => onDesktop(desktop?.newWindow),
   "desktop:recentFiles": () => onDesktop(desktop?.listRecentFiles),
   "desktop:updates": () => onDesktop(desktop?.getUpdateState),
-  "desktop:feedback": () => onDesktop(desktop?.sendTelemetryFeedback),
-  "desktop:telemetry": () => onDesktop(desktop?.getTelemetryState),
   "update-ready": () => updateNotice?.state?.status === "ready" || (desktop?.getUpdateState ? requirementReason("updateReady") : requirementReason("desktop")),
   figure: () => Boolean(editor.object) || requirementReason("figure"),
   figures: () => selection().size > 1 || requirementReason("figures"),
@@ -5686,7 +5669,7 @@ const settingsProvider = {
   },
 };
 // The command palette (Ctrl+P, Ctrl+Shift+P, F1, or Search commands… in the
-// StykAnimate menu): an index of the registry, never a home of its own.
+// TwigAnimate menu): an index of the registry, never a home of its own.
 const palette = createCommandPalette({
   commands,
   overlays,
@@ -6387,9 +6370,6 @@ async function init() {
       ? (value) => desktop.setEditorSettings(value)
       : undefined,
     onResetWorkspace: () => workspaceLayout?.reset(),
-    onPrivacy: desktop?.getTelemetryState ? () => privacyUI.open() : undefined,
-    onFeedback: desktop?.sendTelemetryFeedback ? options => feedbackUI.open(options) : undefined,
-    onDonate: desktop?.openDonate ? () => desktop.openDonate() : undefined,
   });
   state.settings = editorSettings.value;
   // Home shows first, over the editor that goes on starting behind it, unless the launch or the person's setting says otherwise.
@@ -6588,8 +6568,7 @@ async function init() {
   });
   window.styk.assets = assetLibrary;
   // The desktop app keeps the library in its Documents folder; in a browser it lives in that browser's own storage.
-  window.styk.library = new UserLibrary({editor, desktop: desktop ?? createBrowserLibraryApi({library: new LocalLibrary(),
-    community: new CommunityLibrary({downloads: new DownloadLedger(localStorageLedgerStorage())})}), exporter:documentExporter, importer, pause, finishEdit:finishCurrentEdit, setTool, vfxInspector, hotkeys,
+  window.styk.library = new UserLibrary({editor, desktop: desktop ?? createBrowserLibraryApi({library: new LocalLibrary()}), exporter:documentExporter, importer, pause, finishEdit:finishCurrentEdit, setTool, vfxInspector, hotkeys,
     activate: id => shell.showPanel(id, {focus: false})});
   shell.define({id: 'library', root: () => $('user-library'), onVisibility: visible => window.styk.library.panelVisible(visible)});
   const libraryInsert = (asset, point) =>
@@ -6677,7 +6656,6 @@ async function init() {
   window.styk.ready = true;
   markEditorReady();
   window.styk.telemetry = telemetry;
-  window.styk.privacyUI = privacyUI;
   updateNotice = new UpdateUI(desktop, { onRestart: () => actions['restart-update']() });
   queueStartupPrompts();
   void telemetryInit.then(() => telemetry.timing('startup_ms', performance.now()));
@@ -6704,11 +6682,8 @@ async function init() {
   }
 }
 /**
- * Startup prompts open one at a time through the overlay manager's queue,
- * after the first rendered frame and never over a dialog or a menu: the notes
- * of a new version, then the privacy choice on first run (today's order; the
- * choice waits until the notes are known). The recovery offer and the update
- * notice are not prompts: they show at once without taking focus.
+ * Release notes open after the first rendered frame and never over a dialog
+ * or menu. The recovery offer and update notice do not take focus.
  */
 function queueStartupPrompts() {
   let release;   // undefined while the notes load, then the notes or null
@@ -6727,16 +6702,6 @@ function queueStartupPrompts() {
   releaseSplash.startupInfo()
     .then((info) => { release = info ?? null; }, (error) => { console.warn(error); release = null; })
     .finally(() => { if (!release) overlays.cancelPrompt("release-notes"); overlays.pumpPrompts(); });
-  void telemetryInit.then((info) => {
-    if (!info || info.decided) return;
-    overlays.enqueuePrompt({
-      id: "privacy-first-run", priority: 1, ready: () => release !== undefined,
-      open: async () => {
-        try { await privacyUI.open({ firstRun: true }); } catch { return; }
-        await whenClosed(privacyUI.dialog);
-      },
-    });
-  });
 }
 function scheduleGpuRecovery() {
   if (gpuRecoveryTimer !== undefined) return;

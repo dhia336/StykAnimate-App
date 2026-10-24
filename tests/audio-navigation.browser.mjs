@@ -11,7 +11,7 @@ page.on('pageerror', error => errors.push(error.stack ?? error.message));
 const settle = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 const button = page.getByRole('button', {name:'Audio', exact:true});
 try {
-  await page.goto(process.env.STYK_URL ?? 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready); await settle();
+  await page.goto(process.env.TWIGANIMATE_URL ?? 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready); await settle();
   assert.equal(await button.count(), 1); assert.equal(await button.getAttribute('aria-expanded'), 'false');
   assert.equal(await page.locator('.audio-timeline').isVisible(), false);
   assert.ok((await page.locator('body').innerText()).includes('Untitled animation')); assert.deepEqual(errors, []);
@@ -96,7 +96,7 @@ try {
   assert.equal(await page.evaluate(() => styk.timeline.strip.scrollLeft), 0);
   await page.screenshot({path:`${out}/compact.png`});
   // A saved old "expanded audio" preference must not reopen the tab on launch.
-  await page.evaluate(() => localStorage.setItem('stykanimate.audio-view.v1', JSON.stringify({expanded:true, focused:true, height:480})));
+  await page.evaluate(() => localStorage.setItem('twiganimate.audio-view.v1', JSON.stringify({expanded:true, focused:true, height:480})));
   await page.reload(); await page.waitForFunction(() => window.styk?.ready); await settle();
   assert.equal(await button.getAttribute('aria-expanded'), 'false'); assert.equal(await page.locator('.audio-timeline').isVisible(), false);
   assert.deepEqual(errors, []); await writeFile(`${out}/results.json`, JSON.stringify({geometry, aligned, errors}, null, 2));

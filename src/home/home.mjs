@@ -32,8 +32,8 @@ import {ALL_PROJECTS, PINNED_PROJECTS, HOME_LAYOUTS, HOME_SORTS, folderScope, va
  * other command works on the animation, so Home steps aside before it runs.
  */
 export const HOME_COMMANDS = Object.freeze(new Set([
-  'home', 'tutorials', 'menu', 'command-palette', 'settings', 'privacy', 'feedback', 'check-updates', 'release-notes', 'donate',
-  'website', 'help', 'about', 'performance', 'minimize', 'maximize', 'close', 'new-window', 'open', 'open-recent',
+  'home', 'tutorials', 'menu', 'command-palette', 'settings', 'check-updates', 'release-notes',
+  'help', 'about', 'performance', 'minimize', 'maximize', 'close', 'new-window', 'open', 'open-recent',
   'save', 'save-as', 'save-all', 'save-and-close', 'save-and-update', 'restart-update',
 ]));
 /** The shortcuts that work on Home: its own commands and the ones that bring a project to the front. */
@@ -50,7 +50,7 @@ export function createHome(ctx) {
   const workspace = root.closest('.workspace'), shell = root.closest('.shell'), band = shell?.querySelector('.titlebar') ?? null;
   const supported = Boolean(desktop?.listProjects);
   const model = {
-    supported, news: Boolean(desktop?.getUpdateState), feedback: Boolean(desktop?.sendTelemetryFeedback), loading: supported, projects: [], folders: [], scope: ALL_PROJECTS, query: '',
+    supported, news: Boolean(desktop?.getUpdateState), loading: supported, projects: [], folders: [], scope: ALL_PROJECTS, query: '',
     sort: 'recent', layout: 'grid', busyId: null, tutorials: tutorialProgress([], []), documentName: '', firstTime: false,
   };
   let view = null, shown = false, loads = 0, pictureTimer = 0, storedPicture = null;

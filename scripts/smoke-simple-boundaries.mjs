@@ -7,7 +7,7 @@ import {fileURLToPath} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const directory=path.join(root,'artifacts',`simple-boundaries-${Date.now()}`);await mkdir(directory,{recursive:true});
 const stykFile=path.join(directory,'Zero working.styk'),pivFile=path.join(directory,'Zero stored.piv');
-const app=await electron.launch({args:[root],cwd:root,timeout:45000,env:{...process.env,STYK_USER_DATA_DIR:path.join(directory,'profile')}});
+const app=await electron.launch({args:[root],cwd:root,timeout:45000,env:{...process.env,TWIGANIMATE_USER_DATA_DIR:path.join(directory,'profile')}});
 const checks=[],errors=[];const pass=name=>{checks.push(name);console.log(`PASS ${name}`);};
 try {
   const page=await app.firstWindow();page.on('pageerror',error=>errors.push(error.message));await page.waitForFunction(()=>window.styk?.ready);

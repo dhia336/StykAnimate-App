@@ -40,7 +40,7 @@ try {
     });
     await page.locator('[data-action="close-dialog"]').click({timeout:1000}).catch(()=>{});
     await page.screenshot({path:path.join(out,`${name}.png`)});
-    if(process.env.STYK_VERIFY_NATIVE_SAVE==='1') {
+    if(process.env.TWIGANIMATE_VERIFY_NATIVE_SAVE==='1') {
       console.log('NATIVE SAVE',name);
       summary.nativeSave=await page.evaluate(async()=>{
         const {DocumentExporter}=await import('/src/document-export.mjs');

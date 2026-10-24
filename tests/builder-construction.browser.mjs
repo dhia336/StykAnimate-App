@@ -5,7 +5,7 @@ import {builderFixture} from '../scripts/builder-benchmark-fixture.mjs';
 const b=await chromium.launch({channel:'chrome',headless:true});const p=await b.newPage({viewport:{width:1440,height:1000}}),errors=[];
 p.on('pageerror',e=>errors.push(e.message));const settle=()=>p.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
 try {
- await p.goto(process.env.STYK_URL||'http://127.0.0.1:47841');await p.waitForFunction(()=>window.styk?.ready);
+ await p.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47841');await p.waitForFunction(()=>window.styk?.ready);
  await p.locator('[data-workspace-mode="rig"]').click();await settle();
  await p.locator('[data-tool="chain"]').click();
  const rect=await p.locator('#overlay').boundingBox();

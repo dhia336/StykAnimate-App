@@ -30,9 +30,7 @@ import {messageError} from '../localized-error.mjs';
 import {PANEL_CATALOG} from './panel-registry.mjs';
 import {MAX_SAVED_LAYOUTS, MODES, cloneJSON, fitBudget, migrateLayout, normalizeLayout, serializeLayout, trimLayout} from './layout-schema.mjs';
 
-export const BROWSER_LAYOUT_KEY = 'stykanimate.workspace-layout.v2';
-/** Older browser keys, read once when the v2 key is absent: 1.1's studio layout and the earlier splitter layout. */
-export const LEGACY_LAYOUT_KEYS = Object.freeze(['stykanimate.studio-layout.v1', 'stykanimate.workspace.v1']);
+export const BROWSER_LAYOUT_KEY = 'twiganimate.workspace-layout.v2';
 
 const KNOWN_TOP = new Set(['layoutVersion', 'shared', 'modes', 'saved', 'tombstones']);
 const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -55,16 +53,13 @@ export function desktopLayoutBackend(desktop) {
  * The browser pair over a Storage. A blocked storage reads as empty; a
  * failing write rejects, so the store reports it.
  */
-export function storageLayoutBackend(storage, {key = BROWSER_LAYOUT_KEY, legacyKeys = LEGACY_LAYOUT_KEYS} = {}) {
+export function storageLayoutBackend(storage, {key = BROWSER_LAYOUT_KEY} = {}) {
   return {
     async read() {
-      for (const name of [key, ...legacyKeys]) {
-        let text;
-        try { text = storage?.getItem(name); } catch { return null; }
-        if (text == null) continue;
-        try { return JSON.parse(text); } catch { return name === key ? text : null; }   // unreadable v2: 'invalid'
-      }
-      return null;
+      let text;
+      try { text = storage?.getItem(key); } catch { return null; }
+      if (text == null) return null;
+      try { return JSON.parse(text); } catch { return text; }   // unreadable v2: 'invalid'
     },
     async write(value) {
       if (!storage) throw messageError(new Error(''), "errors.layoutStore.layoutStorageIsUnavailable", {});

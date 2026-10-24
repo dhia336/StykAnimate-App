@@ -22,13 +22,13 @@ test('Windows and macOS keep Chromium defaults', () => {
   for (const platform of ['win32', 'darwin']) assert.deepEqual(gpuSwitches({platform, env: {}}), {switches: [], features: [], ozone: null});
 });
 
-test('STYK_GPU_UNSAFE=1 still forces the opt-in on every platform', () => {
-  assert.deepEqual(gpuSwitches({platform: 'win32', env: {STYK_GPU_UNSAFE: '1'}}), {switches: ['enable-unsafe-webgpu'], features: [], ozone: null});
-  assert.deepEqual(gpuSwitches({platform: 'darwin', env: {STYK_GPU_UNSAFE: '1'}}).switches, ['enable-unsafe-webgpu']);
+test('TWIGANIMATE_GPU_UNSAFE=1 still forces the opt-in on every platform', () => {
+  assert.deepEqual(gpuSwitches({platform: 'win32', env: {TWIGANIMATE_GPU_UNSAFE: '1'}}), {switches: ['enable-unsafe-webgpu'], features: [], ozone: null});
+  assert.deepEqual(gpuSwitches({platform: 'darwin', env: {TWIGANIMATE_GPU_UNSAFE: '1'}}).switches, ['enable-unsafe-webgpu']);
 });
 
-test('STYK_GPU_UNSAFE=0 leaves the driver allowlist untouched, even on Linux', () => {
-  assert.deepEqual(gpuSwitches({platform: 'linux', env: {STYK_GPU_UNSAFE: '0'}}), {switches: [], features: [], ozone: null});
+test('TWIGANIMATE_GPU_UNSAFE=0 leaves the driver allowlist untouched, even on Linux', () => {
+  assert.deepEqual(gpuSwitches({platform: 'linux', env: {TWIGANIMATE_GPU_UNSAFE: '0'}}), {switches: [], features: [], ozone: null});
 });
 
 test('the command line receives the switches and merges user features instead of replacing them', () => {
@@ -57,8 +57,8 @@ test('a Wayland session runs through XWayland, because Chromium cannot present V
   assert.equal(gpuSwitches({platform: 'linux', env: wayland}).ozone, 'x11');
   assert.equal(gpuSwitches({platform: 'linux', env: {DISPLAY: ':0'}}).ozone, null, 'an X11 session needs nothing');
   assert.equal(gpuSwitches({platform: 'linux', env: {...wayland, DISPLAY: ''}}).ozone, null, 'no XWayland to fall back to');
-  assert.equal(gpuSwitches({platform: 'linux', env: {...wayland, STYK_WAYLAND: '1'}}).ozone, null, 'native Wayland can be kept');
-  assert.equal(gpuSwitches({platform: 'linux', env: {...wayland, STYK_GPU_UNSAFE: '0'}}).ozone, null, 'no Vulkan, no need');
+  assert.equal(gpuSwitches({platform: 'linux', env: {...wayland, TWIGANIMATE_WAYLAND: '1'}}).ozone, null, 'native Wayland can be kept');
+  assert.equal(gpuSwitches({platform: 'linux', env: {...wayland, TWIGANIMATE_GPU_UNSAFE: '0'}}).ozone, null, 'no Vulkan, no need');
   assert.equal(gpuSwitches({platform: 'win32', env: wayland}).ozone, null);
 });
 
@@ -67,7 +67,7 @@ function relaunch(app, env, extra = {}) {
   const calls = [], handlers = {}, proc = {on: (signal, fn) => { handlers[signal] = fn; }};
   const child = {on: (event, fn) => { handlers['child:' + event] = fn; }, kill: signal => calls.push(['kill', signal])};
   const taken = gpu.relaunchOnX11(app, {platform: 'linux', env, argv: ['/e/electron', '.', 'a.styk'], execPath: '/e/electron',
-    spawn: (path, args, options) => { calls.push(['spawn', path, args, options.env.STYK_DISPLAY_RELAUNCHED]); return child; },
+    spawn: (path, args, options) => { calls.push(['spawn', path, args, options.env.TWIGANIMATE_DISPLAY_RELAUNCHED]); return child; },
     exit: code => calls.push(['exit', code]), proc, ...extra});
   return {taken, calls, handlers};
 }
@@ -86,9 +86,9 @@ test('the restart never loops and never overrides a choice', () => {
   for (const flags of [['--ozone-platform=wayland'], ['--ozone-platform', 'wayland'], ['--ozone-platform=x11']]) {
     assert.equal(relaunch(fakeApp({'ozone-platform': 'wayland'}), wayland, {argv: ['/e/electron', '.', ...flags]}).taken, false, 'a platform given on the command line wins');
   }
-  assert.equal(relaunch(fakeApp(), {...wayland, STYK_DISPLAY_RELAUNCHED: '1'}).taken, false, 'the copy does not restart again');
+  assert.equal(relaunch(fakeApp(), {...wayland, TWIGANIMATE_DISPLAY_RELAUNCHED: '1'}).taken, false, 'the copy does not restart again');
   assert.equal(relaunch(fakeApp(), {DISPLAY: ':0'}).taken, false, 'X11 sessions start directly');
-  assert.equal(relaunch(fakeApp(), {...wayland, STYK_WAYLAND: '1'}).taken, false);
+  assert.equal(relaunch(fakeApp(), {...wayland, TWIGANIMATE_WAYLAND: '1'}).taken, false);
   assert.equal(relaunch(fakeApp(), wayland, {platform: 'win32'}).taken, false);
 });
 

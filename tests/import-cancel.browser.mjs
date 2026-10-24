@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 // as it was and is recorded as exactly one cancellation.
 const browser=await chromium.launch({channel:'chrome',headless:true});
 try{
-  const page=await browser.newPage();await page.goto(process.env.STYK_URL||'http://127.0.0.1:47843');await page.waitForFunction(()=>window.styk?.ready);
+  const page=await browser.newPage();await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47843');await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(async()=>{
     const {emptyDocument}=await import('/src/demo.mjs'),{buildContainerV2}=await import('/src/native-container.mjs');
     const source=emptyDocument();source._styk={...source._styk,format:'StykAnimate',format_version:1};

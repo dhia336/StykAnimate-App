@@ -9,7 +9,7 @@ await writeFile(path.join(profile, 'editor-settings.json'), JSON.stringify({time
 await writeFile(path.join(profile, 'telemetry-state.json'), JSON.stringify({decided:true,consent:{analytics:false,diagnostics:false,policyVersion:'2026-09-10',updatedAt:Date.now()}}));
 const apps = [], errors = [], checks = [];
 async function launch() {
-  const app = await electron.launch({args:[root],cwd:root,timeout:45000,env:{...process.env,STYK_USER_DATA_DIR:profile,STYK_LIBRARY_DIR:path.join(run,'library'),STYK_DEBUG:'1'}});
+  const app = await electron.launch({args:[root],cwd:root,timeout:45000,env:{...process.env,TWIGANIMATE_USER_DATA_DIR:profile,TWIGANIMATE_LIBRARY_DIR:path.join(run,'library'),TWIGANIMATE_DEBUG:'1'}});
   apps.push(app); const page = await app.firstWindow(); page.on('pageerror', error => errors.push(error.message));
   page.setDefaultTimeout(15000);
   await page.waitForFunction(() => window.styk?.ready, undefined, {timeout:45000});

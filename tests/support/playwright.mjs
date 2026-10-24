@@ -10,7 +10,7 @@
 //    image) the browser Playwright downloads is used instead.
 //  - On Linux, Chromium has no hardware WebGPU by default, so the editor uses its
 //    Canvas 2D renderer, whose output tests can read back reliably. Set
-//    STYK_BROWSER_GPU=1 to add Vulkan and the WebGPU opt-in (the switches the
+//    TWIGANIMATE_BROWSER_GPU=1 to add Vulkan and the WebGPU opt-in (the switches the
 //    desktop app applies, desktop/gpu-switches.cjs). Whether that paints depends
 //    on the browser build and driver: on NVIDIA with Chromium 153 a bare WebGPU
 //    clear presents nothing, so it is opt-in, never the default.
@@ -20,11 +20,11 @@
 //
 //  - A page starts in the editor, not on Home (src/home/home.mjs): tests and
 //    profiling scripts drive the editor. Every browser context gets
-//    `window.stykStartupView = 'editor'` and Electron STYK_STARTUP_VIEW=editor; a
+//    `window.stykStartupView = 'editor'` and Electron TWIGANIMATE_STARTUP_VIEW=editor; a
 //    test of Home at startup defines the value itself ('home') before the page loads.
 //
-// Overrides: STYK_BROWSER_PATH (executable), STYK_BROWSER_CHANNEL (for example
-// "chromium" or "chrome-beta"), STYK_BROWSER_GPU=1 (add the Linux GPU switches).
+// Overrides: TWIGANIMATE_BROWSER_PATH (executable), TWIGANIMATE_BROWSER_CHANNEL (for example
+// "chromium" or "chrome-beta"), TWIGANIMATE_BROWSER_GPU=1 (add the Linux GPU switches).
 import { existsSync } from 'node:fs';
 import * as playwright from 'playwright';
 import { gpuSwitches } from '../../desktop/gpu-switches.cjs';
@@ -35,7 +35,7 @@ export const LINUX_WEBGPU_ARGS = ['--enable-unsafe-webgpu', '--enable-features=V
 
 /** Adds the Linux GPU switches, merging any --enable-features the caller passed. */
 export function chromiumArguments(args = [], { platform = process.platform, env = process.env } = {}) {
-  if (platform !== 'linux' || env.STYK_BROWSER_GPU !== '1') return [...args];
+  if (platform !== 'linux' || env.TWIGANIMATE_BROWSER_GPU !== '1') return [...args];
   const merged = [...args];
   for (const arg of LINUX_WEBGPU_ARGS) {
     const [name, value] = arg.split('=');
@@ -55,7 +55,7 @@ export function isMissingBrowser(error) {
 
 export function electronEnvironment(env = process.env) {
   const { ELECTRON_RUN_AS_NODE: _ignored, ...clean } = env;
-  return { STYK_STARTUP_VIEW: 'editor', ...clean };
+  return { TWIGANIMATE_STARTUP_VIEW: 'editor', ...clean };
 }
 
 /** Runs before the page's scripts; a value the test defined first stays. */
@@ -88,8 +88,8 @@ export function electronArguments(args = [], {platform = process.platform, env =
  */
 export async function launchChromium(options = {}, { browserType = playwright.chromium, platform = process.platform, env = process.env, exists = existsSync } = {}) {
   const requested = { ...options, args: chromiumArguments(options.args, { platform, env }) };
-  if (env.STYK_BROWSER_PATH) { requested.executablePath = env.STYK_BROWSER_PATH; delete requested.channel; }
-  else if (env.STYK_BROWSER_CHANNEL) { requested.channel = env.STYK_BROWSER_CHANNEL; delete requested.executablePath; }
+  if (env.TWIGANIMATE_BROWSER_PATH) { requested.executablePath = env.TWIGANIMATE_BROWSER_PATH; delete requested.channel; }
+  else if (env.TWIGANIMATE_BROWSER_CHANNEL) { requested.channel = env.TWIGANIMATE_BROWSER_CHANNEL; delete requested.executablePath; }
   if (requested.executablePath && !exists(requested.executablePath)) delete requested.executablePath;
   try {
     return await browserType.launch(requested);

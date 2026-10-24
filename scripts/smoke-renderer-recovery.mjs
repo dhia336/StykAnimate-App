@@ -4,9 +4,9 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 const root=process.cwd(),profile=path.join(root,'artifacts',`renderer-recovery-${Date.now()}`);
 await mkdir(profile,{recursive:true});
-const env={...process.env,STYK_USER_DATA_DIR:profile};delete env.ELECTRON_RUN_AS_NODE;
+const env={...process.env,TWIGANIMATE_USER_DATA_DIR:profile};delete env.ELECTRON_RUN_AS_NODE;
 await writeFile(path.join(profile,'telemetry-state.json'),JSON.stringify({decided:true,consent:{analytics:false,diagnostics:false,policyVersion:'2026-09-10',updatedAt:Date.now()}}));
-const executablePath=process.env.STYK_PACKAGED_EXECUTABLE;
+const executablePath=process.env.TWIGANIMATE_PACKAGED_EXECUTABLE;
 const app=await electron.launch({executablePath,args:executablePath?[]:[root],cwd:root,env,timeout:60000});
 try{
   const page=await app.firstWindow();await page.waitForFunction(()=>window.styk?.ready);

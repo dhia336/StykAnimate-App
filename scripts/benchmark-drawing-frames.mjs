@@ -2,12 +2,12 @@ import {chromium,_electron} from '../tests/support/playwright.mjs';
 import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import {resolve,extname,sep} from 'node:path';
 import {execFileSync} from 'node:child_process';
-const output=process.env.STYK_DOTS_ARTIFACTS||'artifacts/drawing-frame-latency/baseline',packaged=process.env.STYK_DOTS_PACKAGED==='1';await mkdir(output,{recursive:true});
-const electron=process.env.STYK_DOTS_ELECTRON==='1';
+const output=process.env.TWIGANIMATE_DOTS_ARTIFACTS||'artifacts/drawing-frame-latency/baseline',packaged=process.env.TWIGANIMATE_DOTS_PACKAGED==='1';await mkdir(output,{recursive:true});
+const electron=process.env.TWIGANIMATE_DOTS_ELECTRON==='1';
 let browser,page;
 if(electron){
   const main=resolve(output,'electron-main.cjs');
-  await writeFile(main,`const {app,BrowserWindow}=require('electron');app.setPath('userData',${JSON.stringify(resolve(output,'profile'))});app.whenReady().then(()=>{const w=new BrowserWindow({width:1440,height:1000,show:false,webPreferences:{contextIsolation:true,nodeIntegration:false,sandbox:true,backgroundThrottling:false,offscreen:true}});w.webContents.setFrameRate(60);w.loadURL(${JSON.stringify(process.env.STYK_URL||'http://127.0.0.1:47839')});});`);
+  await writeFile(main,`const {app,BrowserWindow}=require('electron');app.setPath('userData',${JSON.stringify(resolve(output,'profile'))});app.whenReady().then(()=>{const w=new BrowserWindow({width:1440,height:1000,show:false,webPreferences:{contextIsolation:true,nodeIntegration:false,sandbox:true,backgroundThrottling:false,offscreen:true}});w.webContents.setFrameRate(60);w.loadURL(${JSON.stringify(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839')});});`);
   browser=await _electron.launch({args:[main]});page=await browser.firstWindow();
 }else{browser=await chromium.launch({channel:'chrome',headless:true});page=await browser.newPage({viewport:{width:1440,height:1000}});}
 const errors=[],results=[];
@@ -15,20 +15,20 @@ page.on('pageerror',e=>errors.push(e.message));
 try{
   // Keep HTTP-cache policy identical when serving a comparison revision.
   await page.route('**/*',route=>route.continue());
-  if(process.env.STYK_DOTS_BASELINE)for(const file of ['app.mjs','drawing-controller.mjs','renderer-geometry.mjs','renderer.mjs','renderer-raster-cache.mjs','drawing-resources.mjs','drawing-tiles.mjs']){
-    const body=execFileSync('git',['show',`${process.env.STYK_DOTS_BASELINE}:src/${file}`],{encoding:'utf8',maxBuffer:4*1024*1024});
+  if(process.env.TWIGANIMATE_DOTS_BASELINE)for(const file of ['app.mjs','drawing-controller.mjs','renderer-geometry.mjs','renderer.mjs','renderer-raster-cache.mjs','drawing-resources.mjs','drawing-tiles.mjs']){
+    const body=execFileSync('git',['show',`${process.env.TWIGANIMATE_DOTS_BASELINE}:src/${file}`],{encoding:'utf8',maxBuffer:4*1024*1024});
     await page.route(`**/src/${file}`,route=>route.fulfill({body,contentType:'text/javascript'}));
   }
   if(packaged){
-    if(!process.env.STYK_DOTS_WEB_ROOT)throw new Error('Set STYK_DOTS_WEB_ROOT to the packaged resources/web directory.');
-    const root=resolve(process.env.STYK_DOTS_WEB_ROOT);
+    if(!process.env.TWIGANIMATE_DOTS_WEB_ROOT)throw new Error('Set TWIGANIMATE_DOTS_WEB_ROOT to the packaged resources/web directory.');
+    const root=resolve(process.env.TWIGANIMATE_DOTS_WEB_ROOT);
     await page.route('**/*',async route=>{
       const url=new URL(route.request().url()),path=url.pathname==='/'?'index.html':decodeURIComponent(url.pathname.slice(1)),file=resolve(root,path);
-      if(!file.startsWith(root+sep)||url.origin!==(process.env.STYK_URL||'http://127.0.0.1:47839'))return route.continue();
+      if(!file.startsWith(root+sep)||url.origin!==(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839'))return route.continue();
       try{const body=await readFile(file);return route.fulfill({body,contentType:extname(file)==='.mjs'?'text/javascript':extname(file)==='.html'?'text/html':extname(file)==='.css'?'text/css':undefined});}catch{return route.continue();}
     });
   }
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);await page.locator('[data-workspace-mode="draw"]').click();
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);await page.locator('[data-workspace-mode="draw"]').click();
   await page.evaluate(async()=>{const {emptyDocument}=await import('/src/demo.mjs');styk.editor.load(emptyDocument());styk.editor.createDrawingLayer();styk.state.settings.autosaveSeconds=0;Object.assign(styk.drawing.settings,{size:8,resolution:2,stabilization:0,color:'#203ed8'});});
   const box=await page.locator('#viewport').boundingBox(),start={x:box.x+140,y:box.y+170};
   const cdp=await page.context().newCDPSession(page);await cdp.send('Profiler.enable');
@@ -57,7 +57,7 @@ try{
     await page.mouse.click(start.x+i*8,start.y+Math.sin(i/5)*40);await page.waitForFunction(()=>!styk.drawing.gesture&&!styk.drawing.loading&&!styk.drawing.operation);
     if(i===0)await measure(1,false);
   }
-  if(process.env.STYK_DOTS_DENSE)await page.evaluate(async()=>{
+  if(process.env.TWIGANIMATE_DOTS_DENSE)await page.evaluate(async()=>{
     const e=styk.editor,d=styk.drawing,target=e.prepareDrawingCel({pixelsPerUnit:2,world:{x:0,y:0}}),changes=[];
     // A patterned 8.4 MP raster in the current cel, after the same fifty-dot
     // animation setup. Fixture construction is outside the timed interaction.
@@ -69,6 +69,6 @@ try{
     await new Promise(resolve=>setTimeout(resolve,1000));
   });
   await measure(50,false);await measure(50,true);await page.mouse.move(2,2);await page.evaluate(()=>styk.drawing.barrier());await measure(50,false,true);await page.screenshot({path:output+'/fifty-frames.png'});
-  await writeFile(output+'/result.json',JSON.stringify({packaged,electron,dense:Boolean(process.env.STYK_DOTS_DENSE),baseline:process.env.STYK_DOTS_BASELINE||null,browser:electron?await browser.evaluate(()=>process.versions.electron):browser.version(),errors,results},null,2));
+  await writeFile(output+'/result.json',JSON.stringify({packaged,electron,dense:Boolean(process.env.TWIGANIMATE_DOTS_DENSE),baseline:process.env.TWIGANIMATE_DOTS_BASELINE||null,browser:electron?await browser.evaluate(()=>process.versions.electron):browser.version(),errors,results},null,2));
 }catch(error){await writeFile(output+'/failure.json',JSON.stringify({message:error.message,errors,results},null,2));await page.screenshot({path:output+'/failure.png'});throw error;}
 finally{if(electron)await browser.evaluate(({app})=>app.exit(0)).catch(()=>{});else await browser.close();}

@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "StykAnimate",
-  "short_name": "StykAnimate",
-  "description": "Free stick figure animation studio that runs in your browser.",
+  "name": "TwigAnimate",
+  "short_name": "TwigAnimate",
+  "description": "An independently maintained editor for 2D stick animation projects.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

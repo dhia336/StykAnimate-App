@@ -8,13 +8,13 @@ import backend from '../desktop/backend.cjs';
 import {chooseExport, exportDialogClosed, openEncoding} from './helpers/export-dialog.mjs';
 
 const root = path.resolve(import.meta.dirname, '..'), output = path.join(root, 'artifacts', 'webm-alpha-renderer'); await mkdir(output, {recursive: true});
-const app = await electron.launch({args: [root], cwd: root, timeout: 45000, env: {...process.env, STYK_USER_DATA_DIR: path.join(output, `profile-${Date.now()}`)}});
+const app = await electron.launch({args: [root], cwd: root, timeout: 45000, env: {...process.env, TWIGANIMATE_USER_DATA_DIR: path.join(output, `profile-${Date.now()}`)}});
 try {
   const page = await app.firstWindow(), errors = [], checks = []; page.on('pageerror', error => errors.push(error.message));
   await page.waitForFunction(() => window.styk?.ready && window.stykDesktop?.beginVfwExport, undefined, {timeout: 30000});
   await app.evaluate(({ipcMain}) => {
-    const original = ipcMain._invokeHandlers.get('styk:video-begin'); globalThis.__videoOptions = [];
-    ipcMain.removeHandler('styk:video-begin'); ipcMain.handle('styk:video-begin', (event, options) => { globalThis.__videoOptions.push({...options}); return original(event, options); });
+    const original = ipcMain._invokeHandlers.get('twiganimate:video-begin'); globalThis.__videoOptions = [];
+    ipcMain.removeHandler('twiganimate:video-begin'); ipcMain.handle('twiganimate:video-begin', (event, options) => { globalThis.__videoOptions.push({...options}); return original(event, options); });
   });
   await page.evaluate(async () => {
     const {emptyDocument, createFrame, createObject} = await import('/src/demo.mjs'), report = emptyDocument(), figure = report.figure_types[0];

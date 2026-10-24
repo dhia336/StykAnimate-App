@@ -6,7 +6,7 @@ const settle=()=>page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requ
 const point=id=>page.evaluate(async id=>{const {worldToScreen}=await import('/src/renderer.mjs'),{editor:e,state}=styk,p=e.geometry.objects.get(e.selectedSlot).joints.get(id),q=worldToScreen(p,{report:e.report,frame:e.frame,view:state.view}),r=document.querySelector('#viewport').getBoundingClientRect();return {x:r.x+q.x,y:r.y+q.y};},id);
 const click=async id=>{const p=await point(id);await page.mouse.click(p.x,p.y);await settle();};
 try{
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47851');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47851');await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(async()=>{const {Editor}=await import('/src/editor.mjs');const e=new Editor({demo:false});e.addSegment({length:180,angle:0,thickness:0});styk.editor.load(e.serialize());styk.editor.select(styk.editor.frame.objects[0].unique_id,-1);styk.builder.enter();styk.fit();});await settle();
   await click(0);await settle();await page.locator('.ui-quick [data-action="rig-connect"]').click();await click(1);
   assert.deepEqual(await page.evaluate(()=>styk.editor.figure.segments.at(-1)._stykRig.connector),{start:0,end:1,restLength:180});

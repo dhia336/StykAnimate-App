@@ -3,53 +3,50 @@ import assert from 'node:assert/strict';
 import { mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { verifyReleaseAssets, fileHash } from '../scripts/release-assets.mjs';
-test('release verification rejects wrong versions, corrupt installers and incomplete uploads', async () => {
+import { verifyReleaseAssets } from '../scripts/release-assets.mjs';
+test('release verification requires the fork-branded installers', async () => {
   const directory = await mkdtemp(path.join(os.tmpdir(), 'styk-release-'));
   try {
-    const name = 'StykAnimate-0.5.0-Setup-x64.exe';
-    for (const file of [name, `${name}.blockmap`, 'StykAnimate-0.5.0-Portable-x64.exe']) await writeFile(path.join(directory, file), 'fixture');
-    const sha512 = await fileHash(path.join(directory, name));
-    await writeFile(path.join(directory, 'latest.yml'), JSON.stringify({ version: '0.5.0', path: name, sha512, files: [{ url: name, size: 7, sha512 }] }));
-    assert.equal((await verifyReleaseAssets(directory, '0.5.0', 'win32')).length, 4);
+    const name = 'TwigAnimate-0.5.0-Setup-x64.exe';
+    for (const file of [name, 'TwigAnimate-0.5.0-Portable-x64.exe']) await writeFile(path.join(directory, file), 'fixture');
+    assert.equal((await verifyReleaseAssets(directory, '0.5.0', 'win32')).length, 2);
     await assert.rejects(verifyReleaseAssets(directory, '0.6.0', 'win32'));
-    await writeFile(path.join(directory, name), 'corrupt');
-    await assert.rejects(verifyReleaseAssets(directory, '0.5.0', 'win32'), /checksum/);
-    await writeFile(path.join(directory, name), 'fixture');
-    await rm(path.join(directory, `${name}.blockmap`));
+    await writeFile(path.join(directory, name), '');
     await assert.rejects(verifyReleaseAssets(directory, '0.5.0', 'win32'));
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
+
+test('release publishing requires explicit confirmation of this fork only', async () => {
+  const { getReleaseRepository, FORK_RELEASE_REPOSITORY } = await import('../scripts/release-target.mjs');
+  assert.equal(getReleaseRepository(FORK_RELEASE_REPOSITORY), FORK_RELEASE_REPOSITORY);
+  for (const value of [undefined, '', 'filippocalippo/styk-animate-releases', 'filippocalippo/StykAnimate-App', 'someone/else']) {
+    assert.throws(() => getReleaseRepository(value), /explicitly enable fork release publishing/);
+  }
+});
 test('public update feed contains no private repository or credentials', async () => {
   const config = JSON.parse(await readFile('package.json', 'utf8'));
-  assert.deepEqual(config.build.publish, [{ provider: 'github', owner: 'filippocalippo', repo: 'styk-animate-releases', private: false, releaseType: 'draft' }]);
+  assert.equal(config.build.publish, undefined);
+  assert.equal(config.build.productName, 'TwigAnimate');
+  assert.equal(config.build.appId, 'io.github.dhia336.twiganimate');
+  for (const script of ['pack', 'dist', 'dist:win', 'dist:mac', 'dist:linux']) {
+    assert.match(config.scripts[script], /--publish never/, `${script} must never auto-publish`);
+  }
   const notes = JSON.parse(await readFile('desktop/release-info.json', 'utf8'));
   assert.equal(notes.version, config.version);
-  const { DONATE_URL } = await import('../src/support-ui.mjs');
-  const links = await import('../desktop/release-links.cjs');
-  assert.equal(DONATE_URL, links.default.DONATE_URL);
   assert.ok(!config.build.extraResources.some(item => item.from.startsWith('..')));
 });
 
 test('a coordinated release requires verified Windows and Linux assets and excludes unrelated files', async () => {
   const directory = await mkdtemp(path.join(os.tmpdir(), 'styk-platform-release-'));
-  const version = '1.2.0', setup = `StykAnimate-${version}-Setup-x64.exe`, appimage = `StykAnimate-${version}-linux-x86_64.AppImage`;
+  const version = '1.2.0', setup = `TwigAnimate-${version}-Setup-x64.exe`, portable = `TwigAnimate-${version}-Portable-x64.exe`, appimage = `TwigAnimate-${version}-linux-x86_64.AppImage`;
   try {
-    for (const [feed, name] of [['latest.yml', setup], ['latest-linux.yml', appimage]]) {
-      await writeFile(path.join(directory, name), 'fixture');
-      const sha512 = await fileHash(path.join(directory, name));
-      await writeFile(path.join(directory, feed), JSON.stringify({version, path: name, sha512, files: [{url: name, size: 7, sha512}]}));
-    }
-    for (const name of [`${setup}.blockmap`, `StykAnimate-${version}-Portable-x64.exe`, 'private.log']) await writeFile(path.join(directory, name), 'fixture');
+    for (const name of [setup, portable, appimage, 'private.log']) await writeFile(path.join(directory, name), 'fixture');
     const assets = await verifyReleaseAssets(directory, version);
-    assert.equal(assets.length, 6);
+    assert.equal(assets.length, 3);
     assert.ok(assets.includes(path.join(directory, appimage)));
     assert.ok(!assets.includes(path.join(directory, 'private.log')));
-    assert.equal((await verifyReleaseAssets(directory, version, 'linux')).length, 2);
-    await writeFile(path.join(directory, appimage), 'corrupt');
-    await assert.rejects(verifyReleaseAssets(directory, version), /checksum/);
-    await writeFile(path.join(directory, appimage), 'fixture');
-    await rm(path.join(directory, 'latest-linux.yml'));
+    assert.equal((await verifyReleaseAssets(directory, version, 'linux')).length, 1);
+    await rm(path.join(directory, appimage));
     await assert.rejects(verifyReleaseAssets(directory, version));
     await assert.rejects(verifyReleaseAssets(directory, version, 'darwin'), /Choose/);
   } finally { await rm(directory, {recursive: true, force: true}); }

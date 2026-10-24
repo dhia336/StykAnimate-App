@@ -20,7 +20,7 @@ page.on('pageerror', error=>errors.push(error.message));
 const client=await page.context().newCDPSession(page);
 await client.send('Profiler.enable');
 try {
-  await page.goto(process.env.STYK_URL ?? 'http://127.0.0.1:47832');
+  await page.goto(process.env.TWIGANIMATE_URL ?? 'http://127.0.0.1:47832');
   await page.waitForFunction(()=>window.styk?.ready);
   await page.screenshot({path:path.join(output,'startup.png')});
   console.log('Startup',await page.locator('#viewport').isVisible(),await page.locator('#play-button').isVisible(),errors);

@@ -9,9 +9,9 @@ import assert from 'node:assert/strict';
 const [source,referenceRoot]=process.argv.slice(2);
 if(!source||!referenceRoot)throw new Error('Provide project file and reference source directory.');
 const {startBackend}=createRequire(import.meta.url)('../desktop/backend.cjs');
-const backend=await startBackend({appRoot:process.cwd()}),output=path.resolve('artifacts/playback-integrity',process.env.STYK_SEQUENCE_LABEL||'sequence');
+const backend=await startBackend({appRoot:process.cwd()}),output=path.resolve('artifacts/playback-integrity',process.env.TWIGANIMATE_SEQUENCE_LABEL||'sequence');
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex'),sourceHash=hash(await readFile(source));
-const sourceRoot=path.resolve(process.env.STYK_SEQUENCE_SOURCES||'src'),captured=new Map(),sourceHashes={};
+const sourceRoot=path.resolve(process.env.TWIGANIMATE_SEQUENCE_SOURCES||'src'),captured=new Map(),sourceHashes={};
 for(const name of (await readdir(sourceRoot,{recursive:true})).filter(name=>name.endsWith('.mjs'))){
   const bytes=await readFile(path.join(sourceRoot,name)),key=name.replaceAll('\\','/');captured.set(key,bytes);sourceHashes[key]=hash(bytes);
 }
@@ -95,7 +95,7 @@ try {
       }
       return {checks,gpuErrors,heldFailures,cancellations,slices,stats:{...subject.preparedFrames.stats},workerCount:cache.workers.length};
     }finally{cache.dispose();resources.dispose();subject.destroy();reference.destroy();}
-  },{start:Number(process.env.STYK_SEQUENCE_START||0),end:Number(process.env.STYK_SEQUENCE_END??-1),scale:Number(process.env.STYK_SEQUENCE_SCALE||2),msaa:Number(process.env.STYK_SEQUENCE_MSAA||4),runtimeMsaa:process.env.STYK_SEQUENCE_RUNTIME_MSAA==='1'});
+  },{start:Number(process.env.TWIGANIMATE_SEQUENCE_START||0),end:Number(process.env.TWIGANIMATE_SEQUENCE_END??-1),scale:Number(process.env.TWIGANIMATE_SEQUENCE_SCALE||2),msaa:Number(process.env.TWIGANIMATE_SEQUENCE_MSAA||4),runtimeMsaa:process.env.TWIGANIMATE_SEQUENCE_RUNTIME_MSAA==='1'});
   const unchanged=hash(await readFile(source))===sourceHash;
   const changedDuringRun=[];for(const [name,bytes]of captured)if(hash(await readFile(path.join(sourceRoot,name)))!==hash(bytes))changedDuringRun.push(name);
   await writeFile(path.join(output,'report.json'),JSON.stringify({...result,sourceRoot,sourceHash,sourceHashes,changedDuringRun,unchanged,errors},null,2));

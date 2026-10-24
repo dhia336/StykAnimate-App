@@ -14,7 +14,7 @@ export class DrawingHistoryDisk {
     if(this.ready)return this.ready;
     this.ready=new Promise((resolve,reject)=>{
       if(!globalThis.navigator?.locks){resolve();return;}
-      this.lock=navigator.locks.request('stykanimate-drawing-history:'+this.session,()=>new Promise(done=>{this.releaseLock=done;resolve();}));this.lock.catch(reject);
+      this.lock=navigator.locks.request('twiganimate-drawing-history:'+this.session,()=>new Promise(done=>{this.releaseLock=done;resolve();}));this.lock.catch(reject);
     });return this.ready;
   }
   request(kind,data={}){
@@ -22,7 +22,7 @@ export class DrawingHistoryDisk {
     const run=this.queue.catch(()=>{}).then(async()=>{
       if(this.closed&&kind!=='close')throw aborted();await this.lease();
       if(!this.worker){
-        const worker=this.worker=new Worker(new URL('./drawing-history-worker.mjs',import.meta.url),{type:'module',name:'StykAnimate drawing undo disk'});
+        const worker=this.worker=new Worker(new URL('./drawing-history-worker.mjs',import.meta.url),{type:'module',name:'TwigAnimate drawing undo disk'});
         worker.onmessage=({data})=>{const entry=this.pending.get(data.id);if(!entry)return;this.pending.delete(data.id);clearTimeout(entry.timer);data.error?entry.reject(Object.assign(restoreMessageError(new Error(data.error.message), data.error),{name:data.error.name})):entry.resolve(data);};
         worker.onerror=event=>{event.preventDefault();this.fail((event.message ? new Error(event.message) : messageError(new Error(''), "errors.drawingHistory.theDrawingUndoWorkerStoppedRetryUndo")));};
         worker.onmessageerror=()=>this.fail(messageError(new Error(''), "errors.drawingHistory.drawingUndoDataCouldNotBeTransferred", {}));

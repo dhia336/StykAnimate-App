@@ -1,11 +1,11 @@
 import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
-const output=process.env.STYK_FILL_ARTIFACTS||'artifacts/drawing-tiled-fill/browser',checks=[],errors=[];await mkdir(output,{recursive:true});
+const output=process.env.TWIGANIMATE_FILL_ARTIFACTS||'artifacts/drawing-tiled-fill/browser',checks=[],errors=[];await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage({viewport:{width:1440,height:1000}});
 page.on('pageerror',error=>errors.push(error.message));const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('PASS',name);};
 try{
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);await page.locator('[data-workspace-mode="draw"]').click();
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);await page.locator('[data-workspace-mode="draw"]').click();
   const point=await page.evaluate(async()=>{
     const {emptyDocument}=await import('/src/demo.mjs'),{TileStore}=await import('/src/drawing-tiles.mjs'),{transformPoint}=await import('/src/drawing-model.mjs'),{worldToScreen}=await import('/src/renderer-geometry.mjs');
     const e=styk.editor,d=styk.drawing;e.load(emptyDocument());e.createDrawingLayer();styk.state.settings.autosaveSeconds=0;

@@ -3,7 +3,7 @@ import path from "node:path";
 import { mkdir, writeFile } from "node:fs/promises";
 
 import {corpusPath} from './support/corpus.mjs';
-const akaneSource = process.env.STYK_AKANE_SOURCE || corpusPath("Downloads/16 Akane vs Akato Segundo round (3).piv");
+const akaneSource = process.env.TWIGANIMATE_AKANE_SOURCE || corpusPath("Downloads/16 Akane vs Akato Segundo round (3).piv");
 const out = "artifacts/integrated-ux-walkthrough";
 await mkdir(out, { recursive: true });
 const browser = await chromium.launch({ channel: "chrome", headless: true });
@@ -12,7 +12,7 @@ const checks = [],
   defects = [],
   errors = [],
   details = {};
-const requestedSteps = process.env.STYK_UX_STEPS?.split(",");
+const requestedSteps = process.env.TWIGANIMATE_UX_STEPS?.split(",");
 page.on("pageerror", (e) => errors.push(e.message));
 page.setDefaultTimeout(10000);
 const check = (name, ok, detail) => {
@@ -70,7 +70,7 @@ async function canvasPoint(point) {
   }, point);
 }
 try {
-  await page.goto(process.env.STYK_URL || "http://127.0.0.1:47831");
+  await page.goto(process.env.TWIGANIMATE_URL || "http://127.0.0.1:47831");
   await page.waitForFunction(() => window.styk?.ready);
   await page.evaluate(() => styk.workspace.reset());
   await settle();
@@ -740,7 +740,7 @@ try {
       await fallback.addInitScript(() =>
         Object.defineProperty(navigator, "gpu", { get: () => undefined }),
       );
-      await fallback.goto(process.env.STYK_URL || "http://127.0.0.1:47831");
+      await fallback.goto(process.env.TWIGANIMATE_URL || "http://127.0.0.1:47831");
       await fallback.waitForFunction(() => window.styk?.ready);
       const label = await fallback.locator("#renderer-label").evaluate((e) => ({
         text: e.textContent,

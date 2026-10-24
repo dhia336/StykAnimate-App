@@ -8,10 +8,10 @@ import assert from 'node:assert/strict';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const output = path.join(appRoot, 'artifacts');
-const profile = process.env.STYK_TEST_PROFILE ? path.resolve(process.env.STYK_TEST_PROFILE) : path.join(output, 'native-streams-profile');
+const profile = process.env.TWIGANIMATE_TEST_PROFILE ? path.resolve(process.env.TWIGANIMATE_TEST_PROFILE) : path.join(output, 'native-streams-profile');
 const destination = path.join(output, 'native-streams-large.bin');
 await mkdir(output, { recursive: true });
-const app = await electron.launch({ args: [appRoot], cwd: appRoot, timeout: 45000, env: { ...process.env, STYK_USER_DATA_DIR: profile } });
+const app = await electron.launch({ args: [appRoot], cwd: appRoot, timeout: 45000, env: { ...process.env, TWIGANIMATE_USER_DATA_DIR: profile } });
 try {
   const page = await app.firstWindow();
   page.on('pageerror',error=>console.error(error.stack));

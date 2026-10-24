@@ -4,7 +4,7 @@ const browser=await chromium.launch({channel:'chrome',headless:true});
 const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
 page.on('pageerror',error=>errors.push(error.message));page.setDefaultTimeout(120000);
 try {
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   const dom=await page.evaluate(async()=>{
     const {updateInspectorDOM}=await import('/src/inspector-dom.mjs');
     const root=document.createElement('div');document.body.append(root);

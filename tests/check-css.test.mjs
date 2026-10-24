@@ -47,9 +47,9 @@ test('computes Selectors 4 specificity', () => {
 
 test('maps every stylesheet location to its layer', () => {
   assert.equal(styleRole('src/styles/app.css').kind, 'entry');
-  assert.equal(styleRole('src/styles/support-bridge.css').kind, 'bridge');
+  assert.equal(styleRole('src/other.css').kind, 'other');
   assert.equal(styleRole('src/styles/legacy/01-style.css').kind, 'legacy');
-  assert.equal(styleRole('src/support-center.css').kind, 'other');
+  assert.equal(styleRole('src/other.css').kind, 'other');
   for (const [file, layer] of [['base/reset.css', 'reset'], ['base/fonts.css', 'base'], ['tokens.css', 'tokens'], ['legacy-bridge.css', 'tokens'],
     ['layout/shell.css', 'layout'], ['components/button.css', 'components'], ['features/timeline.css', 'features'],
     ['states.css', 'states'], ['utilities.css', 'utilities'], ['misc.css', null], ['extra/x.css', null]])
@@ -120,18 +120,15 @@ test('app.css declares the layer order once and only imports', () => {
   assert.deepEqual(entry(`${ORDER}\n@import url("./legacy/01-style.css");`), ['CSS01']);
   assert.deepEqual(entry(`${ORDER}\n@import url("./base/fonts.css") layer(base);`), ['CSS01']);
   assert.deepEqual(entry(`${ORDER}\nhtml { color: red }`), ['CSS16']);
-  const bridge = css => lintCss(css, 'src/styles/support-bridge.css').map(finding => finding.rule);
-  assert.deepEqual(bridge('@import url("../support-center.css") layer(legacy);'), []);
-  assert.deepEqual(bridge('@import url("../support-center.css");'), ['CSS01']);
 });
 
-test('JS01 counts runtime stylesheets and JS02 allows one runtime link', () => {
+test('JS01 counts runtime stylesheets and JS02 rejects runtime links', () => {
   const source = `const a = document.createElement('style'), b = new CSSStyleSheet(); document.adoptedStyleSheets = [b]; b.insertRule('x{}');`;
   assert.deepEqual(lintSource(source, 'src/x.mjs'), {runtimeSheets: 4, findings: []});
   const link = "const link = document.createElement('link'); link.rel = 'stylesheet';";
   assert.deepEqual(lintSource(link, 'src/x.mjs').findings.map(finding => finding.rule), ['JS02']);
   assert.deepEqual(lintSource(`host.innerHTML = '<link rel="stylesheet" href="x.css">';`, 'src/x.mjs').findings.map(finding => finding.line), [1]);
-  assert.deepEqual(lintSource(link, 'src/support-desktop-ui.mjs').findings, []);
+  assert.deepEqual(lintSource(link, 'src/runtime-style-module.mjs').findings.map(finding => finding.rule), ['JS02']);
 });
 
 test('finds !important in legacy sheets and in the CSS text of injector modules', () => {
@@ -168,8 +165,6 @@ test('lintTree finds unloaded, missing and legacy sheets in a project', async t 
   await write('src/styles/legacy/01-a.css', '[hidden] { display: none !important }');
   await write('src/styles/base/fonts.css', '@layer base { @font-face { font-family: "Inter"; src: url("x.woff2") } }');
   await write('src/styles/components/orphan.css', '@layer components {}');
-  await write('src/styles/support-bridge.css', '@import url("../support.css") layer(legacy);');
-  await write('src/support.css', '.s * { transition: none !important }');
   await write('src/app.mjs', "document.head.append(Object.assign(document.createElement('style'), {textContent: '.m{cursor:wait!important}'}));");
   const {findings, current} = lintTree(root);
   assert.deepEqual(findings.map(finding => `${finding.file} ${finding.message}`).sort(), [
@@ -177,7 +172,7 @@ test('lintTree finds unloaded, missing and legacy sheets in a project', async t 
   ].map((message, index) => `${['src/styles/app.css', 'src/styles/components/orphan.css'][index]} ${message}`));
   assert.deepEqual(current.JS01, {'src/app.mjs': 1});
   assert.deepEqual(current.legacyImportant.map(entry => `${entry.file} ${entry.selector}`),
-    ['src/app.mjs .m', 'src/styles/legacy/01-a.css [hidden]', 'src/support.css .s *']);
+    ['src/app.mjs .m', 'src/styles/legacy/01-a.css [hidden]']);
 });
 
 test('the editor stylesheets pass and the committed baseline is exact', async () => {

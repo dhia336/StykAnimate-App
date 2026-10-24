@@ -105,7 +105,7 @@ test('the packaged desktop app ships and serves the fonts', async t => {
   const {extraResources} = JSON.parse(read('package.json')).build;
   const web = extraResources.find(resource => resource.to === 'web');
   assert.equal(web.from, '.');
-  for (const pattern of ['index.html', 'src/**/*', 'assets/**/*']) assert.ok(web.filter.includes(pattern), `the web root includes ${pattern}`);
+  for (const pattern of ['index.html', 'src/**/*', 'assets/fonts/**/*']) assert.ok(web.filter.includes(pattern), `the web root includes ${pattern}`);
   // A packaged web root with the files the fonts need, served as in the app.
   const directory = await mkdtemp(path.join(os.tmpdir(), 'styk-fonts-')), webRoot = path.join(directory, 'web');
   const files = ['index.html', FONTS_CSS, ...faces.map(face => face.file)];

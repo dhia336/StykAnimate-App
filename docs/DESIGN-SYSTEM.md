@@ -44,12 +44,8 @@ layers once, lowest priority first, and then imports every sheet:
   cascade order, which is also their import order: `00-drawing.css` (formerly
   imported by the first line of `style.css`), `01-style.css`, `20-studio.css`,
   and the other sheets `index.html` linked. Modules that inject a `<style>`
-  block wrap its text in `@layer legacy { … }`, and the desktop feedback shell
-  links `src/styles/support-bridge.css`, which imports `src/support-center.css`
-  into `legacy` after `app.css`. `src/support-center.css` is copied byte for
-  byte to the website; never move or edit it for the editor.
-  `features/support-desktop.css` gives it the editor's look from the
-  `features` layer, which beats it whatever the specificity.
+  block wrap its text in `@layer legacy { … }`. Modules do not load additional
+  stylesheets at runtime.
 - **Every later layer beats `legacy`** for normal declarations, whatever the
   specificity, so a rebuilt surface does not need heavier selectors. For
   `!important` the order inverts: a legacy `!important` rule beats every later
@@ -99,14 +95,13 @@ licences and that the packaged app serves them.
 
 `npm run check` runs `scripts/check-css.mjs`. The rule ids appear in its
 messages. Layered files, meaning everything under `src/styles/` except
-`app.css`, `support-bridge.css` and `legacy/`, must:
+`app.css` and `legacy/`, must:
 
 - wrap all their rules in one `@layer` block named after their place:
   `base/` in `base` (except `base/reset.css`, in `reset`), `layout/`,
   `components/`, `features/`, `tokens.css` and `legacy-bridge.css` in
   `tokens`, `states.css` and `utilities.css`. `app.css` imports each file
-  once, without `layer()`. Only `app.css` and `support-bridge.css` (the lazy
-  feedback styles) may use `@import` (CSS01, CSS16).
+  once, without `layer()`. Only `app.css` may use `@import` (CSS01, CSS16).
 - take colours from tokens. Hex, `rgb()`, `hsl()` and named colours appear only
   in `tokens.css`; system colours only inside `@media (forced-colors: active)`.
   Comment a declaration `/* artwork */` for checkerboards and other artwork
@@ -127,8 +122,8 @@ create stylesheets at runtime (JS01) and every `!important` declaration in the
 legacy layer, including the injected CSS text (`legacyImportant`). Both lists
 may only shrink: a new entry fails the check, and so does an entry whose code
 is gone until you run `node scripts/check-css.mjs --update-baseline`, which
-refuses to record new entries. Only `support-desktop-ui.mjs` may link a
-stylesheet at runtime (JS02).
+refuses to record new entries. Modules may not link stylesheets at runtime
+(JS02).
 
 ## Tokens
 
@@ -248,6 +243,6 @@ list there.
 
 Review visual changes with `node scripts/ui-snapshots.mjs --url <server> --label
 <name>`. It captures Animate, Draw and Build, both timeline modes, the inspector,
-menus, dialogs and the feedback shell in light and dark at four window sizes.
+menus, settings and dialogs in light and dark at four window sizes.
 Add `--compare <earlier label>` to count changed pixels and write diff images; a
 refactor that should not change the look must report 0 changed images.

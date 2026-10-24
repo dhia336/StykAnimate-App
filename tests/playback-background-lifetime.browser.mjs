@@ -6,7 +6,7 @@ import path from 'node:path';
 const output = path.resolve('artifacts/playback-background-fix');
 await mkdir(output, {recursive: true});
 const browser = await chromium.launch({channel: 'chrome', headless: true});
-const errors = [], baseline = process.env.STYK_BACKGROUND_BASELINE === '1';
+const errors = [], baseline = process.env.TWIGANIMATE_BACKGROUND_BASELINE === '1';
 try {
   const page = await browser.newPage();
   page.on('pageerror', error => errors.push(error.message));
@@ -14,7 +14,7 @@ try {
     const body = await readFile(path.join(output, `${name}.before.mjs`), 'utf8');
     await page.route(`**/src/${name}.mjs`, route => route.fulfill({body, contentType: 'text/javascript'}));
   }
-  await page.goto(`${process.env.STYK_URL || 'http://127.0.0.1:47831'}/api/health`);
+  await page.goto(`${process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831'}/api/health`);
   const result = await page.evaluate(async () => {
     const {createRenderer} = await import('/src/renderer.mjs');
     const {compilePlaybackPacket} = await import('/src/playback-worker.mjs');

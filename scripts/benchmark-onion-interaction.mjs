@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import backend from '../desktop/backend.cjs';
 
 const out = 'artifacts/onion-performance-20260928';
-const baseline = process.env.STYK_ONION_BASELINE;
+const baseline = process.env.TWIGANIMATE_ONION_BASELINE;
 const sourceFiles = ['src/renderer.mjs','src/renderer-onion-composite.mjs','src/onion-surface-cache.mjs','src/playback-budget.mjs','src/vfx-viewport.mjs'];
 const fingerprints = async root => Object.fromEntries(await Promise.all(sourceFiles.map(async file => {
   try { return [file, createHash('sha256').update(await readFile(path.join(root,file))).digest('hex')]; }

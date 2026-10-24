@@ -4,7 +4,7 @@ const browser=await chromium.launch({channel:'chrome',headless:true});
 try {
   const page=await browser.newPage();
   await page.route('**/src/app.mjs',route=>route.fulfill({contentType:'text/javascript',body:''}));
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');
   const checks=await page.evaluate(async()=>{
     const {updateInspectorDOM}=await import('/src/inspector-dom.mjs'),{icon}=await import('/src/icons.mjs');
     const root=document.createElement('div');document.body.append(root);const checks=[];

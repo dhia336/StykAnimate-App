@@ -9,7 +9,7 @@ const check = (name, value) => {assert.ok(value, name); console.log('PASS', name
 const selected = () => page.evaluate(() => [...styk.editor.selectedUids].sort((a, b) => a - b).join(','));
 const card = index => page.locator('.sheet-filmstrip canvas').nth(index);
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
   await page.evaluate(async () => {
     const {createDemo} = await import('/src/demo.mjs');
     styk.settingsUI.commit({timelineMode: 'simple'}); styk.editor.load(createDemo());

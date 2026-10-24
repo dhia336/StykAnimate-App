@@ -14,7 +14,7 @@ let app;
 let closed = false;
 const launch=async()=>{
   closed = false;
-  app=await electron.launch({args:[root],cwd:root,timeout:45000,env:{...process.env,STYK_USER_DATA_DIR:profile,STYK_LIBRARY_DIR:path.join(profile,'library')}});
+  app=await electron.launch({args:[root],cwd:root,timeout:45000,env:{...process.env,TWIGANIMATE_USER_DATA_DIR:profile,TWIGANIMATE_LIBRARY_DIR:path.join(profile,'library')}});
   app.on('close',()=>{closed=true;});
   app.process().stderr.on('data', data => process.stderr.write(data));
   console.log('Desktop process started');

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 
-const base=process.env.STYK_TEST_URL || 'http://127.0.0.1:47831';
+const base=process.env.TWIGANIMATE_TEST_URL || 'http://127.0.0.1:47831';
 const output=path.resolve('artifacts/themes');
 await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true});
@@ -82,7 +82,7 @@ try {
   check('The tool bar floats on the dark raised surface',await background('.studio-rail')==='rgb(27, 28, 35)'&&field.every(channel=>channel<32));
   await shot('editor-dark');
   await page.evaluate(()=>styk.settingsUI.flush());
-  check('Dark mode is stored with editor preferences',await page.evaluate(()=>JSON.parse(localStorage.getItem('stykanimate.editor.settings.v1')).theme==='dark'));
+  check('Dark mode is stored with editor preferences',await page.evaluate(()=>JSON.parse(localStorage.getItem('twiganimate.editor.settings.v1')).theme==='dark'));
   await page.reload();await ready();
   check('Dark mode survives reload',await theme()==='dark');
 

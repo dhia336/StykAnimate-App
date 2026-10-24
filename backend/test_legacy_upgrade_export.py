@@ -19,9 +19,9 @@ import server
 from piv_migrate import migrate_legacy_document
 
 # The Pivot sample corpus lives beside the repository and is not redistributed.
-# A clean checkout (CI) skips these cases; STYK_REQUIRE_FIXTURES=1 runs them anyway.
+# A clean checkout (CI) skips these cases; TWIGANIMATE_REQUIRE_FIXTURES=1 runs them anyway.
 needs_corpus = unittest.skipUnless(
-    os.environ.get("STYK_REQUIRE_FIXTURES") == "1" or (server.WORKSPACE / "docs/piv_corpus_manifest.json").is_file(),
+    os.environ.get("TWIGANIMATE_REQUIRE_FIXTURES") == "1" or (server.WORKSPACE / "docs/piv_corpus_manifest.json").is_file(),
     "requires the local Pivot corpus beside the repository")
 
 

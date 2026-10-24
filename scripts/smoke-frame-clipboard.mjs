@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const output = path.join(appRoot, 'artifacts'), profile = path.join(output, `clipboard-profile-${Date.now()}`);
 await mkdir(profile, {recursive: true});
-const launch = () => electron.launch({args: [appRoot], cwd: appRoot, timeout: 45000, env: {...process.env, STYK_USER_DATA_DIR: profile}});
+const launch = () => electron.launch({args: [appRoot], cwd: appRoot, timeout: 45000, env: {...process.env, TWIGANIMATE_USER_DATA_DIR: profile}});
 const applications = [], errors = [], checks = [];
 try {
   const app = await launch(); applications.push(app); const page = await app.firstWindow();

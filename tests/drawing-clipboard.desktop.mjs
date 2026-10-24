@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 
-const root=path.resolve('.'),out=path.resolve(process.env.STYK_PIXEL_CLIPBOARD_ARTIFACTS||'artifacts/drawing-clipboard'),profile=path.join(out,`profile-${Date.now()}`),checks=[],errors=[];
+const root=path.resolve('.'),out=path.resolve(process.env.TWIGANIMATE_PIXEL_CLIPBOARD_ARTIFACTS||'artifacts/drawing-clipboard'),profile=path.join(out,`profile-${Date.now()}`),checks=[],errors=[];
 await mkdir(profile,{recursive:true});
 await writeFile(path.join(profile,'telemetry-state.json'),JSON.stringify({decided:true,consent:{analytics:false,diagnostics:false,policyVersion:'2026-09-10',updatedAt:Date.now()}}));
-const env={...process.env,STYK_USER_DATA_DIR:profile,STYK_LIBRARY_DIR:path.join(profile,'library')};delete env.ELECTRON_RUN_AS_NODE;
+const env={...process.env,TWIGANIMATE_USER_DATA_DIR:profile,TWIGANIMATE_LIBRARY_DIR:path.join(profile,'library')};delete env.ELECTRON_RUN_AS_NODE;
 const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('PASS',name);};
 const applications=[],app=await electron.launch({args:[root],cwd:root,env,timeout:45000});applications.push(app);
 const sink=async application=>application.evaluate(async({clipboard},{file})=>{
@@ -32,7 +32,7 @@ try{
     await d.action('copy-pixels');return{version:e._drawingPixelClipboard.version,tiles:e._drawingPixelClipboard.tiles.length,id:shared.id};
   });
   check('source window publishes a sparse packet through native IPC',packet.version===2&&packet.tiles===2&&!!packet.id);
-  const secondApp=await electron.launch({args:[root],cwd:root,env:{...env,STYK_USER_DATA_DIR:path.join(profile,'destination')},timeout:45000});applications.push(secondApp);
+  const secondApp=await electron.launch({args:[root],cwd:root,env:{...env,TWIGANIMATE_USER_DATA_DIR:path.join(profile,'destination')},timeout:45000});applications.push(secondApp);
   const second=await secondApp.firstWindow();second.on('pageerror',error=>errors.push(error.message));await second.waitForFunction(()=>window.styk?.ready,undefined,{timeout:45000});await sink(secondApp);await setup(second);
   const pasted=await second.evaluate(async()=>{
     const e=styk.editor,d=styk.drawing;await d.action('paste-pixels');const surface=await d.owner.surface(e.drawingTarget().figure),obj=e.drawingTarget().object;

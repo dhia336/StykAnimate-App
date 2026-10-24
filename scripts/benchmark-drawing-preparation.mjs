@@ -4,7 +4,7 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import os from 'node:os';
 
-const baseline=process.env.STYK_PREPARATION_BASELINE||'58a3291',output=process.env.STYK_PREPARATION_BENCHMARK||'artifacts/drawing-preparation-reuse';
+const baseline=process.env.TWIGANIMATE_PREPARATION_BASELINE||'58a3291',output=process.env.TWIGANIMATE_PREPARATION_BENCHMARK||'artifacts/drawing-preparation-reuse';
 const sources=new Map(['drawing-resources','drawing-preparation','drawing-worker'].map(name=>[name,execFileSync('git',['show',`${baseline}:src/${name}.mjs`],{encoding:'utf8'})])),runs=[];
 await mkdir(output,{recursive:true});
 for(const kind of ['opaque8k','textured4k'])for(let pass=0;pass<3;pass++)for(const revision of pass%2?['working-tree',baseline]:[baseline,'working-tree']){
@@ -15,7 +15,7 @@ for(const kind of ['opaque8k','textured4k'])for(let pass=0;pass<3;pass++)for(con
   await context.route('**/*',route=>route.continue());
   if(revision===baseline)for(const [name,body] of sources)await context.route(`**/src/${name}.mjs`,route=>route.fulfill({contentType:'text/javascript',body}));
   const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
   const samples=await page.evaluate(async kind=>{
    const {DrawingResources}=await import('/src/drawing-resources.mjs'),{createDrawingFigure}=await import('/src/drawing-model.mjs');
    const figure=createDrawingFigure(),owner=new DrawingResources({figure_types:[figure]},{history:false});owner.busy=true;await owner.surface(figure);

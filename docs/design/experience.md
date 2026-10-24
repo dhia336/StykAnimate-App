@@ -627,13 +627,13 @@ One `.ui-menu` component (top layer, 232–320 wide, 28px items, an icon, check 
 
 | Menu | Items (groups separated by ─) |
 |---|---|
-| **StykAnimate (the mark)** | Search commands… `Ctrl+P` ─ (at minimal width: File ▸ · Edit ▸ · View ▸ · Animation ▸ or Figure ▸ · Help ▸ ─) Settings… `Ctrl+,` · About StykAnimate · Check for updates… (becomes *Restart to update*) ─ Quit `Ctrl+Q` |
+| **TwigAnimate (the mark)** | Search commands… `Ctrl+P` ─ (at minimal width: File ▸ · Edit ▸ · View ▸ · Animation ▸ or Figure ▸ · Help ▸ ─) Settings… `Ctrl+,` · About TwigAnimate · Check for updates… ─ Quit `Ctrl+Q` |
 | **File** (index) | New animation `Ctrl+N` · New window · Open… `Ctrl+O` · Open recent ▸ ─ Save `Ctrl+S` · Save as… `Ctrl+Shift+S` · Save figure… · Rename… ─ Import figures… · Import image… · Import background… · Import audio… ─ Export… `Ctrl+Shift+E` ─ Quit |
 | **Edit** (index) | Undo · Redo ─ Cut · Copy · Paste · **Paste in place** `Ctrl+Shift+V` · Paste special ▸ (Paste instance · Paste unique copy) · Duplicate `Ctrl+D` · Delete ─ Select all `Ctrl+A` · Invert selection · Select same figure ─ Settings… `Ctrl+,` |
 | **View** (index; `reference/116`; **every checkmark is the state of the toggle it names**, audited) | Canvas: Joints `Shift+J` · Other figures' joints `Ctrl+H` · Motion paths `M` · Motion path settings… · Grid `Ctrl+'` · Grid and guides… · Camera frame `Ctrl+K` · Effects preview · Onion skin `O` ─ Build (in Build): Highlight part `F12` · Static handles `F10` · Smart snapping · Construction colour… `F9` ─ Zoom: Zoom in · Zoom out · Fit canvas `Shift+1` ─ Panels: Properties `Ctrl+1` · VFX `Ctrl+2` · Library `Ctrl+3` · Timeline `Ctrl+4` · Layout… `Ctrl+Alt+L` · Focus mode `Ctrl+\` · Full screen (**no default key**: `F11` is today's *Copy camera*; revision 4.2) |
 | **Animation** (index; Animate, Draw) | Play / pause `Space` · Loop ─ First frame `Home` · Previous frame `,` · Next frame `.` · Last frame `End` · Previous key `Shift+,` · Next key `Shift+.` (their own glyph, revision 4.3) · Go to frame… `Ctrl+G` ─ Add frame `A` · Extend `Shift+A` · Insert blank key `F7` · Insert inbetween… · Delete frames ─ New layer · New drawing layer ─ Movieclip ▸ (New movieclip… · From selection… · From frames…) ─ Timeline ▸ (Simple, Advanced) |
 | **Figure** (index; Build; `data-app-menu="editor"`) | Exact values… `I` ─ Split `S` · Duplicate part · Flip horizontally · Flip vertically · Arrange ▸ ─ Set as origin · Remove joint, keep ends `Ctrl+Del` ─ Connect joints… · Attach image… · Find part… `Ctrl+F` ─ Delete part `Del` · Delete branch `Shift+Del` |
-| **Help** (index) | Keyboard shortcuts `?` · Tutorials ▸ · What's new ─ Report a bug… · Share an idea… · Performance ─ Privacy and diagnostics · Support development · StykAnimate website ─ About StykAnimate · Check for updates… |
+| **Help** (index) | Keyboard shortcuts `?` · Tutorials ▸ · What's new ─ Report a bug… · Share an idea… · Performance ─ Privacy and diagnostics ─ About TwigAnimate · Check for updates… |
 
 **Context menus** (right-click, `Shift+F10`, the Menu key). Every context menu repeats the clipboard group where it applies (aliases of the Edit entries). **Which canvas hit opens which menu** (revision 4.2): a right-click on **a joint handle or a limb stroke** selects that joint and opens the **joint menu**; on **the figure's origin handle** (or with several figures selected) the **selection menu**; on **the empty canvas** the **Scene menu**; with Select pixels or Transform, on the drawing, the pixel selection menu; in Build, on a part, the part menu. The inspector's ⋯ opens its context's menu (the figure's selection menu, the joint's joint menu).
 
@@ -831,7 +831,7 @@ Measured defects on today's routes (the task study's problems 4, 5 and 7, intern
 | About (`about`); Check for updates / Restart to update (`check-updates`, `restart-update`) | StykAnimate menu; Help | 2 (About: broken) | 2 | — |
 | Close / Minimize / Maximize | Window controls (Quit is Close) | 1 | 1 | `Ctrl+Q` |
 | Keyboard shortcuts (`help`) | Help | 2 | 2 | `?` |
-| Tutorials, What's new, StykAnimate website, Privacy and diagnostics, Support development, Report a bug / Share an idea, Performance (`release-notes`, `website`, `privacy`, `donate`, `feedback`, `performance`) | Help (the menubar) | 2 (Performance: 1, the status bar) | 2 (Performance: 1 from the slow-playback message) | — |
+| Tutorials, What's new, Privacy and diagnostics, Report a bug / Share an idea, Performance (`release-notes`, `privacy`, `feedback`, `performance`) | Help (the menubar) | 2 (Performance: 1, the status bar) | 2 (Performance: 1 from the slow-playback message) | — |
 | Cancel the current gesture (`cancel`) | Keys; every native dialog has its own × | key | key | `Esc` |
 
 ### 8.2 Layout and view

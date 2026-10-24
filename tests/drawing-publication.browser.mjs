@@ -2,11 +2,11 @@ import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 
-const output=process.env.STYK_PUBLICATION_ARTIFACTS||'artifacts/drawing-publication',browser=await chromium.launch({channel:'chrome',headless:true});
+const output=process.env.TWIGANIMATE_PUBLICATION_ARTIFACTS||'artifacts/drawing-publication',browser=await chromium.launch({channel:'chrome',headless:true});
 await mkdir(output,{recursive:true});
 try{
   const page=await browser.newPage(),errors=[];page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
   const checks=await page.evaluate(async()=>{
     const {DrawingResources}=await import('/src/drawing-resources.mjs'),{createDrawingFigure}=await import('/src/drawing-model.mjs'),{decodeTileBlob}=await import('/src/drawing-tile-codec.mjs');
     const make=()=>{

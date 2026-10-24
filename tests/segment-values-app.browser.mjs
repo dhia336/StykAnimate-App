@@ -47,7 +47,7 @@ async function hover(handle = 22) {
   return point;
 }
 try {
-  await page.goto(process.env.STYK_URL || "http://127.0.0.1:47831");
+  await page.goto(process.env.TWIGANIMATE_URL || "http://127.0.0.1:47831");
   await page.waitForFunction(() => window.styk?.ready);
   await page.evaluate(async () => {
     const { emptyDocument, createObject, createFrame } = await import(

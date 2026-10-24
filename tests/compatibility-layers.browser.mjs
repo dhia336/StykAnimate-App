@@ -9,7 +9,7 @@ try {
   const page = await browser.newPage({viewport: {width: 1280, height: 850}}), errors = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.addInitScript(() => Object.defineProperty(navigator, 'gpu', {value: undefined}));
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831');
   await page.waitForFunction(() => window.styk?.ready);
   const result = await page.evaluate(async () => {
     for (const dialog of document.querySelectorAll('dialog[open]')) dialog.close();

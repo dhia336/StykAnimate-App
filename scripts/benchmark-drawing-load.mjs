@@ -5,8 +5,8 @@ import path from 'node:path';
 // Heavy drawing load: many dense high-resolution cels well beyond the resident
 // tile budget, then scrubbing, playback, painting on top and saving. Reports
 // frame pacing, stroke latency, memory bounds and correctness at each stage.
-const url=process.env.STYK_URL||'http://127.0.0.1:47839',cels=Number(process.env.CELS||24),resolution=Number(process.env.RESOLUTION||4);
-const output=path.resolve(process.env.STYK_LOAD_ARTIFACTS||'artifacts/drawing-load');await mkdir(output,{recursive:true});
+const url=process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839',cels=Number(process.env.CELS||24),resolution=Number(process.env.RESOLUTION||4);
+const output=path.resolve(process.env.TWIGANIMATE_LOAD_ARTIFACTS||'artifacts/drawing-load');await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true});
 const page=await browser.newPage({viewport:{width:1600,height:1000}}),errors=[];
 page.on('pageerror',error=>errors.push(error.stack));

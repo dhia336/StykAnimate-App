@@ -8,7 +8,7 @@ import {mkdir} from 'node:fs/promises';
 const root = path.resolve('.'), output = path.join(root, 'artifacts', 'renderer-artboard-clip');
 await mkdir(output, {recursive: true});
 const app = await electron.launch({args: [root], cwd: root, timeout: 45000,
-  env: {...process.env, STYK_USER_DATA_DIR: path.join(output, `profile-${Date.now()}`)}});
+  env: {...process.env, TWIGANIMATE_USER_DATA_DIR: path.join(output, `profile-${Date.now()}`)}});
 try {
   const page = await app.firstWindow(), errors = [];
   page.on('pageerror', error => errors.push(error.message));

@@ -2,8 +2,8 @@
  * Matched native/app input benchmark. Preparation is safe by default:
  *   node tests/matched-app-interaction.mjs --plan
  * Run only after obtaining the exclusive GPU slot:
- *   STYK_GPU_SLOT=matched-app-interaction node tests/matched-app-interaction.mjs --run
- * Optional STYK_MATCH_TRAJECTORY is JSON {points:[{x,y,tMs}], view:{x,y}} in world units.
+ *   TWIGANIMATE_GPU_SLOT=matched-app-interaction node tests/matched-app-interaction.mjs --run
+ * Optional TWIGANIMATE_MATCH_TRAJECTORY is JSON {points:[{x,y,tMs}], view:{x,y}} in world units.
  * A new visible Electron process/profile/backend is used per cold repetition. The
  * second import retains that same process, importer worker and backend source cache.
  * OS file/shader caches are uncontrolled. Original source bytes are never written.
@@ -23,22 +23,22 @@ const envNumber = (key, fallback) => {
   return value;
 };
 const config = {
-  source: path.resolve(process.env.STYK_MATCH_SOURCE || corpusPath('Downloads/16 Akane vs Akato Segundo round (3).piv')),
+  source: path.resolve(process.env.TWIGANIMATE_MATCH_SOURCE || corpusPath('Downloads/16 Akane vs Akato Segundo round (3).piv')),
   frameIndex: 1478, uid: 460616, joint: 0, width: 1120, height: 652,
   scale: 1.491176486, dpr: 1, cameraEnabled: false, onionCount: 0,
-  viewX: process.env.STYK_MATCH_VIEW_X === undefined ? null : envNumber('STYK_MATCH_VIEW_X'),
-  viewY: process.env.STYK_MATCH_VIEW_Y === undefined ? null : envNumber('STYK_MATCH_VIEW_Y'),
-  samples: envNumber('STYK_MATCH_SAMPLES', 24), intervalMs: envNumber('STYK_MATCH_INTERVAL_MS', 40),
-  amplitudeWorld: envNumber('STYK_MATCH_AMPLITUDE_WORLD', 8),
-  coldProcesses: envNumber('STYK_MATCH_COLD_PROCESSES', 3), warmImports: envNumber('STYK_MATCH_WARM_IMPORTS', 1),
-  trace: process.env.STYK_MATCH_TRACE === '1', expectedElectron: process.env.STYK_MATCH_ELECTRON || '39.8.10',
-  profileImport: process.env.STYK_MATCH_PROFILE === '1',
-  verifyInitialBatch: process.env.STYK_MATCH_VERIFY_BATCH === '1',
-  expectedScanner: process.env.STYK_MATCH_SCANNER || null,
-  inheritedBackendSelectors: Object.fromEntries(['STYK_PYTHON', 'STYK_NATIVE_SCAN_LIBRARY', 'STYK_DISABLE_NATIVE_SCAN', 'STYK_DISABLE_FAST_JSON']
+  viewX: process.env.TWIGANIMATE_MATCH_VIEW_X === undefined ? null : envNumber('TWIGANIMATE_MATCH_VIEW_X'),
+  viewY: process.env.TWIGANIMATE_MATCH_VIEW_Y === undefined ? null : envNumber('TWIGANIMATE_MATCH_VIEW_Y'),
+  samples: envNumber('TWIGANIMATE_MATCH_SAMPLES', 24), intervalMs: envNumber('TWIGANIMATE_MATCH_INTERVAL_MS', 40),
+  amplitudeWorld: envNumber('TWIGANIMATE_MATCH_AMPLITUDE_WORLD', 8),
+  coldProcesses: envNumber('TWIGANIMATE_MATCH_COLD_PROCESSES', 3), warmImports: envNumber('TWIGANIMATE_MATCH_WARM_IMPORTS', 1),
+  trace: process.env.TWIGANIMATE_MATCH_TRACE === '1', expectedElectron: process.env.TWIGANIMATE_MATCH_ELECTRON || '39.8.10',
+  profileImport: process.env.TWIGANIMATE_MATCH_PROFILE === '1',
+  verifyInitialBatch: process.env.TWIGANIMATE_MATCH_VERIFY_BATCH === '1',
+  expectedScanner: process.env.TWIGANIMATE_MATCH_SCANNER || null,
+  inheritedBackendSelectors: Object.fromEntries(['TWIGANIMATE_PYTHON', 'TWIGANIMATE_NATIVE_SCAN_LIBRARY', 'TWIGANIMATE_DISABLE_NATIVE_SCAN', 'TWIGANIMATE_DISABLE_FAST_JSON']
     .map(key => [key, process.env[key] ?? null])),
-  trajectoryFile: process.env.STYK_MATCH_TRAJECTORY ? path.resolve(process.env.STYK_MATCH_TRAJECTORY) : null,
-  output: path.resolve(process.env.STYK_MATCH_OUTPUT || path.join(appRoot, 'artifacts', `matched-app-interaction-${new Date().toISOString().replace(/[:.]/g, '-')}`)),
+  trajectoryFile: process.env.TWIGANIMATE_MATCH_TRAJECTORY ? path.resolve(process.env.TWIGANIMATE_MATCH_TRAJECTORY) : null,
+  output: path.resolve(process.env.TWIGANIMATE_MATCH_OUTPUT || path.join(appRoot, 'artifacts', `matched-app-interaction-${new Date().toISOString().replace(/[:.]/g, '-')}`)),
 };
 for (const key of ['samples', 'coldProcesses', 'warmImports']) assert.ok(Number.isInteger(config[key]) && config[key] >= (key === 'warmImports' ? 0 : 1), `${key} is invalid`);
 assert.ok(config.intervalMs > 0 && config.amplitudeWorld > 0);
@@ -57,10 +57,10 @@ const metricDefinitions = {
 };
 if (!process.argv.includes('--run')) {
   console.log(JSON.stringify({status: 'prepared-not-run', config, metricDefinitions,
-    launchGuard: 'Requires --run AND STYK_GPU_SLOT=matched-app-interaction after coordinator grants exclusive GPU access.'}, null, 2));
+    launchGuard: 'Requires --run AND TWIGANIMATE_GPU_SLOT=matched-app-interaction after coordinator grants exclusive GPU access.'}, null, 2));
   process.exit(0);
 }
-assert.equal(process.env.STYK_GPU_SLOT, 'matched-app-interaction', 'Obtain the exclusive GPU slot before setting STYK_GPU_SLOT=matched-app-interaction.');
+assert.equal(process.env.TWIGANIMATE_GPU_SLOT, 'matched-app-interaction', 'Obtain the exclusive GPU slot before setting TWIGANIMATE_GPU_SLOT=matched-app-interaction.');
 
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const quantiles = values => {
@@ -398,7 +398,7 @@ try {
   for (let processIndex = 0; processIndex < config.coldProcesses; processIndex++) {
     const processDir = path.join(config.output, `process-${processIndex}`); await mkdir(processDir, {recursive: true});
     activeApp = await electron.launch({args: ['--force-device-scale-factor=1', appRoot], cwd: appRoot, timeout: 60000,
-      env: {...process.env, STYK_USER_DATA_DIR: path.join(processDir, 'profile')}});
+      env: {...process.env, TWIGANIMATE_USER_DATA_DIR: path.join(processDir, 'profile')}});
     const app = activeApp, page = await app.firstWindow(); page.setDefaultTimeout(60000);
     page.on('pageerror', error => report.errors.push({processIndex, message: error.message}));
     await page.waitForFunction(() => window.styk?.ready);

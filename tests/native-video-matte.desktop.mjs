@@ -9,7 +9,7 @@ import { chooseExport, exportDialogClosed, openEncoding } from './helpers/export
 const root = path.resolve(import.meta.dirname, '..'), output = path.join(root, 'artifacts', 'native-video-matte');
 await mkdir(output, { recursive: true });
 const app = await electron.launch({ args: [root], cwd: root, timeout: 45000,
-  env: { ...process.env, STYK_USER_DATA_DIR: path.join(output, `profile-${Date.now()}`) } });
+  env: { ...process.env, TWIGANIMATE_USER_DATA_DIR: path.join(output, `profile-${Date.now()}`) } });
 try {
   const page = await app.firstWindow(), checks = [], errors = [], outputs = [];
   page.on('pageerror', error => errors.push(error.message));

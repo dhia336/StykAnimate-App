@@ -14,7 +14,7 @@ const checks=[],errors=[];
 const check=(name,value=true)=>{assert.ok(value,name);checks.push(name);console.log('PASS',name);};
 let app;
 const launch=async()=>{
-  app=await electron.launch({args:[root],cwd:root,timeout:45000,env:{...process.env,STYK_USER_DATA_DIR:profile,STYK_LIBRARY_DIR:path.join(profile,'library')}});
+  app=await electron.launch({args:[root],cwd:root,timeout:45000,env:{...process.env,TWIGANIMATE_USER_DATA_DIR:profile,TWIGANIMATE_LIBRARY_DIR:path.join(profile,'library')}});
   app.process().stderr.on('data',data=>process.stderr.write(data));
   await app.evaluate(({dialog},file)=>{dialog.showSaveDialog=async()=>({canceled:false,filePath:file});dialog.showOpenDialog=async()=>({canceled:false,filePaths:[file]});dialog.showMessageBox=async()=>({response:1});},file);
   const page=await app.firstWindow();page.on('pageerror',error=>errors.push(error.message));

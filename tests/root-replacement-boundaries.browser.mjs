@@ -61,7 +61,7 @@ async function hold() {
   await page.mouse.move(p.x + 31, p.y + 11, { steps: 3 });
 }
 try {
-  await page.goto(process.env.STYK_URL || "http://127.0.0.1:47831");
+  await page.goto(process.env.TWIGANIMATE_URL || "http://127.0.0.1:47831");
   await page.waitForFunction(() => window.styk?.ready);
   await setup();
   await hold();

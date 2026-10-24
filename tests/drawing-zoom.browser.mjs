@@ -3,22 +3,22 @@ import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 
-const output='artifacts/drawing-zoom',label=process.env.STYK_BENCH_LABEL||'after';
+const output='artifacts/drawing-zoom',label=process.env.TWIGANIMATE_BENCH_LABEL||'after';
 await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true});
 const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[],results=[];
-const figureCount=Number(process.env.STYK_BENCH_FIGURES||0);
-if(process.env.STYK_BENCH_BASELINE)for(const name of ['camera-overlay','drawing-controller','drawing-pixels','renderer','vfx-preview']){
-  const body=execFileSync('git',['show',`${process.env.STYK_BASELINE_REF||'HEAD'}:src/${name}.mjs`],{encoding:'utf8'});
+const figureCount=Number(process.env.TWIGANIMATE_BENCH_FIGURES||0);
+if(process.env.TWIGANIMATE_BENCH_BASELINE)for(const name of ['camera-overlay','drawing-controller','drawing-pixels','renderer','vfx-preview']){
+  const body=execFileSync('git',['show',`${process.env.TWIGANIMATE_BASELINE_REF||'HEAD'}:src/${name}.mjs`],{encoding:'utf8'});
   await page.route(`**/src/${name}.mjs`,route=>route.fulfill({contentType:'text/javascript',body}));
 }
 page.on('pageerror',e=>errors.push(e.message));
 try{
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');
   await page.waitForFunction(()=>window.styk?.ready);
   assert.ok(await page.locator('#viewport').isVisible());
   await page.locator('[data-workspace-mode="draw"]').click();
-  if(process.env.STYK_PROBE_OUTLINE)await page.evaluate(()=>{const ctx=document.querySelector('#overlay').getContext('2d'),stroke=ctx.stroke;ctx.stroke=function(...args){const d=this.getLineDash();if(d.length===2&&d[0]===0&&d[1]===6)return;return stroke.apply(this,args);};});
+  if(process.env.TWIGANIMATE_PROBE_OUTLINE)await page.evaluate(()=>{const ctx=document.querySelector('#overlay').getContext('2d'),stroke=ctx.stroke;ctx.stroke=function(...args){const d=this.getLineDash();if(d.length===2&&d[0]===0&&d[1]===6)return;return stroke.apply(this,args);};});
   for(const zoom of [1,8,32]){
     await page.evaluate(async({zoom,figureCount})=>{
       const {emptyDocument,createObject,createFrame}=await import('/src/demo.mjs');
@@ -68,7 +68,7 @@ try{
     });
     results.push({zoom,live,...metrics});
     assert.ok(metrics.undoExact,'undo/redo restores zoomed stroke exactly');
-    if(!process.env.STYK_BENCH_BASELINE){assert.ok(live.gpuOverlay??live.scratches.some(s=>s.stamp===live.stamp),'live ink reaches a current scratch or GPU overlay before pointer release');assert.ok(Math.abs(live.smoothingScreenDistance-45.6)<1e-6,'zoom preserves the smoothing distance on screen');}
+    if(!process.env.TWIGANIMATE_BENCH_BASELINE){assert.ok(live.gpuOverlay??live.scratches.some(s=>s.stamp===live.stamp),'live ink reaches a current scratch or GPU overlay before pointer release');assert.ok(Math.abs(live.smoothingScreenDistance-45.6)<1e-6,'zoom preserves the smoothing distance on screen');}
   }
   assert.deepEqual(errors,[]);
 }finally{

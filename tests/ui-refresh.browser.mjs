@@ -7,7 +7,7 @@ const page=await browser.newPage({viewport:{width:1440,height:950}});
 const errors=[];page.on('pageerror',error=>errors.push(error.message));
 await mkdir('artifacts/figma-panel-refresh',{recursive:true});
 try {
- await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');
+ await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');
  await page.waitForFunction(()=>window.styk?.ready);
  const clickHandle = async joint => {
    const point = await page.evaluate(async joint => {

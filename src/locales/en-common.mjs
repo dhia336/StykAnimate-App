@@ -1,6 +1,6 @@
 /** Common editor vocabulary. Product copy remains owned by each UI module. */
 export default Object.freeze({
-  'app.name': 'StykAnimate',
+  'app.name': 'TwigAnimate',
   'app.untitled': 'Untitled',
   'common.apply': 'Apply',
   'common.cancel': 'Cancel',
@@ -50,9 +50,7 @@ export default Object.freeze({
   'settings.canvas': 'Canvas',
   'settings.animation': 'Animation',
   'settings.shortcuts': 'Shortcuts',
-  'settings.feedback': 'Feedback',
   'settings.language': 'Language',
-  'settings.donate': 'Donate',
   'settings.uiScale': 'UI scale',
   'settings.resetScale': 'Back to automatic scale',
   'settings.autoScale': 'Automatic',

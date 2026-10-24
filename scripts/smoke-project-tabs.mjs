@@ -14,7 +14,7 @@ await mkdir(profile, {recursive: true});
 // The privacy choice is made, so no first-run prompt covers the editor.
 await writeFile(path.join(profile, 'telemetry-state.json'), JSON.stringify({decided: true, consent: {analytics: false, diagnostics: false, policyVersion: '2026-09-10', updatedAt: Date.now()}}));
 const launch = () => electron.launch({args: [appRoot], cwd: appRoot, timeout: 60000,
-  env: {...process.env, STYK_USER_DATA_DIR: profile, STYK_STARTUP_VIEW: 'editor'}});
+  env: {...process.env, TWIGANIMATE_USER_DATA_DIR: profile, TWIGANIMATE_STARTUP_VIEW: 'editor'}});
 const checks = [], check = (name, value) => { assert.ok(value, name); checks.push(name); console.log('PASS', name); };
 const ready = page => page.waitForFunction(() => window.styk?.ready, null, {timeout: 60000});
 const dismissPrompts = async page => { for (const selector of ['.styk-privacy [data-decline]', '.release-splash [aria-label="Close welcome screen"]']) await page.locator(selector).click({timeout: 1500}).catch(() => {}); };

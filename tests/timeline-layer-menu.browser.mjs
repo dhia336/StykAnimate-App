@@ -14,7 +14,7 @@ const menusFit = () => page.locator('[role="menu"]:visible').evaluateAll(nodes =
   return bounds.left >= 0 && bounds.top >= 0 && bounds.right <= innerWidth + 1 && bounds.bottom <= innerHeight + 1;
 }));
 try {
-  await page.goto(process.env.STYK_URL ?? 'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL ?? 'http://127.0.0.1:47831');
   await page.waitForFunction(() => window.styk?.ready);
   await page.evaluate(async () => {
     const {emptyDocument} = await import('/src/demo.mjs');

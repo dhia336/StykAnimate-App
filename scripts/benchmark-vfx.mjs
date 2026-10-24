@@ -2,7 +2,7 @@ import {chromium} from '../tests/support/playwright.mjs';
 import fs from 'node:fs/promises';
 const browser=await chromium.launch({channel:'chrome',headless:true});
 try {
- const page=await browser.newPage();await page.goto(process.env.STYK_TEST_URL||'http://127.0.0.1:47832');await page.waitForFunction(()=>window.styk?.ready);
+ const page=await browser.newPage();await page.goto(process.env.TWIGANIMATE_TEST_URL||'http://127.0.0.1:47832');await page.waitForFunction(()=>window.styk?.ready);
  const report=await page.evaluate(async()=>{
   const {createRenderer}=await import('/src/renderer.mjs'),{emptyDocument,createFrame,createObject}=await import('/src/demo.mjs'),{createVfx}=await import('/src/vfx.mjs'),{buildGeometry}=await import('/src/pivot/geometry.mjs'),{vfxGPUStats,releaseVfxGPU}=await import('/src/vfx-gpu.mjs');
   const results=[];

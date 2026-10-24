@@ -19,7 +19,7 @@ try {
   await context.route('**/src/pivot/geometry.mjs', route => {
     blocked.push(new URL(route.request().url()).pathname); return route.abort();
   });
-  if (process.env.STYK_TEST_LEGACY_IMAGE_OWNER === '1') {
+  if (process.env.TWIGANIMATE_TEST_LEGACY_IMAGE_OWNER === '1') {
     const body = (await readFile(path.join(root, 'src/preview-image-worker.mjs'), 'utf8'))
       .replaceAll('ImageResources', 'PlaybackResources').replace("'./image-resources.mjs'", "'./playback-resources.mjs'");
     await context.route('**/src/preview-image-worker.mjs', route => route.fulfill({contentType: 'text/javascript', body}));

@@ -2,7 +2,7 @@
 // private sample files (scripts/smoke-desktop.mjs needs a sibling Samples.stk).
 //
 //   node scripts/smoke-boot.mjs                      the source tree, through Electron
-//   node scripts/smoke-boot.mjs --packaged           release/<platform>-unpacked (or STYK_PACKAGED_EXECUTABLE)
+//   node scripts/smoke-boot.mjs --packaged           release/<platform>-unpacked (or TWIGANIMATE_PACKAGED_EXECUTABLE)
 //
 // Checks: the window and renderer start, the bridge is present and Node is not
 // exposed, the codec answers (and, packaged, is the frozen build with its native
@@ -18,10 +18,10 @@ import { _electron as electron } from '../tests/support/playwright.mjs';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const packaged = process.argv.includes('--packaged');
-const unpacked = process.platform === 'win32' ? ['win-unpacked', 'StykAnimate.exe']
-  : process.platform === 'darwin' ? [process.arch === 'arm64' ? 'mac-arm64' : 'mac', 'StykAnimate.app', 'Contents', 'MacOS', 'StykAnimate']
-  : [process.arch === 'arm64' ? 'linux-arm64-unpacked' : 'linux-unpacked', 'stykanimate'];
-const executablePath = packaged ? process.env.STYK_PACKAGED_EXECUTABLE || path.join(appRoot, 'release', ...unpacked) : undefined;
+const unpacked = process.platform === 'win32' ? ['win-unpacked', 'TwigAnimate.exe']
+  : process.platform === 'darwin' ? [process.arch === 'arm64' ? 'mac-arm64' : 'mac', 'TwigAnimate.app', 'Contents', 'MacOS', 'TwigAnimate']
+  : [process.arch === 'arm64' ? 'linux-arm64-unpacked' : 'linux-unpacked', 'twiganimate'];
+const executablePath = packaged ? process.env.TWIGANIMATE_PACKAGED_EXECUTABLE || path.join(appRoot, 'release', ...unpacked) : undefined;
 
 const profile = await mkdtemp(path.join(os.tmpdir(), 'styk-boot-'));
 // No first-run privacy prompt: consent is recorded as declined.
@@ -30,7 +30,7 @@ const failures = [];
 const expect = (name, condition, detail = '') => { if (!condition) failures.push(`${name}${detail ? ` (${detail})` : ''}`); console.log(`${condition ? 'PASS' : 'FAIL'} ${name}${detail ? ` — ${detail}` : ''}`); };
 let app;
 try {
-  app = await electron.launch({ executablePath, args: packaged ? [] : [appRoot], cwd: appRoot, timeout: 60000, env: { ...process.env, STYK_USER_DATA_DIR: profile } });
+  app = await electron.launch({ executablePath, args: packaged ? [] : [appRoot], cwd: appRoot, timeout: 60000, env: { ...process.env, TWIGANIMATE_USER_DATA_DIR: profile } });
   const page = await app.firstWindow({ timeout: 60000 });
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
@@ -46,7 +46,7 @@ try {
     updates: (await window.stykDesktop.getUpdateState()).status,
     title: document.title,
   }));
-  expect('The window opens on the editor', /StykAnimate/.test(facts.title), facts.title);
+  expect('The window opens on the editor', /TwigAnimate/.test(facts.title), facts.title);
   expect('The desktop bridge is present and Node is not exposed to the page', facts.desktop && !facts.nodeExposed);
   expect('The bridge reports this platform', facts.platform === process.platform, facts.platform);
   expect('The renderer started', ['WebGPU', 'Canvas 2D fallback'].includes(facts.renderer), facts.renderer);
@@ -59,6 +59,16 @@ try {
   expect('Installed Windows codecs are offered only on Windows', process.platform === 'win32' || facts.vfw === false);
   expect('The update service starts without an error', facts.updates !== 'error', facts.updates);
   if (!packaged) expect('Source builds do not update', facts.updates === 'unavailable', facts.updates);
+  await page.evaluate(() => window.styk.actions.about());
+  const about = page.locator('.about-identity');
+  await about.waitFor({ state: 'visible' });
+  const aboutFacts = await about.evaluate(element => ({
+    text: element.innerText,
+    logoLoaded: element.querySelector('img')?.naturalWidth === 512,
+  }));
+  expect('About credits Dhia and identifies this as a fork', /Dhia/.test(aboutFacts.text) && /fork/i.test(aboutFacts.text), aboutFacts.text);
+  expect('About displays the new logo', aboutFacts.logoLoaded);
+  await page.keyboard.press('Escape');
   if (packaged && process.platform === 'linux' && executablePath?.endsWith('.AppImage')) {
     expect('The Linux AppImage enables updates', facts.updates !== 'unavailable', facts.updates);
   }

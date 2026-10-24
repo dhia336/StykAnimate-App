@@ -4,13 +4,13 @@ import {mkdir, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {corpusPath} from './support/corpus.mjs';
 const source = process.argv[2] || corpusPath('Downloads/16 Akane vs Akato Segundo round (3).piv');
-const cameraEnabled = process.env.STYK_NEUTRAL_EDITOR !== '1';
+const cameraEnabled = process.env.TWIGANIMATE_NEUTRAL_EDITOR !== '1';
 const output = path.resolve(`artifacts/renderer-adoption${cameraEnabled ? '' : '-neutral'}`); await mkdir(output, {recursive: true});
 const browser = await chromium.launch({channel: 'chrome', headless: true});
 try {
   const page = await browser.newPage({viewport: {width: 1400, height: 950}}), errors = [];
   page.on('pageerror', error => errors.push(error.message));
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
   await page.evaluate(() => styk.editor.markSaved()); await page.locator('#file-input').setInputFiles(source);
   await page.waitForFunction(name => !styk.state.importing && styk.editor.name === name, path.basename(source, '.piv'), {timeout: 180000});
   const rows = await page.evaluate(async cameraEnabled => {

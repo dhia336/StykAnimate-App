@@ -29,9 +29,9 @@ def until(predicate):
 
 def needs_sample(relative):
     """The Pivot sample corpus lives beside the repository and is not redistributed.
-    A clean checkout skips these cases; STYK_REQUIRE_FIXTURES=1 runs them anyway."""
+    A clean checkout skips these cases; TWIGANIMATE_REQUIRE_FIXTURES=1 runs them anyway."""
     return unittest.skipUnless(
-        os.environ.get("STYK_REQUIRE_FIXTURES") == "1" or (server.WORKSPACE / relative).is_file(),
+        os.environ.get("TWIGANIMATE_REQUIRE_FIXTURES") == "1" or (server.WORKSPACE / relative).is_file(),
         f"requires {relative} beside the repository")
 
 

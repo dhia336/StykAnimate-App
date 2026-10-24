@@ -5,7 +5,7 @@ import path from 'node:path';
 const root=process.cwd(),out=path.join(root,'artifacts/settings-scale');await mkdir(out,{recursive:true});
 const profile=path.join(out,`profile-${Date.now()}`),checks=[],errors=[];
 const check=(name,result)=>{assert.ok(result,name);checks.push(name);console.log('PASS',name);};
-const launch=()=>electron.launch({args:[root],cwd:root,timeout:60000,env:{...process.env,STYK_USER_DATA_DIR:profile}});
+const launch=()=>electron.launch({args:[root],cwd:root,timeout:60000,env:{...process.env,TWIGANIMATE_USER_DATA_DIR:profile}});
 let app;
 const screenshot=async name=>{ await new Promise(resolve=>setTimeout(resolve,180)); return writeFile(path.join(out,name),Buffer.from(await app.evaluate(async({BrowserWindow})=>(await BrowserWindow.getAllWindows()[0].capturePage()).toPNG().toString('base64')),'base64')); };
 try{

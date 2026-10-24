@@ -21,7 +21,7 @@ const fits = element => {
   return bounds.left >= 0 && bounds.right <= innerWidth && element.scrollWidth <= element.clientWidth + 1;
 };
 try {
-  await page.goto(process.env.STYK_TEST_URL || 'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_TEST_URL || 'http://127.0.0.1:47831');
   await page.waitForFunction(() => window.styk?.ready && styk.localization);
   await page.locator('.brand[data-action=menu]').click();
   await page.locator('#menu [data-action=settings]').click();

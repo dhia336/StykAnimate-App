@@ -3,20 +3,22 @@ import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import { verifyReleaseAssets, fileHash } from './release-assets.mjs';
 import { checkReleaseNotes } from './changelog.mjs';
+import { getReleaseRepository } from './release-target.mjs';
+const repo = getReleaseRepository();
 await checkReleaseNotes();
-const repo = 'filippocalippo/styk-animate-releases';
 const { version } = JSON.parse(await readFile('package.json', 'utf8'));
 const directory = process.argv.find(arg => arg.startsWith('--directory='))?.slice(12) || `release/${version}`;
 const assets = await verifyReleaseAssets(directory, version);
 const tag = `v${version}`;
 const gh = args => execFileSync('gh', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
+gh(['auth', 'status', '--hostname', 'github.com']);
 let existing;
 try { existing = JSON.parse(gh(['release', 'view', tag, '--repo', repo, '--json', 'isDraft'])); }
 catch (error) { if (!String(error.stderr).includes('release not found')) throw error; }
 if (existing && !existing.isDraft) throw new Error(`${tag} is already public. Increase the version instead of replacing an existing release.`);
 const checksums = path.join(directory, 'SHA256SUMS.txt');
 await writeFile(checksums, (await Promise.all(assets.map(async file => `${await fileHash(file, 'sha256', 'hex')}  ${path.basename(file)}`))).join('\n') + '\n');
-if (!existing) gh(['release', 'create', tag, '--repo', repo, '--draft', '--title', `StykAnimate ${version}`, '--notes-file', 'release-notes.md']);
+if (!existing) gh(['release', 'create', tag, '--repo', repo, '--draft', '--title', `TwigAnimate ${version}`, '--notes-file', 'release-notes.md']);
 // Upload only this fixed allowlist; private source, logs and app.asar never become release attachments.
 gh(['release', 'upload', tag, '--repo', repo, '--clobber', ...assets, checksums]);
 gh(['release', 'edit', tag, '--repo', repo, '--notes-file', 'release-notes.md']);

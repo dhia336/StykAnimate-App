@@ -30,7 +30,7 @@ const server = createServer(async (req, res) => {
 });
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 const url = `http://127.0.0.1:${server.address().port}/`;
-const browser = await chromium.launch({...(process.env.STYK_BROWSER_PATH ? {executablePath: process.env.STYK_BROWSER_PATH}
+const browser = await chromium.launch({...(process.env.TWIGANIMATE_BROWSER_PATH ? {executablePath: process.env.TWIGANIMATE_BROWSER_PATH}
   : process.platform === 'win32' ? {channel: 'chrome'} : {}), headless: true, args: ['--disable-gpu']});
 const page = await browser.newPage({viewport: {width: 1180, height: 880}, deviceScaleFactor: 1});
 const pageErrors = [], timings = {};

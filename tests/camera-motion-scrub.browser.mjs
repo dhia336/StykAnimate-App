@@ -25,7 +25,7 @@ async function drag(key,dx,modifier){
   await page.mouse.up();
 }
 try{
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');
   await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(()=>{const e=styk.editor;e.newDocument();e.addFigure();styk.settingsUI.commit({timelineMode:'advanced',onionCount:0});styk.state.onion=false;styk.fit();});
   await page.getByRole('button',{name:'Select layer Camera',exact:true}).click();

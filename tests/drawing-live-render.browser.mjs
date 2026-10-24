@@ -5,9 +5,9 @@ import {execFileSync} from 'node:child_process';
 const output='artifacts/drawing-zoom';await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage(),errors=[];
 page.on('pageerror',e=>errors.push(e.message));
-if(process.env.STYK_BASELINE)await page.route('**/src/renderer.mjs',route=>route.fulfill({contentType:'text/javascript',body:execFileSync('git',['show',`${process.env.STYK_BASELINE_REF||'HEAD'}:src/renderer.mjs`],{encoding:'utf8'})}));
+if(process.env.TWIGANIMATE_BASELINE)await page.route('**/src/renderer.mjs',route=>route.fulfill({contentType:'text/javascript',body:execFileSync('git',['show',`${process.env.TWIGANIMATE_BASELINE_REF||'HEAD'}:src/renderer.mjs`],{encoding:'utf8'})}));
 try{
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>styk?.ready);
   const result=await page.evaluate(async()=>{
     const {createRenderer}=await import('/src/renderer.mjs'),{createDrawingFigure,drawingPixelMatrix}=await import('/src/drawing-model.mjs');
     const {emptyDocument,createFrame,createObject}=await import('/src/demo.mjs'),{buildGeometry}=await import('/src/pivot/geometry.mjs');
@@ -50,7 +50,7 @@ try{
     }
     return {results,outline};
   });
-  await writeFile(`${output}/live-render${process.env.STYK_BASELINE?'-baseline':''}.json`,JSON.stringify({result,errors},null,2));
+  await writeFile(`${output}/live-render${process.env.TWIGANIMATE_BASELINE?'-baseline':''}.json`,JSON.stringify({result,errors},null,2));
   console.log(JSON.stringify({result,errors},null,2));
   assert.deepEqual(errors,[]);
   for(const r of result.results){assert.deepEqual(r.live,[30,60,220,255],`${r.backend} live pixels with retained geometry`);assert.deepEqual(r.pan,[220,30,60,255],`${r.backend} pan to previously offscreen ink`);assert.notDeepEqual(r.erased,r.pan);assert.deepEqual(r.back,r.live);if(r.backend==='WebGPU')assert.ok(r.preparation.slice(1).every(p=>p==='retained'||p==='drawing'),'pixel edits and pan retain scene layout');}

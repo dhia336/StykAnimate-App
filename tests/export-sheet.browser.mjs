@@ -6,7 +6,7 @@
  * "Stop exporting?" while an export runs, and a
  * palette command that exports today's defaults with its progress in its own
  * dialog. Serve the repository (node scripts/serve.mjs --port 47832) and run
- * `node tests/export-sheet.browser.mjs`; STYK_URL overrides the address.
+ * `node tests/export-sheet.browser.mjs`; TWIGANIMATE_URL overrides the address.
  */
 import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
@@ -14,7 +14,7 @@ import {readFile} from 'node:fs/promises';
 import {EXPORT_FIELD_IDS, EXPORT_ELEMENT_IDS} from '../src/export-request.mjs';
 import {chooseExport, exportDialogClosed, openEncoding} from './helpers/export-dialog.mjs';
 
-const base = process.env.STYK_URL || 'http://127.0.0.1:47832';
+const base = process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47832';
 const browser = await chromium.launch({channel: 'chrome', headless: true});
 const page = await browser.newPage({viewport: {width: 1440, height: 900}, acceptDownloads: true});
 const errors = [];

@@ -10,7 +10,7 @@ const directory = path.join(out, `simple-native-${Date.now()}`), profile = path.
 await mkdir(directory, {recursive: true});
 const checks = [], errors = [], applications = [];
 const record = name => { checks.push(name); console.log(`PASS ${name}`); };
-const launch = () => electron.launch({args: [root], cwd: root, timeout: 45000, env: {...process.env, STYK_USER_DATA_DIR: profile}});
+const launch = () => electron.launch({args: [root], cwd: root, timeout: 45000, env: {...process.env, TWIGANIMATE_USER_DATA_DIR: profile}});
 let clipboardApp;
 try {
   const app = await launch(); applications.push(app); clipboardApp = app;

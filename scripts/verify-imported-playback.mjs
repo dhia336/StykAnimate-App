@@ -13,7 +13,7 @@ const errors=[],result={sources:[path.basename(animation),path.basename(layers)]
 try{
   const page=await browser.newPage({viewport:{width:1560,height:1000}});
   page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');
   await page.waitForFunction(()=>window.styk?.ready);
   await page.locator('input[type=file]').first().setInputFiles(animation);
   await page.waitForFunction(()=>styk.editor.report.keyframes.length>100,null,{timeout:120000});

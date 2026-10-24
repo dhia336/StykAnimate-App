@@ -8,10 +8,10 @@
  * move, the Layout popover and saved presets, tab menus and drag to dock,
  * and persistence (architecture §3.11, M1).
  *
- * Serve the repository (STYK_PYTHON=py node scripts/serve.mjs --port 47911)
- * and run `node tests/shell-layout.browser.mjs`; STYK_URL overrides the
+ * Serve the repository (TWIGANIMATE_PYTHON=py node scripts/serve.mjs --port 47911)
+ * and run `node tests/shell-layout.browser.mjs`; TWIGANIMATE_URL overrides the
  * address. Every size starts from a fresh page with no stored layout.
- * STYK_DENSE_SOURCE (a dense .piv or .styk) adds the M1 performance gate:
+ * TWIGANIMATE_DENSE_SOURCE (a dense .piv or .styk) adds the M1 performance gate:
  * a splitter drag and a tab drag on that scene keep every frame under 200 ms.
  *
  * Transitional (until M3b hides the 24px status bar into the activity log):
@@ -31,7 +31,7 @@ import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 import {BAND_FOLDS, stageFloor, timelineDefaultHeight} from '../src/shell/layout-solver.mjs';
 
-const base = process.env.STYK_URL || 'http://127.0.0.1:47911';
+const base = process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47911';
 const out = 'artifacts/shell-layout';
 await mkdir(out, {recursive: true});
 const browser = await chromium.launch({channel: 'chrome', headless: true});
@@ -46,7 +46,7 @@ async function open(width, height) {
   await page?.context().close();
   const context = await browser.newContext({viewport: {width, height}, deviceScaleFactor: 1});
   await context.addInitScript(() => {
-    localStorage.setItem('stykanimate.editor.settings.v1', JSON.stringify({rendererMode: 'canvas', locale: 'en'}));
+    localStorage.setItem('twiganimate.editor.settings.v1', JSON.stringify({rendererMode: 'canvas', locale: 'en'}));
   });
   page = await context.newPage();
   page.setDefaultTimeout(10000);
@@ -1058,7 +1058,7 @@ try {
     await right.focus();
     await page.keyboard.press('ArrowLeft');
     await page.evaluate(() => styk.workspace.flushPreferences());
-    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('stykanimate.workspace-layout.v2')));
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('twiganimate.workspace-layout.v2')));
     assert.equal(stored.shared.sizes.right, 332);
     assert.equal(stored.right, 332, 'the v1 mirror a 1.1 app reads');
     assert.equal(stored.studioVersion, 1);
@@ -1068,7 +1068,7 @@ try {
     assert.equal(await page.evaluate(() => styk.workspace.sizes.right), 332);
     await resize(800, 600);
     await resize(1440, 900);
-    assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('stykanimate.workspace-layout.v2')).shared.sizes.right), 332);
+    assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('twiganimate.workspace-layout.v2')).shared.sizes.right), 332);
     assert.equal(await page.evaluate(() => styk.workspace.sizes.right), 332);
     await page.evaluate(async () => { styk.workspace.reset(); await styk.workspace.flushPreferences(); });
   });
@@ -1077,9 +1077,9 @@ try {
     await resize(width, height);
     await page.screenshot({path: `${out}/animate-${width}x${height}.png`});
   }
-  // The M1 performance gate on a dense scene (optional: STYK_DENSE_SOURCE names a .piv or .styk file, such as
+  // The M1 performance gate on a dense scene (optional: TWIGANIMATE_DENSE_SOURCE names a .piv or .styk file, such as
   // the Akane round or benchmark:dense's testreallydense.piv): splitter and tab drags keep every frame under 200 ms.
-  const dense = process.env.STYK_DENSE_SOURCE;
+  const dense = process.env.TWIGANIMATE_DENSE_SOURCE;
   if (dense) await step(`on a dense scene (${dense.split(/[\/]/).at(-1)}) a splitter drag and a tab drag keep every frame under 200 ms`, async () => {
     await open(1440, 900);
     await page.evaluate(() => { window.startupReport = styk.editor.report; });

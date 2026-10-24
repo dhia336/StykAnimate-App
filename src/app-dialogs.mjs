@@ -137,6 +137,30 @@ export function createAppDialogs(ctx) {
     });
     void dialog.showModal();
   }
+  function showAbout() {
+    const body = document.createElement("div"), identity = document.createElement("div"), logo = document.createElement("img");
+    body.className = "about-identity";
+    identity.className = "about-identity-copy";
+    logo.src = "./mark.svg";
+    logo.alt = "";
+    logo.width = 80;
+    logo.height = 80;
+    const maintainer = document.createElement("p"), fork = document.createElement("p"), license = document.createElement("p");
+    maintainer.className = fork.className = license.className = "ui-dialog-desc";
+    localizedText(maintainer, "about.forkMaintainer", {});
+    localizedText(fork, "about.forkNotice", {});
+    localizedText(license, "about.license", {});
+    appendLocalized(identity, maintainer, fork, license);
+    appendLocalized(body, logo, identity);
+    const dialog = dialogOf({
+      size: "sm",
+      title: interfaceText("about.title"),
+      titleKey: "about.title",
+      body,
+      actions: [{ label: kitText(t, "common.close"), labelKey: "common.close", labelParams: {}, cancel: true, variant: "ghost" }],
+    });
+    void dialog.showModal();
+  }
   /** Which asset of a Stick Nodes pack to import: its index, or null when the dialog closes. */
   async function chooseSticknodesEntry(entries) {
     const dialog = dialogOf({
@@ -312,6 +336,7 @@ export function createAppDialogs(ctx) {
     },
     "open-recent": showRecentFiles,
     performance: showPerformance,
+    about: showAbout,
   });
   async function chooseRecovery(records, discard) {
     const body=document.createDocumentFragment(), label=document.createElement('label'), select=document.createElement('select'), wrap=document.createElement('span');
@@ -320,7 +345,7 @@ export function createAppDialogs(ctx) {
     for(const record of records){
       const option=document.createElement('option'),name=document.createTextNode(record.name || ''),time=document.createTextNode('');option.value=record.id;
       if(!record.name)localizedText(name,'app.untitled');
-      localizedText(time,'supportMessages.date',{date:{format:'date',value:record.savedAt,options:{dateStyle:'short',timeStyle:'short'}}});
+      localizedText(time,'appDialogs.savedAt',{date:{format:'date',value:record.savedAt,options:{dateStyle:'short',timeStyle:'short'}}});
       appendLocalized(option,name,' · ',time);appendLocalized(select,option);
     }
     wrap.prepend(select);appendLocalized(label, wrap);appendLocalized(body, label, translatedElement(paragraph(interfaceText("appDialogs.restoreOpensThisCopyAsAnEditedProject")), "appDialogs.restoreOpensThisCopyAsAnEditedProject", {}));

@@ -1,24 +1,31 @@
-# StykAnimate logos
+# Branding assets
 
-These SVGs are the source of the app's icons. The mark is drawn as smooth vector paths,
-and the wordmark uses outlined Inter lettering (its OFL notice is in `Inter-LICENSE.txt`).
-They contain no embedded images, fonts, scripts or network dependencies.
+The SVGs in `svg/` are clearly marked temporary TwigAnimate placeholders, not a
+finished product logo. Replace them with independently created TwigAnimate artwork
+before distributing branded builds. No upstream logo is included.
 
-- `symbol-blue`, `symbol-black`, `symbol-white`: the standalone mark on a transparent background.
-- `horizontal-primary`, `horizontal-black`, `horizontal-white`: wide lockups.
-- `stacked-primary`, `stacked-black`, `stacked-white`: the mark centred above the wordmark.
-- `app-icon-blue`, `app-icon-black`, `app-icon-light`: rounded-square app icons.
-
-White variants are meant for dark surfaces. Primary colour: #0D99FF. Primary wordmark: #111418.
-The light app icon uses #F5F7FA. Use the symbol alone at small sizes; the wordmark is not
-meant to be read at favicon scale. `preview.svg` is a specimen sheet of every variant.
-
-`npm run build:brand` rasterizes `svg/stykanimate-app-icon-blue.svg` into the native
+`npm run build:brand` rasterizes `svg/twiganimate-app-icon.svg` into the native
 PNG/ICO/ICNS files in `desktop/assets`, copies that tile to the favicon `mark.svg`, and copies
-`svg/stykanimate-symbol-blue.svg` to `symbol.svg`. Packaging runs it automatically, and native
-icons keep their alpha outside the rounded corners.
+`svg/twiganimate-symbol.svg` to `symbol.svg`. Replace the source SVGs, then regenerate native
+assets with that command and web icons with `node scripts/build-web-icons.mjs`.
 
-`node scripts/verify-brand-assets.mjs --assets-only` checks transparency and size variants.
-Without the flag it also compares a packaged Windows build's icon resources with the generated ICO.
+The current SVGs intentionally use a plain monogram as a temporary identity.
+The separate font license remains in `Inter-LICENSE.txt`.
 
-The StykAnimate name and logo identify the official project; see "Trademarks" in the root README.
+Before distributing a branded build, replace these source placeholders:
+
+- `svg/twiganimate-app-icon.svg`: square 512×512 app icon artwork; keep its
+  rounded-square background, centered safe-area artwork, and transparent
+  outer corners.
+- `svg/twiganimate-symbol.svg`: standalone 64×64 transparent symbol for the
+  editor header and dialogs.
+- `mark.svg` and `symbol.svg` are generated copies. Do not edit them directly.
+- `desktop/assets/twiganimate.ico` contains 16, 20, 24, 32, 40, 48, 64, 128,
+  and 256px images; `twiganimate.icns` contains 16–1024px representations;
+  `twiganimate.png` is 512×512 and `twiganimate-1024.png` is 1024×1024.
+- `web/icons/icon-192.png` is 192×192; `icon-512.png` and
+  `icon-maskable-512.png` are 512×512; `apple-touch-icon.png` is 180×180.
+
+After replacing the SVGs, run `npm run build:brand` and
+`node scripts/build-web-icons.mjs`. Verify the generated native assets with
+`node scripts/verify-brand-assets.mjs --assets-only`.

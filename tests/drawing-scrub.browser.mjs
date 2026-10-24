@@ -4,13 +4,13 @@ import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 import {decodeDrawingPNGBytes} from '../src/drawing-png.mjs';
-const output=process.env.STYK_DRAWING_SCRUB_ARTIFACTS||'artifacts/drawing-scrub';
+const output=process.env.TWIGANIMATE_DRAWING_SCRUB_ARTIFACTS||'artifacts/drawing-scrub';
 await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true});
 const page=await browser.newPage({viewport:{width:1280,height:900}}),checks=[],errors=[];
 page.on('pageerror',error=>errors.push(error.stack));
-if(process.env.STYK_DRAWING_BASELINE)for(const file of ['drawing-controller.mjs','renderer.mjs'])
- await page.route('**/src/'+file,route=>route.fulfill({contentType:'text/javascript',body:execFileSync('git',['show',process.env.STYK_DRAWING_BASELINE+':src/'+file],{encoding:'utf8'})}));
+if(process.env.TWIGANIMATE_DRAWING_BASELINE)for(const file of ['drawing-controller.mjs','renderer.mjs'])
+ await page.route('**/src/'+file,route=>route.fulfill({contentType:'text/javascript',body:execFileSync('git',['show',process.env.TWIGANIMATE_DRAWING_BASELINE+':src/'+file],{encoding:'utf8'})}));
 const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('PASS',name);};
 async function colors(){
  const {pixels}=await decodeDrawingPNGBytes(await page.locator('#scene').screenshot());let red=0,blue=0;
@@ -31,7 +31,7 @@ async function visible(name,color){
  check(name+' '+JSON.stringify(found),color?found[color]>500&&found[color==='red'?'blue':'red']<10:found.red<10&&found.blue<10);
 }
 try{
- await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>styk?.ready);
+ await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>styk?.ready);
  await page.evaluate(async()=>{
   styk.settingsUI.commit({autosaveSeconds:0,onionCount:0});
   const {Editor}=await import('/src/editor.mjs'),{emptyDocument,createObject,createFrame}=await import('/src/demo.mjs'),{movieclipFigure}=await import('/src/movieclips.mjs');

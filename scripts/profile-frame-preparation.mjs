@@ -8,9 +8,9 @@ import path from 'node:path';
 const source = process.argv[2];
 if (!source) throw new Error('Provide a PIV project and optional display ticks.');
 const ticks = process.argv.slice(3).map(Number);
-const output = path.resolve('artifacts/frame-preparation', process.env.STYK_PROBE_LABEL || 'current');
+const output = path.resolve('artifacts/frame-preparation', process.env.TWIGANIMATE_PROBE_LABEL || 'current');
 await mkdir(output, {recursive:true});
-const app = await electron.launch({args:[process.cwd()], env:{...process.env, STYK_USER_DATA_DIR:path.join(output,'profile')}});
+const app = await electron.launch({args:[process.cwd()], env:{...process.env, TWIGANIMATE_USER_DATA_DIR:path.join(output,'profile')}});
 try {
   const page = await app.firstWindow();
   const errors = []; page.on('pageerror', error => errors.push(error.message));

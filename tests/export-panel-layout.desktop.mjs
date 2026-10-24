@@ -13,7 +13,7 @@ const app = await electron.launch({
   timeout: 45000,
   env: {
     ...process.env,
-    STYK_USER_DATA_DIR: path.join(out, `profile-${Date.now()}`),
+    TWIGANIMATE_USER_DATA_DIR: path.join(out, `profile-${Date.now()}`),
   },
 });
 const checks = [],

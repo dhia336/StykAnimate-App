@@ -2,8 +2,6 @@ import {UserLibrary} from '../src/user-library.mjs';
 import {interfaceLocalization} from '../src/localization.mjs';
 
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
-const asset = (id, name, category) => ({id, name, category, kind: 'figure', author: 'Kim', tags: ['paper'], description: '', sha256: id});
-
 /** Real DOM and the production card/render methods. Run in an initialized app
  * page via T3 or a browser test; this measures registration and writes, not time. */
 export async function verifyUserLibraryRender({localization = globalThis.styk?.localization} = {}) {
@@ -15,8 +13,8 @@ export async function verifyUserLibraryRender({localization = globalThis.styk?.l
   document.body.append(host);
   const observed = new Set(); let disconnects = 0;
   const library = Object.assign(Object.create(UserLibrary.prototype), {
-    source: 'mine', folder: '', entries: [{path: 'Characters', name: 'Characters', kind: 'folder'}, ...Array.from({length: 199}, (_, index) => ({path: `Asset-${index}.stkz`, name: `Asset ${index}`, kind: index % 2 ? 'set' : 'figure', modified: 1}))],
-    selected: 'Asset-40.stkz', publicSelected: null, publicCatalog: null, publicState: 'ready', publicGeneration: 0, generation: 1,
+    folder: '', entries: [{path: 'Characters', name: 'Characters', kind: 'folder'}, ...Array.from({length: 199}, (_, index) => ({path: `Asset-${index}.stkz`, name: `Asset ${index}`, kind: index % 2 ? 'set' : 'figure', modified: 1}))],
+    selected: 'Asset-40.stkz', generation: 1,
     input: host.querySelector('input'), filterValue: 'all', container: host, grid: host.querySelector('.library-grid'), empty: host.querySelector('.library-empty'),
     editor: {selectedObjects: []}, roots: [], propertySave: null, busy: false, menu: null, thumbnails: new Map(),
     hoverPreview: {stop() {}}, observer: {observe(card) {observed.add(card);}, disconnect() {disconnects++; observed.clear();}},
@@ -57,29 +55,13 @@ export async function verifyUserLibraryRender({localization = globalThis.styk?.l
     assert(library.cards.length === 1 && library.cardFor('Asset-40.stkz') === null && library.cards[0].tabIndex === 0, 'Filtering must replace card indexes and preserve one tab stop.');
     pass('filtering discards obsolete thumbnail work and replaces card indexes');
 
-    library.input.value = ''; library.source = 'public'; library.publicSelected = 'fan';
-    library.publicCatalog = {categories: [{id: 'effects', name: 'Effects'}, {id: 'props', name: 'Props'}], items: [asset('fan', 'Folding fan', 'props'), asset('box', 'Box', 'effects'), asset('crane', 'Crane', 'props')]};
-    const beforePublic = localization.stats.applications; library.render();
-    assert(localization.stats.applications - beforePublic === 1, 'A grouped catalogue must register translations once.');
-    assert([...library.grid.querySelectorAll('.library-group-label > span:first-child')].map(node => node.textContent).join('|') === 'Effects|Props', 'Category order and headers must remain intact.');
-    assert([...library.grid.querySelectorAll('.library-group-count')].map(node => node.textContent).join('|') === '1|2', 'Category counts must remain intact.');
-    assert(library.cards.map(card => library.keyOf(card)).join('|') === 'box|fan|crane', 'Grouped card and keyboard order must remain intact.');
-    assert(library.assetFor(library.cardFor('fan')) === library.visibleItems().find(item => item.id === 'fan'), 'Dragging and filtering must share the same normalized asset.');
-    assert(library.neighbour(library.cardFor('fan'), 'ArrowLeft') === library.cardFor('box') && library.neighbour(library.cardFor('fan'), 'End') === library.cardFor('crane'), 'Horizontal and endpoint navigation must follow grouped order.');
-    pass('public groups, counts, normalized assets and keyboard order remain intact');
-
-    const retained = library.cardFor('fan'); await localization.setLocale('it');
-    assert(retained === library.cardFor('fan') && retained.querySelector('.library-kind span').textContent === interfaceLocalization.t('userLibrary.figure'), 'Inserted card captions must remain registered for language changes.');
-    assert(retained.getAttribute('aria-label') === interfaceLocalization.t('userLibrary.assetLabel', {name: 'Folding fan', kind: {messageKey: 'userLibrary.figure'}}), 'Inserted ARIA captions must follow language changes.');
+    library.input.value = '';
+    const retained = library.cardFor('Asset-41.stkz'); await localization.setLocale('it');
+    assert(retained === library.cardFor('Asset-41.stkz') && retained.querySelector('.library-kind span').textContent === interfaceLocalization.t('userLibrary.figure'), 'Inserted card captions must remain registered for language changes.');
+    assert(retained.getAttribute('aria-label') === interfaceLocalization.t('userLibrary.assetLabel', {name: 'Asset 41', kind: {messageKey: 'userLibrary.figure'}}), 'Inserted ARIA captions must follow language changes.');
     pass('retained card captions and ARIA follow language changes');
 
-    library.publicState = 'loading'; library.render();
-    assert(library.grid.querySelectorAll('.is-skeleton').length === 6 && library.grid.getAttribute('aria-busy') === 'true' && library.cards.length === 0 && observed.size === 0, 'Loading must clear rendered card indexes and observers.');
-    library.publicState = 'ready'; library.publicCatalog = {categories: [{id: 'props', name: 'Props'}], items: [asset('crane', 'Paper crane', 'props')]}; library.render();
-    assert(library.cardFor('fan') === null && library.publicSelected === null && library.cardFor('crane').tabIndex === 0, 'Catalogue replacement must clear a removed selection and restore the tab stop.');
-    pass('loading and catalogue replacement clear stale selection and observers');
-
-    library.source = 'mine'; library.entries = [{path: 'Old.stkz', name: 'Old', kind: 'figure', modified: 1}]; library.input.value = 'old'; library.render();
+    library.entries = [{path: 'Old.stkz', name: 'Old', kind: 'figure', modified: 1}]; library.input.value = 'old'; library.render();
     library.entries[0].path = 'New.stkz'; library.entries[0].name = 'New';
     library.desktop.listLibrary = async () => ({path: '', root: 'Library', entries: library.entries});
     await library.refresh('');
@@ -87,7 +69,7 @@ export async function verifyUserLibraryRender({localization = globalThis.styk?.l
     library.input.value = 'new'; library.render();
     assert(library.cardFor('New.stkz')?.tabIndex === 0 && library.cardFor('Old.stkz') === null, 'A renamed local asset must use its new indexed key.');
     pass('local refresh invalidates reused listing records, names and search text');
-    return {checks, disconnects, localCards: 200, publicCards: 3};
+    return {checks, disconnects, localCards: 200};
   } finally {
     mutations.disconnect(); library.observer.disconnect(); host.remove(); localization.prune();
     await localization.setLocale(locale); if (focused?.isConnected) focused.focus({preventScroll: true});

@@ -11,7 +11,7 @@ try {
     const page=await browser.newPage({viewport:{width:1440,height:960}}),errors=[];
     page.on('pageerror',error=>errors.push(error.message));
     await page.route('**/benchmark-fixture.mjs',route=>route.fulfill({contentType:'text/javascript',body:fixture}));
-    await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+    await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
     console.log('BROWSER',config.name);
     await page.evaluate(async config=>{
       const {createPerformanceEditor}=await import('/benchmark-fixture.mjs');

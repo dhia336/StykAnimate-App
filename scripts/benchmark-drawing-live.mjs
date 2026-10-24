@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import os from 'node:os';
 import {createHash} from 'node:crypto';
 
-const run=promisify(execFile),baseline=process.env.STYK_LIVE_BASELINE||'2776f60',output=process.env.STYK_LIVE_BENCHMARK||'artifacts/drawing-preview-progress',runs=[];
+const run=promisify(execFile),baseline=process.env.TWIGANIMATE_LIVE_BASELINE||'2776f60',output=process.env.TWIGANIMATE_LIVE_BENCHMARK||'artifacts/drawing-preview-progress',runs=[];
 const files=['src/drawing-preview-cache.mjs','src/drawing-worker-operations.mjs','src/renderer.mjs','tests/drawing-live.browser.mjs'];
 const fingerprint=async()=>Object.fromEntries(await Promise.all(files.map(async file=>[file,createHash('sha256').update((await readFile(file,'utf8')).replaceAll('\r\n','\n')).digest('hex')])));
 const sourceSha256NormalizedLF=await fingerprint();
@@ -13,7 +13,7 @@ await mkdir(output,{recursive:true});
 for(const [software,delay] of [[false,0],[false,30],[true,30]])for(let pass=0;pass<3;pass++)for(const revision of pass%2?['working-tree',baseline]:[baseline,'working-tree']){
  const directory=`${output}/${software?'software':'gpu'}-delay-${delay}-${revision}-${pass}`;
  let failure=null;
- try{await run(process.execPath,['tests/drawing-live.browser.mjs'],{env:{...process.env,STYK_LIVE_ARTIFACTS:directory,STYK_LIVE_BASELINE:revision==='working-tree'?'':revision,STYK_PREVIEW_DELAY_MS:String(delay),STYK_LIVE_SOFTWARE:software?'1':'0'},windowsHide:true,maxBuffer:4*1024*1024});}
+ try{await run(process.execPath,['tests/drawing-live.browser.mjs'],{env:{...process.env,TWIGANIMATE_LIVE_ARTIFACTS:directory,TWIGANIMATE_LIVE_BASELINE:revision==='working-tree'?'':revision,TWIGANIMATE_PREVIEW_DELAY_MS:String(delay),TWIGANIMATE_LIVE_SOFTWARE:software?'1':'0'},windowsHide:true,maxBuffer:4*1024*1024});}
  catch(error){
   if(revision==='working-tree')throw error;
   failure=error.stderr?.match(/AssertionError \[ERR_ASSERTION\]: ([^\r\n]+)/)?.[1];

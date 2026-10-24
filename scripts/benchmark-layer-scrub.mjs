@@ -17,4 +17,4 @@ for(const mode of ['native','layers','edited-layers']){
   results.push({mode,seek:measure(false),geometry:measure(true)});
 }
 console.log(JSON.stringify(results,null,2));
-if(process.env.STYK_BENCH_OUT)writeFileSync(process.env.STYK_BENCH_OUT,JSON.stringify(results,null,2));
+if(process.env.TWIGANIMATE_BENCH_OUT)writeFileSync(process.env.TWIGANIMATE_BENCH_OUT,JSON.stringify(results,null,2));

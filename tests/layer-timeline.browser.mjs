@@ -4,7 +4,7 @@ const browser=await chromium.launch({channel:'chrome',headless:true});
 const page=await browser.newPage({viewport:{width:1440,height:960}}),errors=[];
 page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(30000);
 try{
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(async()=>{const {emptyDocument,createFrame,createObject}=await import('/src/demo.mjs');const report=emptyDocument();report.keyframes=[0,60].map(x=>createFrame([createObject(report.figure_types[0],1,200+x,250)],12));styk.settingsUI.commit({timelineMode:'advanced'});styk.editor.load(report);styk.editor.sheetSetEasing(['layer-1'],0,12,{interpolation:'constant'});styk.fit();});
   const grid=page.getByRole('grid',{name:'Layer frames'});
   const cell=async(tick,row=0)=>{const box=await grid.boundingBox(),{y,step,offset}=await page.evaluate(row=>{const t=styk.timeline;return {y:t.rowY(row+2)+t.rowSize(row+2)/2,step:t.pxPerTick,offset:t._offsetX()};},row);return {x:box.x+(tick+.5)*step-offset,y:box.y+y};};

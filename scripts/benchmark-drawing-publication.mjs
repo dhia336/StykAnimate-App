@@ -4,7 +4,7 @@ import {execFileSync} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import os from 'node:os';
 
-const baseline=process.env.STYK_PUBLICATION_BASELINE,output=process.env.STYK_PUBLICATION_ARTIFACTS||'artifacts/drawing-publication';
+const baseline=process.env.TWIGANIMATE_PUBLICATION_BASELINE,output=process.env.TWIGANIMATE_PUBLICATION_ARTIFACTS||'artifacts/drawing-publication';
 const revisions=[baseline,'working-tree'].filter(Boolean),runs=[];await mkdir(output,{recursive:true});
 const sources=new Map();if(baseline)for(const name of ['drawing-tiles','drawing-resources','drawing-tile-codec','drawing-worker','drawing-history','drawing-controller','editor-drawing','editor'])sources.set(name,execFileSync('git',['show',`${baseline}:src/${name}.mjs`],{encoding:'utf8'}));
 if(baseline&&execFileSync('git',['ls-tree','--name-only',baseline,'src/drawing-preparation.mjs'],{encoding:'utf8'}).trim())sources.set('drawing-preparation',execFileSync('git',['show',`${baseline}:src/drawing-preparation.mjs`],{encoding:'utf8'}));
@@ -16,7 +16,7 @@ for(const kind of ['opaque8k','textured4k'])for(let pass=0;pass<3;pass++)for(con
     await context.route('**/*',route=>route.continue());
     if(revision!=='working-tree')for(const [name,body] of sources)await context.route(`**/src/${name}.mjs`,route=>route.fulfill({contentType:'text/javascript',body}));
     const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
-    await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);await page.locator('[data-workspace-mode="draw"]').click();
+    await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);await page.locator('[data-workspace-mode="draw"]').click();
     const sample=await page.evaluate(async kind=>{
       const {emptyDocument}=await import('/src/demo.mjs'),{drawingMetadata}=await import('/src/drawing-model.mjs');
       const e=styk.editor,d=styk.drawing;e.load(emptyDocument());e.createDrawingLayer();styk.state.settings.autosaveSeconds=0;

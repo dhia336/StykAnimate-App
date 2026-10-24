@@ -2,8 +2,8 @@
 // production headers, and use it the way a person would with no server behind it.
 //
 //   node tests/web-build.browser.mjs            build into a temp directory first
-//   STYK_WEB_DIR=build/web node tests/...       test an existing build
-//   STYK_WEB_URL=https://... node tests/...     test a running site, such as `wrangler dev`
+//   TWIGANIMATE_WEB_DIR=build/web node tests/...       test an existing build
+//   TWIGANIMATE_WEB_URL=https://... node tests/...     test a running site, such as `wrangler dev`
 //                                               or a deployment (see docs/WEB.md)
 import assert from 'node:assert/strict';
 import { mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises';
@@ -15,8 +15,8 @@ import { buildWeb } from '../scripts/build-web.mjs';
 import { startWebServer } from '../scripts/serve-web.mjs';
 
 const temp = await mkdtemp(path.join(os.tmpdir(), 'styk-web-'));
-const remote = process.env.STYK_WEB_URL;
-const existing = process.env.STYK_WEB_DIR && path.resolve(process.env.STYK_WEB_DIR);
+const remote = process.env.TWIGANIMATE_WEB_URL;
+const existing = process.env.TWIGANIMATE_WEB_DIR && path.resolve(process.env.TWIGANIMATE_WEB_DIR);
 const site = remote
   ? { origin: remote.replace(/\/$/, ''), close: async () => {} }
   : await startWebServer({ root: existing ?? (await buildWeb({ output: path.join(temp, 'site') })).output });
@@ -154,7 +154,7 @@ try {
     }, [bytes.toString('base64'), place.start]);
   };
   const aacSupported = await page.evaluate(async () => (await import('/src/audio-encode.mjs')).audioEncoderSupported('aac'));
-  if (process.env.STYK_REQUIRE_AAC === '1') check('This release runner can verify real AAC encoding', aacSupported);
+  if (process.env.TWIGANIMATE_REQUIRE_AAC === '1') check('This release runner can verify real AAC encoding', aacSupported);
   if (aacSupported) {
     const withMp4 = await heard('export-mp4', 'sound.mp4');
     check('An MP4 carries the project\'s sound (AAC): the same pitch, level and stereo layout', Math.abs(withMp4.hertz - 440) < 6 && Math.abs(withMp4.rms - 0.354) < 0.05 && withMp4.channels === 2);

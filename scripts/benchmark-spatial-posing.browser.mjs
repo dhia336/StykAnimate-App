@@ -1,12 +1,12 @@
 // Usage: node scripts/benchmark-spatial-posing.browser.mjs <served-document.json> <IK-joint-name>
-// The document is loaded locally through STYK_URL; no project data leaves the app.
+// The document is loaded locally through TWIGANIMATE_URL; no project data leaves the app.
 import {chromium} from '../tests/support/playwright.mjs';
 const [fixture, joint] = process.argv.slice(2);
 if (!fixture || !joint) throw new Error('Provide a served JSON document path and the name of its IK joint.');
 const browser = await chromium.launch({channel:'chrome', headless:true});
 try {
   const page = await browser.newPage();
-  await page.goto(`${process.env.STYK_URL ?? 'http://127.0.0.1:47861'}/api/health`);
+  await page.goto(`${process.env.TWIGANIMATE_URL ?? 'http://127.0.0.1:47861'}/api/health`);
   const result = await page.evaluate(async ({fixture, joint}) => {
     const {Editor} = await import('/src/editor.mjs');
     const {drawGeometry, buildGeometry} = await import('/src/pivot/geometry.mjs');

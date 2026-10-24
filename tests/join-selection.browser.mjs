@@ -33,7 +33,7 @@ const click = async (uid, index, options) => {const p = await point(uid, index);
 const menu = () => page.locator('#menu [data-action="join-figure"]');
 const joined = () => page.evaluate(() => styk.editor.selectionFrame.objects.find(o => o.unique_id === 707).join);
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
   for (const mode of ['advanced', 'simple']) {
     await fixture(mode);
     await click(707, 6); await page.keyboard.press('j'); await settle();

@@ -3,8 +3,8 @@ import {chromium} from '../tests/support/playwright.mjs';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 
-const origin=process.env.STYK_URL||'http://127.0.0.1:47831';
-const candidate=process.env.STYK_COMPAT_CANDIDATE&&path.resolve(process.env.STYK_COMPAT_CANDIDATE);
+const origin=process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831';
+const candidate=process.env.TWIGANIMATE_COMPAT_CANDIDATE&&path.resolve(process.env.TWIGANIMATE_COMPAT_CANDIDATE);
 const mime={'.mjs':'text/javascript','.js':'text/javascript','.css':'text/css','.json':'application/json',
   '.png':'image/png','.svg':'image/svg+xml','.woff2':'font/woff2','.wasm':'application/wasm'};
 const fixtures={
@@ -41,7 +41,7 @@ try{
     await page.exposeFunction('compatibilityProgress',detail=>console.log(JSON.stringify({name,...(typeof detail==='string'?{phase:detail}:detail)})));
     const result=await page.evaluate(async([file,method])=>(await import('/tests/'+file))[method]({onProgress:detail=>window.compatibilityProgress(detail)}),fixtures[name]);
     if(errors.length)throw Error(`${name}: ${errors.join('\n')}`);
-    const output=path.resolve(process.env.STYK_COMPAT_ARTIFACTS||'artifacts/compatibility-improvements');
+    const output=path.resolve(process.env.TWIGANIMATE_COMPAT_ARTIFACTS||'artifacts/compatibility-improvements');
     await mkdir(output,{recursive:true});await writeFile(path.join(output,`${name}-final.json`),JSON.stringify({result,errors},null,2));
     if(name==='app')await page.screenshot({path:path.join(output,'app-final.png')});
     console.log(JSON.stringify({name,result,errors}));await page.close();

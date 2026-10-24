@@ -1,4 +1,4 @@
-/* StykAnimate editor styles: the only stylesheet index.html links.
+/* TwigAnimate editor styles: the only stylesheet index.html links.
  *
  * Cascade layers, lowest priority first. For normal declarations every layer
  * after `legacy` beats it whatever the specificity; for !important the order
@@ -6,9 +6,8 @@
  *
  * legacy  The stylesheets that predate the layers, moved unchanged into
  *         legacy/ and imported below in their previous cascade order. The
- *         <style> blocks that modules inject and the lazy support sheets
- *         (support-bridge.css) join this layer after them, so they still win
- *         on order exactly as before. See docs/DESIGN-SYSTEM.md.
+ *         <style> blocks that modules inject join this layer after them, so
+ *         they still win on order exactly as before. See docs/DESIGN-SYSTEM.md.
  *
  * Every import is a request before first paint: add files sparingly.
  */
@@ -110,5 +109,4 @@
 @import url("./features/view-options.css");
 @import url("./features/settings.css");
 @import url("./features/home.css");  /* Home and the tutorials' strip, mark and pointer (docs/HOME.md, docs/TUTORIALS.md) */
-@import url("./features/support-desktop.css");  /* the Feedback shell over the lazy support-bridge.css */
 @import url("./features/touch.css");  /* the touch interface's components (docs/TOUCH.md) */

@@ -10,7 +10,7 @@ const settle=async page=>{
   await page.waitForFunction(()=>!styk.state.editablePreparing&&styk.state.renderer.last?.report===styk.editor.report);
 };
 try{
-  for(const page of [a,b]){await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);}
+  for(const page of [a,b]){await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);}
   for(const [from,to] of [[4,5],[5,4],[5,5]]){
     const packet=await a.evaluate(async version=>{
       const {emptyDocument,createFrame,createObject}=await import('/src/demo.mjs');

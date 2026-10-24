@@ -12,7 +12,7 @@
   .titlebar, .shell-tabs, :where(#inspector), .inspector-head, .inspector-foot,
   .shell-panel-head, .library-body, .timeline-head, .sheet-labels,
   .ui-dialog, dialog, .ui-menu, :where(#menu), .ui-popover, .ui-tooltip,
-  .ui-toast, .styk-settings, .support-center {
+  .ui-toast, .styk-settings {
     direction: var(--interface-direction);
   }
   .ui-dialog-desc, .ui-dialog-row, .ui-row-label, .ui-field-label,

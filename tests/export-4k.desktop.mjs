@@ -8,7 +8,7 @@ import {chooseExport, exportDialogClosed} from './helpers/export-dialog.mjs';
 const root = process.cwd(), output = path.resolve('artifacts/export-4k');
 await mkdir(output, {recursive: true});
 const app = await electron.launch({args: [root], cwd: root, timeout: 45000,
-  env: {...process.env, STYK_USER_DATA_DIR: path.join(output, `profile-${Date.now()}`)}});
+  env: {...process.env, TWIGANIMATE_USER_DATA_DIR: path.join(output, `profile-${Date.now()}`)}});
 const errors = [], runs = [];
 try {
   const page = await app.firstWindow(); page.on('pageerror', error => errors.push(error.message));
@@ -19,10 +19,10 @@ try {
     dismiss(); new MutationObserver(dismiss).observe(document.body, {subtree: true, childList: true, attributes: true, attributeFilter: ['open']});
   });
   await app.evaluate(({ipcMain}) => {
-    const original = ipcMain._invokeHandlers.get('styk:video-begin');
+    const original = ipcMain._invokeHandlers.get('twiganimate:video-begin');
     globalThis.exportQualityRequests = [];
-    ipcMain.removeHandler('styk:video-begin');
-    ipcMain.handle('styk:video-begin', (event, options) => {exportQualityRequests.push({...options}); return original(event, options);});
+    ipcMain.removeHandler('twiganimate:video-begin');
+    ipcMain.handle('twiganimate:video-begin', (event, options) => {exportQualityRequests.push({...options}); return original(event, options);});
   });
   await page.evaluate(async () => {
     const {samplingFixture} = await import('/tests/export-sampling-fixture.mjs');

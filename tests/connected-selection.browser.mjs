@@ -5,7 +5,7 @@ const browser = await chromium.launch({channel:'chrome', headless:true});
 const page = await browser.newPage({viewport:{width:1560,height:1000}});
 const errors=[]; page.on('pageerror', error=>errors.push(error.message));
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831');
   await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(async()=>{
     const {emptyDocument,defaultFigure,createObject,createFrame}=await import('/src/demo.mjs');

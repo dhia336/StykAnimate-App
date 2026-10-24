@@ -3,11 +3,11 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 const root=process.cwd(),output=path.join(root,'artifacts',`editable-app-${Date.now()}`);await mkdir(output,{recursive:true});
-const browser=process.env.STYK_BROWSER_URL?await chromium.launch({channel:'chrome',headless:true}):null;
-const app=browser?null:await electron.launch({args:[root],cwd:root,env:{...process.env,STYK_USER_DATA_DIR:path.join(output,'profile')}});
+const browser=process.env.TWIGANIMATE_BROWSER_URL?await chromium.launch({channel:'chrome',headless:true}):null;
+const app=browser?null:await electron.launch({args:[root],cwd:root,env:{...process.env,TWIGANIMATE_USER_DATA_DIR:path.join(output,'profile')}});
 const checks=[],errors=[];let page;
 try{
-  page=browser?await browser.newPage():await app.firstWindow();if(browser)await page.goto(process.env.STYK_BROWSER_URL);
+  page=browser?await browser.newPage():await app.firstWindow();if(browser)await page.goto(process.env.TWIGANIMATE_BROWSER_URL);
   if(app)await app.evaluate(({BrowserWindow})=>{const w=BrowserWindow.getAllWindows()[0];w.setIgnoreMouseEvents(true);w.setFocusable(false);w.webContents.setBackgroundThrottling(false);});
   page.on('pageerror',error=>errors.push(error.message));await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(async()=>{

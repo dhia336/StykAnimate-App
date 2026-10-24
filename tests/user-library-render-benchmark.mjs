@@ -29,14 +29,12 @@ export async function benchmarkUserLibraryRender({
   host.style.cssText = 'position:fixed;left:0;top:0;width:360px;height:700px;z-index:2147483000;display:flex;flex-direction:column;background:var(--surface);color:var(--text-1);font:var(--type-ui);';
   host.innerHTML = '<div class="library-head"><nav></nav><input type="search"><span class="library-count"></span></div><div class="library-content"><div class="library-grid" role="listbox"></div><div class="library-empty" hidden></div></div>';
   const entries = Array.from({length: count}, (_, index) => ({path: `Asset-${index}.stkz`, name: `Asset ${index}`, kind: index % 7 === 0 ? 'set' : 'figure', modified: 1}));
-  const categories = [{id: 'effects', name: 'Effects'}, {id: 'props', name: 'Props'}, {id: 'characters', name: 'Characters'}];
-  const publicCatalog = {categories, items: Array.from({length: count}, (_, index) => ({id: `asset${String(index).padStart(5, '0')}`, name: `Asset ${index}`, kind: index % 7 === 0 ? 'movieclip' : 'figure', category: categories[index % categories.length].id, description: 'Editable artwork', author: 'Kim', tags: ['paper', 'shared'], sha256: String(index)}))};
   const owners = Object.fromEntries(Object.entries(classes).map(([name, Library]) => [name, Object.assign(Object.create(Library.prototype), {
-    source: 'mine', folder: '', entries, publicCatalog, publicState: 'ready', filterValue: 'all', selected: entries[Math.floor(count / 2)].path, publicSelected: publicCatalog.items[Math.floor(count / 2)].id,
+    source: 'mine', folder: '', entries, filterValue: 'all', selected: entries[Math.floor(count / 2)].path,
     input: host.querySelector('input'), container: host, grid: host.querySelector('.library-grid'), empty: host.querySelector('.library-empty'), editor: {selectedObjects: []},
     generation: 1, busy: false, menu: null, hoverPreview: {stop() {}}, observer: {observe() {}, disconnect() {}}, cards: [], cardsByKey: new Map(), selectedCard: null, tabStopCard: null,
   })]));
-  const scenarios = [{name: 'mine-all', source: 'mine', query: ''}, {name: 'public-all', source: 'public', query: ''}, {name: 'public-cached-search', source: 'public', query: 'paper'}];
+  const scenarios = [{name: 'library-all', source: 'mine', query: ''}, {name: 'library-search', source: 'mine', query: 'paper'}];
   const rows = [], locale = localization.localization.locale;
   document.body.append(host);
   try {

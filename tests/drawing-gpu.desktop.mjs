@@ -9,7 +9,7 @@ import path from 'node:path';
 const root=path.resolve('.'),out=path.join(root,'artifacts/drawing-gpu'),profile=path.join(out,`desktop-profile-${Date.now()}`),checks=[];
 await mkdir(profile,{recursive:true});
 await writeFile(path.join(profile,'telemetry-state.json'),JSON.stringify({decided:true,consent:{analytics:false,diagnostics:false,policyVersion:'2026-09-10',updatedAt:Date.now()}}));
-const env={...process.env,STYK_USER_DATA_DIR:profile,STYK_LIBRARY_DIR:path.join(profile,'library')};delete env.ELECTRON_RUN_AS_NODE;
+const env={...process.env,TWIGANIMATE_USER_DATA_DIR:profile,TWIGANIMATE_LIBRARY_DIR:path.join(profile,'library')};delete env.ELECTRON_RUN_AS_NODE;
 const check=(name,value,detail)=>{assert.ok(value,`${name}${detail?` ${JSON.stringify(detail)}`:''}`);checks.push(name);console.log('PASS',name);};
 const app=await electron.launch({args:[root],cwd:root,env,timeout:45000});
 let result;

@@ -3,13 +3,13 @@
  * tests/fixtures/ui-overlays.html, then wired into the app (app.mjs: the
  * menubar and every #menu menu, messages, the hotkey gate).
  * Serve the repository (node scripts/serve.mjs --port 47832) and run
- * `node tests/overlays.browser.mjs`; STYK_URL overrides the address.
+ * `node tests/overlays.browser.mjs`; TWIGANIMATE_URL overrides the address.
  */
 import {chromium} from './support/playwright.mjs';
 import {openAppMenu, closeAppMenus} from './support/app-menu.mjs';
 import assert from 'node:assert/strict';
 
-const base = process.env.STYK_URL || 'http://127.0.0.1:47832';
+const base = process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47832';
 const url = `${base}/tests/fixtures/ui-overlays.html`;
 const browser = await chromium.launch({channel: 'chrome', headless: true});
 const page = await browser.newPage({viewport: {width: 1280, height: 720}});

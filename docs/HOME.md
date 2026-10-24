@@ -25,7 +25,7 @@ as soon as a project comes to the front or a command works on the animation. The
 
 - At startup Home shows unless the launch says otherwise or the person turned it off (Settings › Interface ›
   Show Home when the app starts, `showHomeOnStartup`). The desktop decides `startupView` in the main process:
-  `'editor'` when the window opens with a file (Home would only flash before it), or what `STYK_STARTUP_VIEW`
+  `'editor'` when the window opens with a file (Home would only flash before it), or what `TWIGANIMATE_STARTUP_VIEW`
   says. In a browser `window.stykStartupView` does the same. Tests and scripts start in the editor
   (`tests/support/playwright.mjs` sets both); a test of Home asks for it.
 - Home leaves for the editor when: the person presses Back to {project}, Escape, the Home button again, a

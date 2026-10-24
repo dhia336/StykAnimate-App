@@ -10,8 +10,8 @@ const root = path.resolve(import.meta.dirname, ".."),
 const out = path.join(root, "artifacts", "workspace-release-ux");
 await mkdir(out, { recursive: true });
 const executablePath = packaged
-  ? process.env.STYK_PACKAGED_EXECUTABLE ||
-    path.join(root, "release", "win-unpacked", "StykAnimate.exe")
+  ? process.env.TWIGANIMATE_PACKAGED_EXECUTABLE ||
+    path.join(root, "release", "win-unpacked", "TwigAnimate.exe")
   : undefined;
 const sourceFiles = [
   "index.html",
@@ -72,7 +72,7 @@ try {
     timeout: 45000,
     env: {
       ...process.env,
-      STYK_USER_DATA_DIR: path.join(out, `profile-${Date.now()}`),
+      TWIGANIMATE_USER_DATA_DIR: path.join(out, `profile-${Date.now()}`),
     },
   });
   page = await app.firstWindow();

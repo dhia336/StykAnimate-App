@@ -2,14 +2,14 @@ import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
-const output=process.env.STYK_LIFECYCLE_ARTIFACTS||'artifacts/drawing-preview-lifecycle',baseline=process.env.STYK_LIFECYCLE_BASELINE,checks=[],errors=[],observations=[];
+const output=process.env.TWIGANIMATE_LIFECYCLE_ARTIFACTS||'artifacts/drawing-preview-lifecycle',baseline=process.env.TWIGANIMATE_LIFECYCLE_BASELINE,checks=[],errors=[],observations=[];
 await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage({viewport:{width:1440,height:1000}});
 page.on('pageerror',error=>errors.push(error.message));const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('PASS',name);};
 try{
  await page.context().route('**/*',route=>route.continue());
  if(baseline){const body=execFileSync('git',['show',`${baseline}:src/renderer.mjs`],{encoding:'utf8'});await page.context().route('**/src/renderer.mjs',route=>route.fulfill({contentType:'text/javascript',body}));}
- await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);await page.locator('[data-workspace-mode="draw"]').click();
+ await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);await page.locator('[data-workspace-mode="draw"]').click();
  await page.evaluate(()=>{
   styk.state.settings.autosaveSeconds=0;
   window.probeDrawing=()=>new Promise(resolve=>{

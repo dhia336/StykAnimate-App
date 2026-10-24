@@ -10,7 +10,7 @@ try {
   for(const failure of ['transient','requestDevice','initialize']) {
     const page=await browser.newPage({viewport:{width:1280,height:850}}),errors=[];
     page.on('pageerror',e=>errors.push(e.message));
-    await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');
+    await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');
     await page.waitForFunction(()=>window.styk?.ready);
     await page.evaluate(async()=>{
       for(const dialog of document.querySelectorAll('dialog[open]'))dialog.close();

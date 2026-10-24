@@ -1,7 +1,7 @@
 // The inspector's header in the actual app (src/inspector-header.mjs): the target's name and its one menu, the
 // scope line while Edit together reaches beyond the frame, the selection's quick actions from the command registry,
 // renaming in place, and titled sections that remember being open.
-//   STYK_URL=http://127.0.0.1:47831 node tests/inspector-header.browser.mjs
+//   TWIGANIMATE_URL=http://127.0.0.1:47831 node tests/inspector-header.browser.mjs
 import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 
@@ -13,7 +13,7 @@ const settle = () => page.evaluate(() => new Promise(resolve => requestAnimation
 const name = () => page.locator('[data-slot=inspector-target] .ui-target-text').textContent();
 const quick = () => page.locator('[data-slot=inspector-head] .ui-quick button').evaluateAll(buttons => buttons.map(button => [button.dataset.action, button.textContent.trim()]));
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831');
   await page.waitForFunction(() => window.styk?.ready);
   await page.evaluate(async () => {
     const {createDemo} = await import('/src/demo.mjs');

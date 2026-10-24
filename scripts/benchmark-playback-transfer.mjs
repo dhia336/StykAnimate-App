@@ -95,7 +95,7 @@ if(!isMainThread){
   for(const frame of report.keyframes)for(const object of frame.objects){inventory.objects++;inventory.runtimeSegments+=object.runtime_segments?.length||0;
     for(const key of ['angles','lengths','bends']){const count=object[key]?.length||0;inventory.poseNumbers+=count;if(count>=32)inventory.largePoseNumbers+=count;}}
   let expected;
-  const modes=(process.env.STYK_TRANSFER_MODES||'clone,native,native,clone').split(',');
+  const modes=(process.env.TWIGANIMATE_TRANSFER_MODES||'clone,native,native,clone').split(',');
   assert.ok(modes.every(mode=>['clone','binary','numbers','native'].includes(mode)));
   for(const mode of modes){
     globalThis.gc?.();const workers=[],startup=performance.now();let sequence=0;

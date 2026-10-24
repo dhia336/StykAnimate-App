@@ -27,7 +27,7 @@ test('unexpected filename stems cannot redirect the native clipboard files', () 
 });
 
 test('preparation contains independent run guard and only measured native clipboard routes', () => {
-  assert.match(source, /os\.environ\.get\("STYK_GPU_SLOT"\) != "native-clipboard"/);
+  assert.match(source, /os\.environ\.get\("TWIGANIMATE_GPU_SLOT"\) != "native-clipboard"/);
   assert.match(source, /kind==='copy'\?0xb123ec:0xb125c8/);
   assert.match(source, /decodedClipboardFrames!==op\.count/);
   assert.match(source, /operationToSuccessfulPresentMs=present\?present\.end-op\.start:null/);

@@ -5,7 +5,7 @@
 import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 
-const url=process.env.STYK_URL||'http://127.0.0.1:47839',checks=[],errors=[];
+const url=process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839',checks=[],errors=[];
 const check=(name,value,detail)=>{assert.ok(value,`${name}${detail===undefined?'':` ${JSON.stringify(detail)}`}`);checks.push(name);console.log('PASS',name);};
 const browser=await chromium.launch({channel:'chrome',headless:true});
 try{

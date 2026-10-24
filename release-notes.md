@@ -1,4 +1,4 @@
-# StykAnimate 1.2.5
+# TwigAnimate 1.2.5
 
 Layer folders, camera follow and smoother editing
 
@@ -6,7 +6,6 @@ Layer folders, camera follow and smoother editing
 
 - Layer folders with quick creation and a searchable filter to organize your timeline.
 - Playback ranges to loop a chosen section of your animation.
-- Automatic updates for the Linux AppImage, with a prompt to save your work before restarting.
 - Move a layer up or down from its menu in the timeline.
 - Auto key in the Advanced timeline: turn it on (K) and every change you make adds a keyframe at the playhead.
 - Camera follow: right-click figures and choose Follow with camera to keep them in frame, with smooth catch-up, look ahead, a dead zone and auto zoom. Projects that use it need this version or newer.
@@ -60,8 +59,4 @@ Layer folders, camera follow and smoother editing
 - Quicker preparation for playback and exports.
 - APNG and PNG sequence exports use less memory.
 
-Free to create. Powered by your support.
-
-StykAnimate is completely free. If it helps bring your ideas to life, a donation helps keep development moving. [Support development on Ko-fi](https://ko-fi.com/Q5Q41WY7QC).
-
-Install the **Setup** version for automatic updates. Portable copies require manual updates.
+Automatic updates are not configured for TwigAnimate. Installers must be updated manually.

@@ -45,7 +45,7 @@ async function start(from,to,keys=['Shift']) {
   await page.mouse.move(a.x,a.y);await page.mouse.down();await page.mouse.move(b.x,b.y,{steps:6});await settle();
 }
 try {
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   await setup();let before=await snap(),root=before.joints[0];
   const p=await screen(root);await page.keyboard.down('Shift');await page.mouse.click(p.x,p.y);await page.keyboard.up('Shift');
   check('Shift-click toggles selection without history',await page.evaluate(n=>!styk.editor.selectedUids.size&&styk.editor._undo.length===n,before.history));

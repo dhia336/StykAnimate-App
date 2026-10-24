@@ -1,4 +1,4 @@
-// Offline support for the StykAnimate web build (docs/WEB.md).
+// Offline support for the TwigAnimate web build (docs/WEB.md).
 //
 // The editor is a fixed set of files, so each build has its own cache holding all
 // of them, and every request the page makes is answered from it: the app starts
@@ -15,7 +15,7 @@
 // Entries are [path, hash]; the empty path is the page itself.
 const PRECACHE = {version: 'development', core: [], codec: []};
 
-const PREFIX = 'styk-app-';
+const PREFIX = 'twiganimate-app-';
 const CACHE = PREFIX + PRECACHE.version;
 const SCOPE = self.registration.scope;
 const SCOPE_PATH = new URL(SCOPE).pathname;
@@ -80,8 +80,6 @@ self.addEventListener('activate', event => {
 function keyFor(request, url) {
   if (url.origin !== location.origin || !url.pathname.startsWith(SCOPE_PATH)) return null;
   const relative = url.pathname.slice(SCOPE_PATH.length);
-  // The community library is live data from the site (web/worker.js): never stored, never answered from here.
-  if (relative.startsWith('community/')) return null;
   if (relative === '' || relative === 'index.html') return urlOf('');
   return request.mode === 'navigate' ? null : urlOf(relative);
 }

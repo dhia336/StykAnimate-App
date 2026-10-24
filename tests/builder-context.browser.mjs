@@ -10,7 +10,7 @@ const action=name=>page.locator(`[role="menu"] [data-action="${name}"]:visible`)
 const submenu=name=>page.getByRole('menuitem',{name,exact:true});
 page.on('pageerror',e=>errors.push(e.message));
 try {
- await page.goto(process.env.STYK_URL||'http://127.0.0.1:47841');await page.waitForFunction(()=>window.styk?.ready);
+ await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47841');await page.waitForFunction(()=>window.styk?.ready);
  await page.locator('[data-workspace-mode="rig"]').click();
  await page.locator('.rail-quick [data-action="zoom-selection"]').click();await settle();
  const jointPoint=async index=>page.evaluate(async index=>{

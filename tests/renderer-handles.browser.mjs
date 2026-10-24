@@ -3,7 +3,7 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 const root=process.cwd(),output=path.join(root,'artifacts',`gpu-handle-verification-${Date.now()}`);
 await mkdir(output,{recursive:true});
-const app=await electron.launch({args:[root],cwd:root,env:{...process.env,STYK_USER_DATA_DIR:path.join(output,'profile')}});
+const app=await electron.launch({args:[root],cwd:root,env:{...process.env,TWIGANIMATE_USER_DATA_DIR:path.join(output,'profile')}});
 try{
   const page=await app.firstWindow();await page.waitForFunction(()=>window.styk?.ready);
   const result=await page.evaluate(async()=>{

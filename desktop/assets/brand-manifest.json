@@ -1,7 +1,7 @@
 {
-  "source": "assets/brand/svg/stykanimate-app-icon-blue.svg",
-  "sourceSHA256": "e60af0673b3c359ffe2c2d1a32c1bb524fa90046ecf2360f5620d57083da57cd",
-  "color": "#0D99FF",
+  "source": "assets/brand/svg/twiganimate-app-icon.svg",
+  "sourceSHA256": "e33861c4afeb19bc7b265605cf812dc861a97081fe48a56b6f6411b4b0e638da",
+  "color": "#172B4D",
   "transparentCorners": true,
   "icoSizes": [
     16,

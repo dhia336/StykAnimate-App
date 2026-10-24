@@ -9,20 +9,20 @@ import {startWorkerProfiles,summarizeProfiles} from './worker-profile-support.mj
 
 if(!process.argv[2])throw new Error('Provide a project path and optional artifact label.');
 const source=path.resolve(process.argv[2]),label=process.argv[3]||String(Date.now());
-const root=process.cwd(),output=path.resolve('artifacts/project-playback',label),sourceRoot=path.resolve(process.env.STYK_BASELINE_SOURCES||'src');
+const root=process.cwd(),output=path.resolve('artifacts/project-playback',label),sourceRoot=path.resolve(process.env.TWIGANIMATE_BASELINE_SOURCES||'src');
 await mkdir(output,{recursive:true});
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
 const result={source:{path:source,sha256:digest(await readFile(source))},measuredAt:new Date().toISOString(),
-  environment:{cpu:os.cpus()[0].model,memory:os.totalmem(),node:process.version,dpr:process.env.STYK_PROBE_DPR==='native'?'native':Number(process.env.STYK_PROBE_DPR||1),width:Number(process.env.STYK_PROBE_WIDTH||1600),height:Number(process.env.STYK_PROBE_HEIGHT||1000),memoryHintGiB:Number(process.env.STYK_PROBE_MEMORY_GIB)||null,previewQuality:process.env.STYK_PROBE_QUALITY||'adaptive'},hashes:{},errors:[]};
+  environment:{cpu:os.cpus()[0].model,memory:os.totalmem(),node:process.version,dpr:process.env.TWIGANIMATE_PROBE_DPR==='native'?'native':Number(process.env.TWIGANIMATE_PROBE_DPR||1),width:Number(process.env.TWIGANIMATE_PROBE_WIDTH||1600),height:Number(process.env.TWIGANIMATE_PROBE_HEIGHT||1000),memoryHintGiB:Number(process.env.TWIGANIMATE_PROBE_MEMORY_GIB)||null,previewQuality:process.env.TWIGANIMATE_PROBE_QUALITY||'adaptive'},hashes:{},errors:[]};
 const captured=new Map();
 for(const name of (await readdir(sourceRoot,{recursive:true})).filter(name=>name.endsWith('.mjs'))){
   const bytes=await readFile(path.join(sourceRoot,name));result.hashes[name]=digest(bytes);captured.set(name.replaceAll('\\','/'),bytes);
   const target=path.join(output,'sources',name);await mkdir(path.dirname(target),{recursive:true});await writeFile(target,bytes);
 }
 console.log('OUTPUT',output);
-// STYK_RENDERER=canvas|gpu seeds the disposable profile's Graphics mode setting.
-if(process.env.STYK_RENDERER){result.environment.renderer=process.env.STYK_RENDERER;await mkdir(path.join(output,'profile'),{recursive:true});await writeFile(path.join(output,'profile','editor-settings.json'),JSON.stringify({rendererMode:process.env.STYK_RENDERER}));}
-const app=await electron.launch({executablePath:createRequire(import.meta.url)('electron'),args:[root,...(process.env.STYK_PROBE_WORKER_PROFILE==='1'?['--remote-debugging-port=9339']:[])],cwd:root,timeout:60000,env:{...process.env,STYK_DEBUG:'1',STYK_USER_DATA_DIR:path.join(output,'profile')}});
+// TWIGANIMATE_RENDERER=canvas|gpu seeds the disposable profile's Graphics mode setting.
+if(process.env.TWIGANIMATE_RENDERER){result.environment.renderer=process.env.TWIGANIMATE_RENDERER;await mkdir(path.join(output,'profile'),{recursive:true});await writeFile(path.join(output,'profile','editor-settings.json'),JSON.stringify({rendererMode:process.env.TWIGANIMATE_RENDERER}));}
+const app=await electron.launch({executablePath:createRequire(import.meta.url)('electron'),args:[root,...(process.env.TWIGANIMATE_PROBE_WORKER_PROFILE==='1'?['--remote-debugging-port=9339']:[])],cwd:root,timeout:60000,env:{...process.env,TWIGANIMATE_DEBUG:'1',TWIGANIMATE_USER_DATA_DIR:path.join(output,'profile')}});
 const child=app.process();result.processId=child.pid;
 result.launchLog='';child.stderr.on('data',chunk=>{result.launchLog=(result.launchLog+chunk).slice(-12000);});
 try{
@@ -31,15 +31,15 @@ try{
   await page.context().route('**/src/**',async route=>{
     const name=new URL(route.request().url()).pathname.slice('/src/'.length);let body=captured.get(name);
     if(body&&name==='playback-budget.mjs'&&result.environment.memoryHintGiB)body=Buffer.from(body.toString().replace('export function deviceMemoryHint(environment = globalThis) {',`export function deviceMemoryHint(environment = globalThis) { return ${result.environment.memoryHintGiB};`));
-    if(body&&name==='playback.mjs'&&process.env.STYK_PROBE_WORKERS){
-      const count=Number(process.env.STYK_PROBE_WORKERS);
+    if(body&&name==='playback.mjs'&&process.env.TWIGANIMATE_PROBE_WORKERS){
+      const count=Number(process.env.TWIGANIMATE_PROBE_WORKERS);
       if(!Number.isInteger(count)||count<1||count>4)throw new Error('Worker diagnostic count must be between one and four.');
       const code=body.toString(),signature=/\bworkerCount,(?=\s*maxWorkerBytes\b)/;
       if(!signature.test(code))throw new Error('Worker diagnostic override could not be applied.');
       body=Buffer.from(code.replace(signature,`workerCount = ${count},`));
       result.environment.workerCount=count;result.executedPlaybackHash=digest(body);
     }
-    if(body&&name==='playback-resources.mjs'&&process.env.STYK_PROBE_CPU_PATHS==='1'){
+    if(body&&name==='playback-resources.mjs'&&process.env.TWIGANIMATE_PROBE_CPU_PATHS==='1'){
       const signature='width*height<=512*512',code=body.toString();
       if(!code.includes(signature))throw new Error('CPU raster diagnostic override could not be applied.');
       body=Buffer.from(code.replace(signature,'true'));result.environment.cpuPaths=true;result.executedResourcesHash=digest(body);
@@ -52,14 +52,14 @@ try{
     }
     if(body)await route.fulfill({status:200,contentType:'text/javascript',body});else await route.continue();
   });
-  // STYK_PROBE_FOREGROUND=1 focuses the window on top, as when someone is using the app; Windows
+  // TWIGANIMATE_PROBE_FOREGROUND=1 focuses the window on top, as when someone is using the app; Windows
   // schedules an unfocused, occluded window's threads less favourably. The display stays awake
   // for this app instance only, since a sleeping display stops presenting frames.
-  result.environment.foreground=process.env.STYK_PROBE_FOREGROUND==='1';
+  result.environment.foreground=process.env.TWIGANIMATE_PROBE_FOREGROUND==='1';
   await app.evaluate(({BrowserWindow,powerSaveBlocker},{width,height,foreground})=>{const w=BrowserWindow.getAllWindows()[0];if(foreground)powerSaveBlocker.start('prevent-display-sleep');w.setContentSize(width,height);w.webContents.setBackgroundThrottling(false);w.setIgnoreMouseEvents(true);if(foreground){w.setAlwaysOnTop(true);w.show();w.focus();}else{w.setFocusable(false);w.showInactive();}},result.environment);
   await page.waitForFunction(()=>window.styk?.ready);
   const client=await page.context().newCDPSession(page);
-  // STYK_PROBE_DPR=native keeps the display's own scale factor. Emulating another one
+  // TWIGANIMATE_PROBE_DPR=native keeps the display's own scale factor. Emulating another one
   // adds a scaling composite that the app never pays in real use.
   if(result.environment.dpr!=='native'){
     await client.send('Emulation.setDeviceMetricsOverride',{width:result.environment.width,height:result.environment.height,deviceScaleFactor:result.environment.dpr,mobile:false});
@@ -90,18 +90,18 @@ try{
   });
   console.log('SCENE',JSON.stringify({...result.scene,definitions:result.scene.definitions.length,objects:Math.max(...result.scene.objects),importMs:result.importMs}));
   await page.screenshot({path:path.join(output,'import.png')});
-  if(process.env.STYK_PROBE_FPS){
-    result.targetFps=Number(process.env.STYK_PROBE_FPS);
+  if(process.env.TWIGANIMATE_PROBE_FPS){
+    result.targetFps=Number(process.env.TWIGANIMATE_PROBE_FPS);
     await page.evaluate(fps=>{styk.editor.setFPS(fps);styk.editor.markSaved();},result.targetFps);
   }
-  // STYK_PROBE_HIDE=<css selector> skips the subtree's style, layout and paint (content-visibility) to measure UI cost during playback.
-  if(process.env.STYK_PROBE_HIDE){await page.addStyleTag({content:`${process.env.STYK_PROBE_HIDE}{content-visibility:hidden!important}`});result.environment.hide=process.env.STYK_PROBE_HIDE;}
-  if(process.env.STYK_PROBE_TRACE==='1')await client.send('Tracing.start',{transferMode:'ReturnAsStream',traceConfig:{recordMode:'recordContinuously',traceBufferSizeInKb:131072,
-    includedCategories:['gpu','cc','viz','blink.user_timing','renderer.scheduler','devtools.timeline','v8','toplevel','disabled-by-default-gpu.service','disabled-by-default-gpu.device','disabled-by-default-skia','disabled-by-default-v8.gc',...(process.env.STYK_PROBE_TRACE_EXTRA?process.env.STYK_PROBE_TRACE_EXTRA.split(','):[])]}});
-  // STYK_PROBE_MAIN_PROFILE=1 records the page's main-thread CPU profile during playback (main-profile.cpuprofile).
-  if(process.env.STYK_PROBE_MAIN_PROFILE==='1'){await client.send('Profiler.enable');await client.send('Profiler.setSamplingInterval',{interval:250});await client.send('Profiler.start');}
-  // STYK_PROBE_WORKER_PROFILE=1 records every playback worker's CPU profile during playback.
-  let workerProfiles=null;if(process.env.STYK_PROBE_WORKER_PROFILE==='1'){workerProfiles=await startWorkerProfiles(9339);result.workerProfileCount=workerProfiles.count;}
+  // TWIGANIMATE_PROBE_HIDE=<css selector> skips the subtree's style, layout and paint (content-visibility) to measure UI cost during playback.
+  if(process.env.TWIGANIMATE_PROBE_HIDE){await page.addStyleTag({content:`${process.env.TWIGANIMATE_PROBE_HIDE}{content-visibility:hidden!important}`});result.environment.hide=process.env.TWIGANIMATE_PROBE_HIDE;}
+  if(process.env.TWIGANIMATE_PROBE_TRACE==='1')await client.send('Tracing.start',{transferMode:'ReturnAsStream',traceConfig:{recordMode:'recordContinuously',traceBufferSizeInKb:131072,
+    includedCategories:['gpu','cc','viz','blink.user_timing','renderer.scheduler','devtools.timeline','v8','toplevel','disabled-by-default-gpu.service','disabled-by-default-gpu.device','disabled-by-default-skia','disabled-by-default-v8.gc',...(process.env.TWIGANIMATE_PROBE_TRACE_EXTRA?process.env.TWIGANIMATE_PROBE_TRACE_EXTRA.split(','):[])]}});
+  // TWIGANIMATE_PROBE_MAIN_PROFILE=1 records the page's main-thread CPU profile during playback (main-profile.cpuprofile).
+  if(process.env.TWIGANIMATE_PROBE_MAIN_PROFILE==='1'){await client.send('Profiler.enable');await client.send('Profiler.setSamplingInterval',{interval:250});await client.send('Profiler.start');}
+  // TWIGANIMATE_PROBE_WORKER_PROFILE=1 records every playback worker's CPU profile during playback.
+  let workerProfiles=null;if(process.env.TWIGANIMATE_PROBE_WORKER_PROFILE==='1'){workerProfiles=await startWorkerProfiles(9339);result.workerProfileCount=workerProfiles.count;}
   await page.evaluate(async({start,end,quality})=>{
     const {PlaybackCache}=await import('/src/playback.mjs');
     const s=styk.state,e=styk.editor,r=s.renderer;
@@ -118,8 +118,8 @@ try{
     s.settings.playbackQuality=quality==='adaptive'?'auto':quality==='full'?'normal':quality;
     s.loop=false;s.loopRange=end>=0?{startTick:start,endTick:Math.min(end+1,e.totalTicks)}:null;e.seek(start);styk.fit();
     probe.active=true;probe.started=performance.now();styk.actions.play();
-  },{start:Number(process.env.STYK_PROBE_START||0),end:Number(process.env.STYK_PROBE_END??-1),quality:result.environment.previewQuality});
-  const timeout=Date.now()+Number(process.env.STYK_PROBE_SECONDS||600)*1000;
+  },{start:Number(process.env.TWIGANIMATE_PROBE_START||0),end:Number(process.env.TWIGANIMATE_PROBE_END??-1),quality:result.environment.previewQuality});
+  const timeout=Date.now()+Number(process.env.TWIGANIMATE_PROBE_SECONDS||600)*1000;
   while(Date.now()<timeout){
     await page.waitForTimeout(10000);
     const status=await page.evaluate(()=>({playing:styk.state.playing,tick:styk.editor.tick,total:styk.editor.totalTicks,fps:styk.performance().presentation.fps,quality:styk.state.previewGovernor?.index,packet:probe.packets.at(-1)}));
@@ -129,16 +129,16 @@ try{
   result.playback=await page.evaluate(()=>{probe.active=false;return {...probe,playing:styk.state.playing,performance:styk.performance(),
     preparedStats:styk.state.renderer?.preparedFrames?.stats?{...styk.state.renderer.preparedFrames.stats}:null,
     playbackStats:styk.state.playback?.stats?{...styk.state.playback.stats,lastSharing:null,workerCache:null}:null};});
-  if(process.env.STYK_PROBE_MAIN_PROFILE==='1'){const {profile}=await client.send('Profiler.stop');await writeFile(path.join(output,'main-profile.cpuprofile'),JSON.stringify(profile));result.mainProfile=summarizeProfiles([profile]);console.log('MAIN_PROFILE',JSON.stringify(result.mainProfile.top.slice(0,25)));}
+  if(process.env.TWIGANIMATE_PROBE_MAIN_PROFILE==='1'){const {profile}=await client.send('Profiler.stop');await writeFile(path.join(output,'main-profile.cpuprofile'),JSON.stringify(profile));result.mainProfile=summarizeProfiles([profile]);console.log('MAIN_PROFILE',JSON.stringify(result.mainProfile.top.slice(0,25)));}
   if(workerProfiles){const written=await workerProfiles.stop(output);result.workerProfileFiles=written;const {readFile:read}=await import('node:fs/promises');result.workerProfile=summarizeProfiles(await Promise.all(written.map(async w=>JSON.parse(await read(w.file,'utf8')))));console.log('WORKER_PROFILE',JSON.stringify(result.workerProfile.top.slice(0,20)));}
-  if(process.env.STYK_PROBE_TRACE==='1'){
+  if(process.env.TWIGANIMATE_PROBE_TRACE==='1'){
     const completed=new Promise(resolve=>client.once('Tracing.tracingComplete',resolve));await client.send('Tracing.end');
     const {stream}=await completed,parts=[];
     try{for(;;){const part=await client.send('IO.read',{handle:stream});parts.push(Buffer.from(part.data,part.base64Encoded?'base64':'utf8'));if(part.eof)break;}}
     finally{await client.send('IO.close',{handle:stream});}
     await writeFile(path.join(output,'chrome-trace.json'),Buffer.concat(parts));
   }
-  const first=Number(process.env.STYK_PROBE_START||0),last=Math.min(Number(process.env.STYK_PROBE_END??(result.scene.ticks-1)),result.scene.ticks-1);
+  const first=Number(process.env.TWIGANIMATE_PROBE_START||0),last=Math.min(Number(process.env.TWIGANIMATE_PROBE_END??(result.scene.ticks-1)),result.scene.ticks-1);
   result.sequential=result.playback.presented.length===last-first+1&&result.playback.presented.every((p,i)=>p.tick===first+i);
   await page.evaluate(()=>{if(styk.state.playing)styk.actions.play();});
   await page.waitForFunction(()=>!styk.state.editablePreparing);

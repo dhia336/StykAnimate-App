@@ -8,7 +8,7 @@ const settle=()=>page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requ
 const saved=()=>page.evaluate(()=>JSON.stringify(styk.editor.serialize()));
 const gallery=async()=>{await page.locator('#library-tab').click();await page.locator('.rig-library-examples').click();await settle();};
 try{
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47851');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47851');await page.waitForFunction(()=>window.styk?.ready);
   assert.ok(await page.locator('#viewport').isVisible());assert.deepEqual(errors,[]);
   const examples=await page.evaluate(async()=>{const {MECHANISM_RIG_EXAMPLES}=await import('/src/rig-mechanism-examples.mjs');return MECHANISM_RIG_EXAMPLES.map(r=>({id:r.id,controls:r.build().controls}));});
   for(const [n,r] of examples.entries()){

@@ -4,8 +4,8 @@
  *   node scripts/check-css.mjs                    lint; exits 1 on any problem
  *   node scripts/check-css.mjs --update-baseline  rewrite the ratchet after removing entries
  *
- * Layered files (everything under src/styles/ except app.css,
- * support-bridge.css and legacy/) follow these rules:
+ * Layered files (everything under src/styles/ except app.css and legacy/)
+ * follow these rules:
  *
  *   CSS01  exactly one top-level `@layer` block, named after the file's place
  *          (base/ → base, base/reset.css → reset, layout/, components/,
@@ -23,9 +23,8 @@
  *          count their most specific argument.
  *   CSS11  `z-index` is `var(--z-*)`, a literal 0–3 or `auto`.
  *   CSS14  viewport size media queries only in layout/shell.css.
- *   CSS16  `@import` only in app.css and support-bridge.css.
- *   JS02   modules link a stylesheet at runtime only from
- *          support-desktop-ui.mjs (src/styles/support-bridge.css).
+ *   CSS16  `@import` only in app.css.
+ *   JS02   modules do not link stylesheets at runtime.
  *
  * The legacy layer is not linted: its sheets are emptied and deleted, not
  * fixed. A ratchet in scripts/check-css-baseline.json records what legacy
@@ -35,8 +34,7 @@
  *   JS01             modules that create stylesheets at runtime (<style>
  *                    elements, constructed sheets, insertRule), per file.
  *   legacyImportant  every `!important` declaration in the legacy layer: the
- *                    legacy sheets, the sheets support-bridge.css imports into
- *                    it and the CSS text of the JS01 modules. Legacy
+ *                    legacy sheets and the CSS text of the JS01 modules. Legacy
  *                    `!important` beats every later layer.
  *
  * `--update-baseline` rewrites the file after entries were removed and refuses
@@ -55,7 +53,7 @@ const FOLDER_LAYERS = new Set(['base', 'layout', 'components', 'features']);
 const BUDGETS = {base: 0, layout: 2, components: 2, features: 3};
 const IMPORTANT_FILES = new Set(['base/reset.css', 'states.css', 'utilities.css']);
 const VIEWPORT_QUERY_FILES = new Set(['layout/shell.css']);
-const RUNTIME_LINK_MODULES = new Set(['src/support-desktop-ui.mjs']);
+const RUNTIME_LINK_MODULES = new Set();
 const NAMED_COLORS = new Set(('aliceblue antiquewhite aqua aquamarine azure beige bisque black blanchedalmond blue blueviolet brown burlywood ' +
   'cadetblue chartreuse chocolate coral cornflowerblue cornsilk crimson cyan darkblue darkcyan darkgoldenrod darkgray darkgreen darkgrey ' +
   'darkkhaki darkmagenta darkolivegreen darkorange darkorchid darkred darksalmon darkseagreen darkslateblue darkslategray darkslategrey ' +
@@ -237,13 +235,12 @@ export function specificity(selector) {
 // ---------------------------------------------------------------------------
 // Layered stylesheets
 
-/** Where a file sits in the cascade: the entry, the support bridge, legacy or a layered file. */
+/** Where a file sits in the cascade: the entry, legacy or a layered file. */
 export function styleRole(file) {
   const name = file.replaceAll('\\', '/');
   if (!name.startsWith(STYLES)) return {kind: 'other'};
   const local = name.slice(STYLES.length), folder = local.split('/')[0];
   if (local === 'app.css') return {kind: 'entry', local};
-  if (local === 'support-bridge.css') return {kind: 'bridge', local};
   if (folder === 'legacy') return {kind: 'legacy', local};
   return {kind: 'layered', local, layer: FILE_LAYERS[local] ?? (local.includes('/') && FOLDER_LAYERS.has(folder) ? folder : null)};
 }
@@ -265,7 +262,7 @@ function colorLiterals(declaration, forcedColors) {
 /** Lint findings for one stylesheet under src/styles/. File paths are relative to the repository root. */
 export function lintCss(text, file) {
   const role = styleRole(file);
-  if (role.kind === 'entry' || role.kind === 'bridge') return readImports(text, file).findings;
+  if (role.kind === 'entry') return readImports(text, file).findings;
   if (role.kind !== 'layered') return [];
   const findings = [], add = (rule, line, message) => findings.push({rule, file, line, message});
   const {items, errors} = parseCss(text);
@@ -319,7 +316,7 @@ export function lintCss(text, file) {
   return findings;
 }
 
-/** The @import list of app.css or support-bridge.css, with CSS01/CSS16 findings for anything else. */
+/** The @import list of app.css, with CSS01/CSS16 findings for anything else. */
 export function readImports(text, file) {
   const role = styleRole(file), findings = [], imports = [];
   const add = (rule, line, message) => findings.push({rule, file, line, message});
@@ -341,8 +338,7 @@ export function readImports(text, file) {
     const layer = /^layer\(\s*([\w.-]+)\s*\)/.exec(match[5])?.[1] ?? (/^layer\b/.test(match[5]) ? '' : null);
     const href = match[2] ?? match[4];
     imports.push({href, layer, line: item.line});
-    if (role.kind === 'bridge') { if (!['legacy', 'features'].includes(layer)) add('CSS01', item.line, `${href} must load into layer(legacy) or layer(features)`); }
-    else if (href.startsWith('./legacy/')) { if (layer !== 'legacy') add('CSS01', item.line, `${href} must load into layer(legacy)`); }
+    if (href.startsWith('./legacy/')) { if (layer !== 'legacy') add('CSS01', item.line, `${href} must load into layer(legacy)`); }
     else if (layer !== null) add('CSS01', item.line, `${href} wraps itself in its @layer block; import it without layer()`);
   });
   if (role.kind === 'entry' && !items.length) add('CSS01', 1, `app.css starts with @layer ${order};`);
@@ -429,7 +425,7 @@ export function lintTree(root = ROOT) {
     findings.push(...lintCss(read(sheet), sheet));
     const role = styleRole(sheet);
     if (role.kind === 'legacy') legacySheets.add(sheet);
-    if (role.kind !== 'entry' && role.kind !== 'bridge') continue;
+    if (role.kind !== 'entry') continue;
     for (const entry of readImports(read(sheet), sheet).imports) {
       const target = path.posix.normalize(path.posix.join(path.posix.dirname(sheet), entry.href));
       if (!existsSync(path.join(root, target))) findings.push({rule: 'CSS01', file: sheet, line: entry.line, message: `${entry.href} does not exist`});

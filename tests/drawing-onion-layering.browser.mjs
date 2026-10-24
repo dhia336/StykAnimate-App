@@ -63,7 +63,7 @@ if(typeof window==='undefined'){
   const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage(),errors=[];
   page.on('pageerror',error=>errors.push(error.message));
   try{
-    await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>styk.ready);
+    await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>styk.ready);
     const result=await page.evaluate(async()=>{const {verifyDrawingOnionLayering}=await import('/tests/drawing-onion-layering.browser.mjs');return verifyDrawingOnionLayering();});
     const output='artifacts/drawing-onion-fix';await mkdir(output,{recursive:true});
     for(const canvas of result.canvases){await writeFile(`${output}/${canvas.backend}.png`,Buffer.from(canvas.png.split(',')[1],'base64'));delete canvas.png;}

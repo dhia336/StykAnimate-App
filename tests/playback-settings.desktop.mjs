@@ -5,7 +5,7 @@ import path from 'node:path';
 
 const root=path.resolve('.'),output=path.join(root,'artifacts/playback-settings');
 await mkdir(output,{recursive:true});
-const app=await electron.launch({args:[root],cwd:root,env:{...process.env,STYK_USER_DATA_DIR:path.join(output,`profile-${Date.now()}`)}});
+const app=await electron.launch({args:[root],cwd:root,env:{...process.env,TWIGANIMATE_USER_DATA_DIR:path.join(output,`profile-${Date.now()}`)}});
 try {
   const page=await app.firstWindow(),errors=[];
   page.setDefaultTimeout(30000);page.on('pageerror',error=>errors.push(error.message));

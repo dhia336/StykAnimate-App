@@ -13,7 +13,7 @@ const profile = path.join(runDirectory, 'profile');
 await mkdir(runDirectory, { recursive: true });
 const files = { a: path.join(runDirectory, 'Rooftop.styk'), b: path.join(runDirectory, 'Vertical loop.styk'), moved: path.join(runDirectory, 'Rooftop (moved).styk') };
 const launch = (startupView, args = []) => electron.launch({ args: [appRoot, ...args], cwd: appRoot, timeout: 45000,
-  env: { ...process.env, STYK_USER_DATA_DIR: profile, STYK_STARTUP_VIEW: startupView } });
+  env: { ...process.env, TWIGANIMATE_USER_DATA_DIR: profile, TWIGANIMATE_STARTUP_VIEW: startupView } });
 const checks = [];
 let app;
 
@@ -65,7 +65,7 @@ try {
   app = await launch('home');
   let page = await ready();
   await page.waitForFunction(() => window.styk.home.shown && document.querySelector('.home-projects .ui-empty-title'));
-  assert.equal(await page.locator('.home-title').textContent(), 'Welcome to StykAnimate');
+  assert.equal(await page.locator('.home-title').textContent(), 'Welcome to TwigAnimate');
   assert.equal(await page.locator('.home-lesson-start').count(), 1);
   assert.equal(await page.locator('.home-lesson-row').count(), 4);
   // Home owns the keyboard: the Hand tool's key does nothing, Escape goes back to the animation.

@@ -7,7 +7,7 @@ import {fileURLToPath} from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const output = path.join(root, 'artifacts', 'native-text-authoring');
-const origin = process.env.STYK_URL || 'http://127.0.0.1:47831';
+const origin = process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831';
 const names = ['text_abc_66903de7', 'text_bike_f18f65c7', 'text_speech_bubble_0f3b81ef'];
 const reports = await Promise.all(names.map(async name => JSON.parse(await readFile(
   path.join(root, '..', 'reports', 'browser_corpus', name, 'scene.json'), 'utf8'))));

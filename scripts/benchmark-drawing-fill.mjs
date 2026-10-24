@@ -25,7 +25,7 @@ if(process.argv[2]==='--sample'){
   }
   console.log(JSON.stringify({kind,elapsedMs,error,tiles:store.size,changes:changes?.length,maxRssBytes:process.resourceUsage().maxRSS*1024,outputBytes:store.bytes}));
 }else{
-  const baseline=process.env.STYK_FILL_BASELINE||'ab71603',output=process.env.STYK_FILL_BENCHMARK||'artifacts/drawing-tiled-fill';mkdirSync(output,{recursive:true});
+  const baseline=process.env.TWIGANIMATE_FILL_BASELINE||'ab71603',output=process.env.TWIGANIMATE_FILL_BENCHMARK||'artifacts/drawing-tiled-fill';mkdirSync(output,{recursive:true});
   mkdirSync('tmp/drawing-audit-20260921',{recursive:true});const temporary=mkdtempSync(resolve('tmp/drawing-audit-20260921/fill-baseline-')),file=resolve(temporary,'pixels.mjs');
   const body=execFileSync('git',['show',`${baseline}:src/drawing-pixels.mjs`],{encoding:'utf8'}).replace(/from '\.\/([^']+)'/g,(_,p)=>`from '${pathToFileURL(resolve('src',p)).href}'`);
   writeFileSync(file,body);const results=[];

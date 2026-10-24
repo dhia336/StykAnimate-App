@@ -16,7 +16,7 @@ const wheel = modifiers => page.evaluate(modifiers => {
     deltaY:40,clientX:rect.left+250,clientY:rect.top+200,...modifiers}));
 }, modifiers);
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831');
   await page.waitForFunction(() => window.styk?.ready);
   let before = await view();
   await wheel({});

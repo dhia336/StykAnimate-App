@@ -8,10 +8,10 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 await mkdir(path.join(root, 'artifacts'), { recursive: true });
 const browser=process.argv.includes('--browser');
-const app = browser?await chromium.launch({channel:'chrome',headless:true}):await electron.launch({ args: [root], cwd: root, timeout: 45000, env: { ...process.env, STYK_USER_DATA_DIR: path.join(root, 'artifacts', `raster-failure-${Date.now()}`) } });
+const app = browser?await chromium.launch({channel:'chrome',headless:true}):await electron.launch({ args: [root], cwd: root, timeout: 45000, env: { ...process.env, TWIGANIMATE_USER_DATA_DIR: path.join(root, 'artifacts', `raster-failure-${Date.now()}`) } });
 try {
   const page = browser?await app.newPage():await app.firstWindow();
-  if(browser)await page.goto(process.env.STYK_URL||'http://127.0.0.1:47843');
+  if(browser)await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47843');
   await page.waitForLoadState('domcontentloaded');
   await page.waitForFunction(() => window.styk?.ready === true, { timeout: 20000 });
   const result = await page.evaluate(async () => {

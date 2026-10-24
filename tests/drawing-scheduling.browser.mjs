@@ -2,18 +2,18 @@ import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
-const output=process.env.STYK_SCHEDULING_ARTIFACTS||'artifacts/drawing-scheduling',checks=[],errors=[];
+const output=process.env.TWIGANIMATE_SCHEDULING_ARTIFACTS||'artifacts/drawing-scheduling',checks=[],errors=[];
 await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage({viewport:{width:1440,height:1000}});
 page.on('pageerror',e=>errors.push(e.message));
 const check=(name,ok)=>{checks.push({name,ok:Boolean(ok)});console.log(ok?'PASS':'FAIL',name);};
 try{
-  if(process.env.STYK_SCHEDULING_BASELINE)for(const file of ['app.mjs','drawing-controller.mjs','renderer-geometry.mjs']){
-    const body=execFileSync('git',['show',`${process.env.STYK_SCHEDULING_BASELINE}:src/${file}`],{encoding:'utf8',maxBuffer:4*1024*1024});
+  if(process.env.TWIGANIMATE_SCHEDULING_BASELINE)for(const file of ['app.mjs','drawing-controller.mjs','renderer-geometry.mjs']){
+    const body=execFileSync('git',['show',`${process.env.TWIGANIMATE_SCHEDULING_BASELINE}:src/${file}`],{encoding:'utf8',maxBuffer:4*1024*1024});
     await page.route(`**/src/${file}`,route=>route.fulfill({body,contentType:'text/javascript'}));
   }
-  if(process.env.STYK_SCHEDULING_CANVAS)await page.addInitScript(()=>Object.defineProperty(navigator,'gpu',{value:undefined}));
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+  if(process.env.TWIGANIMATE_SCHEDULING_CANVAS)await page.addInitScript(()=>Object.defineProperty(navigator,'gpu',{value:undefined}));
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
   await page.locator('[data-workspace-mode="draw"]').click();
   await page.evaluate(async()=>{
     const {emptyDocument}=await import('/src/demo.mjs'),{PreviewImages}=await import('/src/preview-images.mjs'),{EMPTY_PNG}=await import('/src/drawing-model.mjs');

@@ -263,7 +263,7 @@ If a target fails, identify the owning bottleneck and fix or explicitly scope th
 
 ### Commands and documentation
 
-Run `npm run check` after JavaScript changes, focused behavioral tests during each milestone, and `npm test` for integration readiness. Use `npm.cmd` if the workstation's PowerShell launcher fails as described in AGENTS.md. Add real browser/desktop checks for rendering and input; run relevant Python/native tests when changing codecs. Run `npm run changelog:check` when adding the completed feature entry.
+Run `npm run check` after JavaScript changes, focused behavioral tests during each milestone, and `npm test` for integration readiness. Add real browser/desktop checks for rendering and input; run relevant Python/native tests when changing codecs. Run `npm run changelog:check` when adding the completed feature entry.
 
 Update `docs/DRAWING.md`, `docs/TIMELINE.md`, `docs/animation-modes.md`, `docs/ARCHITECTURE.md`, renderer/export/native-format contracts, and user help where their behavior changes. Record fixtures, hardware, runtime versions, results, and remaining limits under `artifacts/`. Older reports do not certify this implementation.
 
