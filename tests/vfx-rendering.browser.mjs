@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 const browser=await chromium.launch({channel:'chrome',headless:true});
 try{
- const page=await browser.newPage();await page.goto(process.env.STYK_TEST_URL||'http://127.0.0.1:47832');await page.waitForFunction(()=>window.styk?.ready);
+ const page=await browser.newPage();await page.goto(process.env.TWIGANIMATE_TEST_URL||'http://127.0.0.1:47832');await page.waitForFunction(()=>window.styk?.ready);
  const result=await page.evaluate(async()=>{
   const {createRenderer}=await import('/src/renderer.mjs'),{emptyDocument,createFrame,createObject}=await import('/src/demo.mjs'),{createVfx}=await import('/src/vfx.mjs'),{buildGeometry}=await import('/src/pivot/geometry.mjs'),{drawExportScene}=await import('/src/export-frame-core.mjs'),{ExportFrameRenderer}=await import('/src/export-frame-renderer.mjs'),{vfxPreviewGeometry,vfxPreviewFrame}=await import('/src/vfx-preview.mjs');
   const pixels=canvas=>{const out=new OffscreenCanvas(canvas.width,canvas.height),c=out.getContext('2d');c.drawImage(canvas,0,0);return c.getImageData(0,0,out.width,out.height).data;};

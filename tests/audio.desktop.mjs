@@ -8,7 +8,7 @@ const root=process.cwd(),out=path.join(root,'artifacts','audio-desktop'); await 
 const ffmpeg=path.join(root,'build','video-encoder','ffmpeg.exe');
 const encoded=spawnSync(ffmpeg,['-hide_banner','-loglevel','error','-y','-f','lavfi','-i','sine=frequency=440:duration=3:sample_rate=48000','-c:a','libmp3lame',path.join(out,'Voice.mp3')],{windowsHide:true});
 assert.equal(encoded.status,0,encoded.stderr?.toString());
-const app=await electron.launch({args:[root],cwd:root,timeout:45000,env:{...process.env,STYK_USER_DATA_DIR:path.join(out,`profile-${Date.now()}`)}});
+const app=await electron.launch({args:[root],cwd:root,timeout:45000,env:{...process.env,TWIGANIMATE_USER_DATA_DIR:path.join(out,`profile-${Date.now()}`)}});
 app.process().stderr.on('data',bytes=>process.stderr.write(bytes));
 app.process().stdout.on('data',bytes=>process.stdout.write(bytes));
 try {

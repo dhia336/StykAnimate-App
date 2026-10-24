@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 const root=process.cwd(),out=path.join(root,'artifacts/onion-rebuild');await mkdir(out,{recursive:true});
-const app=await electron.launch({args:[root],cwd:root,timeout:60000,env:{...process.env,STYK_USER_DATA_DIR:path.join(out,`profile-${Date.now()}`)}});
+const app=await electron.launch({args:[root],cwd:root,timeout:60000,env:{...process.env,TWIGANIMATE_USER_DATA_DIR:path.join(out,`profile-${Date.now()}`)}});
 app.process().stderr.on('data',data=>process.stderr.write(data));
 try{
   const page=await app.firstWindow(),errors=[];page.on('pageerror',error=>errors.push(error.message));await page.waitForFunction(()=>window.styk?.ready,undefined,{timeout:60000});

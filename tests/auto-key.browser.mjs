@@ -11,7 +11,7 @@ const check = (name, value) => {assert.ok(value, name); console.log('PASS', name
 const settle = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 const button = () => page.locator('.tl-autokey');
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
   await page.evaluate(async () => {
     const {createDemo} = await import('/src/demo.mjs');
     styk.state.settings.autosaveSeconds = 0; styk.settingsUI.commit({timelineMode: 'advanced', autoKey: false}); styk.editor.load(createDemo());

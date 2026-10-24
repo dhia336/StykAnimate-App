@@ -5,7 +5,7 @@ const out='artifacts/camera-motion';await mkdir(out,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
 page.on('pageerror',e=>errors.push(e.message));const checks=[];const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('PASS',name);};
 try{
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(()=>{const e=styk.editor;e.newDocument();e.addFigure();styk.settingsUI.commit({timelineMode:'advanced',onionCount:0});styk.state.onion=false;styk.fit();});
   await page.getByRole('button',{name:'Select layer Camera',exact:true}).click();
   await page.locator('[data-camera-tab="motion"]').click();

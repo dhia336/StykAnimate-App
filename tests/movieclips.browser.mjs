@@ -10,7 +10,7 @@ const errors=[],checks=[];
 page.on('pageerror',e=>errors.push(e.stack));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
 const check=(name,value=true)=>{assert.ok(value,name);checks.push(name);console.log('PASS',name);};
 try{
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   check('Editor loaded',await page.locator('#viewport').isVisible());
   await page.evaluate(()=>{styk.settingsUI.commit({timelineMode:'advanced'});styk.editor.select(1);styk.movieclips.open('range');});
   await page.locator('.movieclip-dialog').getByRole('textbox',{name:'Movieclip name'}).fill('Walk cycle');

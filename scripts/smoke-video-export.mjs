@@ -20,10 +20,10 @@ import { _electron as electron } from '../tests/support/playwright.mjs';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const packaged = process.argv.includes('--packaged');
-const unpacked = process.platform === 'win32' ? ['win-unpacked', 'StykAnimate-Max.exe']
-  : process.platform === 'darwin' ? [process.arch === 'arm64' ? 'mac-arm64' : 'mac', 'StykAnimate-Max.app', 'Contents', 'MacOS', 'StykAnimate-Max']
-  : [process.arch === 'arm64' ? 'linux-arm64-unpacked' : 'linux-unpacked', 'stykanimate-max'];
-const executablePath = packaged ? process.env.STYK_PACKAGED_EXECUTABLE || path.join(appRoot, 'release', ...unpacked) : undefined;
+const unpacked = process.platform === 'win32' ? ['win-unpacked', 'TwigAnimate.exe']
+  : process.platform === 'darwin' ? [process.arch === 'arm64' ? 'mac-arm64' : 'mac', 'TwigAnimate.app', 'Contents', 'MacOS', 'TwigAnimate']
+  : [process.arch === 'arm64' ? 'linux-arm64-unpacked' : 'linux-unpacked', 'twiganimate'];
+const executablePath = packaged ? process.env.TWIGANIMATE_PACKAGED_EXECUTABLE || path.join(appRoot, 'release', ...unpacked) : undefined;
 const resources = packaged ? path.join(path.dirname(executablePath), 'resources') : path.join(appRoot, 'build');
 const ffmpeg = path.join(resources, 'video-encoder', process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg');
 if (!existsSync(ffmpeg)) { console.error(`The bundled encoder is missing (${ffmpeg}). Run npm run build:video-encoder.`); process.exit(2); }
@@ -34,7 +34,7 @@ await writeFile(path.join(work, 'telemetry-state.json'), JSON.stringify({ decide
 const failures = [];
 let app;
 try {
-  app = await electron.launch({ executablePath, args: packaged ? [] : [appRoot], cwd: appRoot, timeout: 60000, env: { ...process.env, STYK_USER_DATA_DIR: work } });
+  app = await electron.launch({ executablePath, args: packaged ? [] : [appRoot], cwd: appRoot, timeout: 60000, env: { ...process.env, TWIGANIMATE_USER_DATA_DIR: work } });
   const page = await app.firstWindow({ timeout: 60000 });
   await page.waitForFunction(() => window.styk?.ready === true, undefined, { timeout: 60000 });
   for (const [action, extension] of EXPORTS) {

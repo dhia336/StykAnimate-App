@@ -135,9 +135,9 @@ export async function benchmarkDrags(page,result,output,{source,cpu=false}){
   for(const name of Object.keys(result.sourceHashes))sourceModules.set(name.replaceAll('\\','/'),await readFile(path.join(output,'sources',name)));
   const serveSource=async route=>{const name=new URL(route.request().url()).pathname.slice('/src/'.length),body=sourceModules.get(name);if(body)await route.fulfill({status:200,contentType:name.endsWith('.css')?'text/css; charset=utf-8':'text/javascript; charset=utf-8',body});else await route.continue();};
   await page.context().route('**/src/**',serveSource);
-  const filter=process.env.STYK_DRAG_CASES?.split(','),matrix=cases.filter(c=>!filter||filter.includes(c.id));
-  if(!matrix.length&&!filter?.includes('controls'))throw new Error('No matching STYK_DRAG_CASES.');
-  const trials=Number(process.env.STYK_DRAG_TRIALS)|| (cpu?1:2),repeats=Number(process.env.STYK_DRAG_REPEATS)||3;
+  const filter=process.env.TWIGANIMATE_DRAG_CASES?.split(','),matrix=cases.filter(c=>!filter||filter.includes(c.id));
+  if(!matrix.length&&!filter?.includes('controls'))throw new Error('No matching TWIGANIMATE_DRAG_CASES.');
+  const trials=Number(process.env.TWIGANIMATE_DRAG_TRIALS)|| (cpu?1:2),repeats=Number(process.env.TWIGANIMATE_DRAG_REPEATS)||3;
   result.dragMethodology={trials,repeats,cpuSampling:cpu,steps:24,paceMs:16,sourcePolicy:'All src/*.mjs modules are served from the captured source snapshot for this run, across document reloads.',
     firstDrag:'First gesture on a newly reloaded/imported document; renderer and handles are already visible. Later trials reuse the Electron process, not its document/worker caches.',
     timings:'Event capture to CPU-complete scene submission includes pose, render, and overlay. Excludes physical scanout. Pointer dispatch-to-handler is reported separately; automation backpressure limits achievable input rate.',
@@ -150,9 +150,9 @@ export async function benchmarkDrags(page,result,output,{source,cpu=false}){
     await page.evaluate(()=>styk.editor.markSaved());await page.locator('#file-input').setInputFiles(source);
     await page.waitForFunction(name=>styk.editor.name===name&&!styk.state.importing,path.basename(source,'.piv'),{timeout:180000});
     await scaleBenchmarkScene(page);
-    if(process.env.STYK_DRAG_FRAME)await page.evaluate(tick=>styk.editor.seek(tick),Number(process.env.STYK_DRAG_FRAME));
+    if(process.env.TWIGANIMATE_DRAG_FRAME)await page.evaluate(tick=>styk.editor.seek(tick),Number(process.env.TWIGANIMATE_DRAG_FRAME));
     await page.waitForTimeout(200);
-    await page.evaluate(s=>{styk.state.tool=s.tool||'select';styk.state.onion=Boolean(s.onion);if(s.selectedOnly)styk.state.settings.showUnselectedHandles=false;if(s.onion&&!process.env.STYK_DRAG_FRAME)styk.editor.selectFrame(1);if(s.scale)styk.state.view.scale=s.scale;styk.state.dirtyRender=true;window.dispatchEvent(new Event('resize'));},scenario);
+    await page.evaluate(s=>{styk.state.tool=s.tool||'select';styk.state.onion=Boolean(s.onion);if(s.selectedOnly)styk.state.settings.showUnselectedHandles=false;if(s.onion&&!process.env.TWIGANIMATE_DRAG_FRAME)styk.editor.selectFrame(1);if(s.scale)styk.state.view.scale=s.scale;styk.state.dirtyRender=true;window.dispatchEvent(new Event('resize'));},scenario);
     await page.waitForTimeout(350);
     await install(page);
     let target=await locate(page,scenario);

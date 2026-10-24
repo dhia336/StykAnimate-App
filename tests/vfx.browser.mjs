@@ -5,7 +5,7 @@ const browser=await chromium.launch({channel:'chrome',headless:true});
 const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
 page.on('pageerror',e=>errors.push(e.message));
 try{
- await page.goto(process.env.STYK_TEST_URL||'http://127.0.0.1:47832');
+ await page.goto(process.env.TWIGANIMATE_TEST_URL||'http://127.0.0.1:47832');
  await page.waitForFunction(()=>window.styk?.ready,{timeout:60000});
  const result=await page.evaluate(async()=>{
   const {createVfx,VFX_REGISTRY}=await import('/src/vfx.mjs');

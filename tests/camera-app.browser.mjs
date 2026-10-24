@@ -24,7 +24,7 @@ async function setup(){
 async function handle(kind,index){return page.evaluate(async({kind,index})=>__project((await __cam()).handles.find(h=>h.kind===kind&&(index==null||h.index===index)).point),{kind,index});}
 async function drag(a,b){await page.mouse.move(a.x,a.y);await page.mouse.down();await page.mouse.move(b.x,b.y,{steps:4});await page.mouse.up();await page.waitForTimeout(45);}
 try{
- await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+ await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
  await setup();check('Editing renders world space despite a saved camera',await page.evaluate(()=>styk.state.renderer.last.cameraEnabled===false));
  const point=await page.evaluate(()=>__project(styk.editor.geometry.objects.get(0).root)),before=await page.evaluate(()=>({x:styk.editor.object.root_x,y:styk.editor.object.root_y,scale:styk.state.view.scale}));
  await drag(point,{x:point.x+40,y:point.y+20});let moved=await page.evaluate(()=>({x:styk.editor.object.root_x,y:styk.editor.object.root_y}));

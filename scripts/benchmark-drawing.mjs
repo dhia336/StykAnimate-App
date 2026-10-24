@@ -1,7 +1,7 @@
 import {chromium} from '../tests/support/playwright.mjs';
 import {mkdir,writeFile} from 'node:fs/promises';
 import os from 'node:os';
-const url=process.env.STYK_URL||'http://127.0.0.1:47839';
+const url=process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839';
 const browser=await chromium.launch({channel:'chrome',headless:true});
 const page=await browser.newPage({viewport:{width:1440,height:1000}});
 page.on('console',message=>{if(message.text().startsWith('DRAWING BENCH'))console.log(message.text());});

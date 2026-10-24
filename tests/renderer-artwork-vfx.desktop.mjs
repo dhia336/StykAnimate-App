@@ -11,9 +11,9 @@ import {mkdir, writeFile} from 'node:fs/promises';
 
 const root = path.resolve('.'), output = path.join(root, 'artifacts/renderer-artwork-vfx');
 await mkdir(output, {recursive:true});
-const env = {...process.env, STYK_USER_DATA_DIR:path.join(output, `profile-${Date.now()}`)};
-await mkdir(env.STYK_USER_DATA_DIR, {recursive:true});
-await writeFile(path.join(env.STYK_USER_DATA_DIR,'telemetry-state.json'), JSON.stringify({decided:true,consent:{analytics:false,diagnostics:false,policyVersion:'2026-09-10',updatedAt:Date.now()}}));
+const env = {...process.env, TWIGANIMATE_USER_DATA_DIR:path.join(output, `profile-${Date.now()}`)};
+await mkdir(env.TWIGANIMATE_USER_DATA_DIR, {recursive:true});
+await writeFile(path.join(env.TWIGANIMATE_USER_DATA_DIR,'telemetry-state.json'), JSON.stringify({decided:true,consent:{analytics:false,diagnostics:false,policyVersion:'2026-09-10',updatedAt:Date.now()}}));
 delete env.ELECTRON_RUN_AS_NODE;
 const app = await electron.launch({args:[root], cwd:root, timeout:45000, env});
 try {

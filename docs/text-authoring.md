@@ -14,7 +14,7 @@ Integration uses `new TextDialog({dialog, content, fontService?, onClose?})`, th
 
 ## Verification
 
-Run from the application directory with the codec server at `http://127.0.0.1:47831`, or set `STYK_URL` for browser checks.
+Run from the application directory with the codec server at `http://127.0.0.1:47831`, or set `TWIGANIMATE_URL` for browser checks.
 
 | Command / evidence | Coverage |
 | --- | --- |

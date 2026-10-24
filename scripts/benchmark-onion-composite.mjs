@@ -2,7 +2,7 @@ import {chromium} from '../tests/support/playwright.mjs';
 import {mkdir,writeFile} from 'node:fs/promises';
 const browser=await chromium.launch({channel:'chrome',headless:true});
 try{
-  const page=await browser.newPage();await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  const page=await browser.newPage();await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   const result=await page.evaluate(async baseline=>{
     const current=await import('/src/renderer.mjs'),before=baseline?await import(baseline):null;
     const {emptyDocument,createFrame,createObject}=await import('/src/demo.mjs'),{buildGeometry}=await import('/src/pivot/geometry.mjs');
@@ -26,7 +26,7 @@ try{
       for(const {name,renderer,cpu,complete} of instances)rows.push({name,backend:renderer.stats.backend,adapter:renderer.stats.adapter,cpuMs:summary(cpu),submissionAndCompletionMs:summary(complete),drawCalls:renderer.stats.drawCalls,onionCompositeBytes:renderer.stats.onionCompositeBytes??0,onionCacheBytes:renderer.onionArtworkBytes??0,retainedGpuBytes:renderer.stats.gpuBytes??0,onionRasterized:renderer.stats.onionRasterizedObjects??0});
     }finally{for(const {renderer} of instances)renderer.destroy();}
     return {workload:{figures:400,ghosts:3,width:960,height:540,samples:40},rows,errors};
-  },process.env.STYK_ONION_BASELINE??null);
+  },process.env.TWIGANIMATE_ONION_BASELINE??null);
   await mkdir('artifacts/onion-scene-opacity',{recursive:true});await writeFile('artifacts/onion-scene-opacity/benchmark.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));
   if(result.errors.length)throw Error(result.errors.join('\n'));
 }finally{await browser.close();}

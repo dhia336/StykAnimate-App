@@ -14,7 +14,7 @@ const project=()=>page.evaluate(()=>styk.editor.report._styk.palette?.colors??[]
 const frame=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
 const picker=page.locator('.paint-picker');
 try{
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(async()=>{
     styk.state.settings.autosaveSeconds=0;
     const {emptyDocument,createFrame,createObject}=await import('/src/demo.mjs');
@@ -179,7 +179,7 @@ try{
     check(`the last palette falls back to ${fallback}`,await picker.locator(`[data-palette-view="${fallback}"]`).getAttribute('aria-pressed')==='true'
       &&await picker.locator('[data-palette-menu]').getAttribute('aria-expanded')==='false');
     check('focus returns to the palette menu',await picker.locator('[data-palette-menu]').evaluate(el=>el===document.activeElement));
-    check('deletion is saved',await page.evaluate(()=>JSON.parse(localStorage.getItem('stykanimate.colors.v1')).palettes.length)===0);
+    check('deletion is saved',await page.evaluate(()=>JSON.parse(localStorage.getItem('twiganimate.colors.v1')).palettes.length)===0);
     await page.screenshot({path:`${output}/deleted-last-${fallback}.png`,clip:await picker.boundingBox()});
   }
   await page.keyboard.press('Escape');

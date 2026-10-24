@@ -18,7 +18,7 @@ const start = () => page.evaluate(custom => {
 }, customView);
 const stop = () => page.evaluate(() => { if (styk.state.playing) styk.actions.play(); });
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831');
   await page.waitForFunction(() => window.styk?.ready);
   const fitted = await page.evaluate(() => { styk.fit(); return {...styk.state.view}; });
   assert.equal(await start(), true);

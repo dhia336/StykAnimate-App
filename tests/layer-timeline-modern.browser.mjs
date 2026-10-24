@@ -5,7 +5,7 @@ const browser=await chromium.launch({channel:'chrome',headless:true}),page=await
 page.on('pageerror',e=>errors.push(e.message));
 const settle=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
 try{
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(async()=>{
     const {emptyDocument,createFrame,createObject}=await import('/src/demo.mjs'),r=emptyDocument();r.keyframes=[0,60].map(x=>createFrame([createObject(r.figure_types[0],1,200+x,250)],12));
     styk.settingsUI.commit({timelineMode:'advanced'});styk.editor.load(r);styk.editor.createLayer('Effects');styk.editor.select(1);styk.fit();

@@ -19,7 +19,7 @@ function pythonCandidates(env = process.env, platform = process.platform) {
   const add = (command, args = []) => {
     if (command && !candidates.some((item) => item.command === command)) candidates.push({ command, args });
   };
-  add(env.STYK_PYTHON);
+  add(env.TWIGANIMATE_PYTHON);
   if (env.VIRTUAL_ENV) add(path.join(env.VIRTUAL_ENV, platform === 'win32' ? 'Scripts/python.exe' : 'bin/python'));
   if (env.CONDA_PREFIX) add(path.join(env.CONDA_PREFIX, platform === 'win32' ? 'python.exe' : 'bin/python'));
   if (platform === 'win32') {
@@ -91,7 +91,7 @@ async function startBackend({ appRoot, resourcesPath, packaged = false, onError 
       cwd: resourceRoot,
       windowsHide: true,
       stdio: ['pipe', 'pipe', 'pipe'],
-      env: { ...process.env, PYTHONUNBUFFERED: '1', PYTHONDONTWRITEBYTECODE: '1', STYK_WEB_ROOT: webRoot, STYK_TOOLS_ROOT: toolsRoot, STYK_BRIDGE_PATH: bridgePath, ...(token ? { STYK_API_TOKEN: token } : {}) },
+      env: { ...process.env, PYTHONUNBUFFERED: '1', PYTHONDONTWRITEBYTECODE: '1', TWIGANIMATE_WEB_ROOT: webRoot, TWIGANIMATE_TOOLS_ROOT: toolsRoot, TWIGANIMATE_BRIDGE_PATH: bridgePath, ...(token ? { TWIGANIMATE_API_TOKEN: token } : {}) },
     });
     child.stdin.on('error', () => { /* The codec closed its end; exit handling below reports it. */ });
     const stop = () => { intentionalStop = true; if (!terminated) child.kill(); };

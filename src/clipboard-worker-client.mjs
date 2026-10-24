@@ -52,8 +52,8 @@ export class ClipboardWorkerClient {
       if (checkCurrent() === false) throw abortError('The document changed during the clipboard operation.');
     };
     current();
-    const worker = this.workerFactory ? this.workerFactory(this.workerURL, {type: 'module', name: 'StykAnimate clipboard'})
-      : new Worker(this.workerURL, {type: 'module', name: 'StykAnimate clipboard'});
+    const worker = this.workerFactory ? this.workerFactory(this.workerURL, {type: 'module', name: 'TwigAnimate clipboard'})
+      : new Worker(this.workerURL, {type: 'module', name: 'TwigAnimate clipboard'});
     const jobId = ++this.sequence, started = performance.now();
     let pending = null, requestId = 0, failure = null, closed = false, result = null, outputSequence = 0;
     const timings = {inputBytes: 0, outputBytes: 0, inputChunks: 0, outputChunks: 0,

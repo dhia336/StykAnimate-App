@@ -22,14 +22,14 @@
  *   - a tool's option descriptors (ui/tool-options.mjs) replace the crumb in
  *     the start and run their commands; the crumb returns without them
  *
- * Serve the repository (STYK_PYTHON=py node scripts/serve.mjs --port 47913)
- * and run `node tests/stage-chrome.browser.mjs`; STYK_URL overrides the address.
+ * Serve the repository (TWIGANIMATE_PYTHON=py node scripts/serve.mjs --port 47913)
+ * and run `node tests/stage-chrome.browser.mjs`; TWIGANIMATE_URL overrides the address.
  */
 import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 
-const base = process.env.STYK_URL || 'http://127.0.0.1:47913';
+const base = process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47913';
 const out = 'artifacts/stage-chrome';
 await mkdir(out, {recursive: true});
 const browser = await chromium.launch({channel: 'chrome', headless: true});
@@ -43,7 +43,7 @@ const settle = () => page.evaluate(() => new Promise(resolve => requestAnimation
 async function open(width, height) {
   await page?.context().close();
   const context = await browser.newContext({viewport: {width, height}, deviceScaleFactor: 1});
-  await context.addInitScript(() => localStorage.setItem('stykanimate.editor.settings.v1', JSON.stringify({rendererMode: 'canvas', locale: 'en'})));
+  await context.addInitScript(() => localStorage.setItem('twiganimate.editor.settings.v1', JSON.stringify({rendererMode: 'canvas', locale: 'en'})));
   page = await context.newPage();
   page.setDefaultTimeout(10000);
   page.on('pageerror', error => errors.push(error.message));

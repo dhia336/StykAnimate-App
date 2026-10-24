@@ -9,7 +9,7 @@ await writeFile(path.join(profile, 'telemetry-state.json'), JSON.stringify({deci
 const checks = [], errors = [], check = (name, value = true) => { assert.ok(value, name); checks.push(name); console.log('PASS', name); };
 let app, page;
 try {
-  app = await electron.launch({args:[root], cwd:root, timeout:45000, env:{...process.env, STYK_USER_DATA_DIR:profile, STYK_LIBRARY_DIR:path.join(run,'library')}});
+  app = await electron.launch({args:[root], cwd:root, timeout:45000, env:{...process.env, TWIGANIMATE_USER_DATA_DIR:profile, TWIGANIMATE_LIBRARY_DIR:path.join(run,'library')}});
   page = await app.firstWindow(); page.on('pageerror', error => errors.push(error.message));
   await page.waitForFunction(() => window.styk?.ready);
   const welcome = page.getByRole('button', {name:'Close welcome screen'}); if (await welcome.isVisible()) await welcome.click();

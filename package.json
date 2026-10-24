@@ -1,20 +1,20 @@
 {
-  "name": "stykanimate-max",
-  "productName": "StykAnimate-Max",
+  "name": "twiganimate",
+  "productName": "TwigAnimate",
   "version": "1.2.5",
-  "description": "An independently maintained stick animation editor based on the StykAnimate upstream project.",
+  "description": "An independently maintained 2D stick animation editor.",
   "license": "GPL-3.0-or-later",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dhia336/StykAnimate-App.git"
+    "url": "https://github.com/dhia336/TwigAnimate.git"
   },
   "bugs": {
-    "url": "https://github.com/dhia336/StykAnimate-App/issues"
+    "url": "https://github.com/dhia336/TwigAnimate/issues"
   },
   "private": true,
   "type": "module",
   "main": "desktop/main.cjs",
-  "desktopName": "stykanimate-max.desktop",
+  "desktopName": "twiganimate.desktop",
   "scripts": {
     "start": "electron .",
     "dev": "electron .",
@@ -37,7 +37,7 @@
     "test:streams": "node --test scripts/file-streams.test.mjs",
     "test:streams:desktop": "node scripts/smoke-native-streams.mjs",
     "test:preferences": "node --test scripts/preferences.test.mjs",
-    "test:telemetry": "node --test tests/telemetry*.test.mjs",
+    "test:telemetry": "node --test tests/telemetry-measurements.test.mjs tests/telemetry-performance.test.mjs",
     "benchmark:telemetry": "node scripts/benchmark-telemetry.mjs",
     "web:build": "node scripts/build-web.mjs",
     "web:verify": "node scripts/verify-web.mjs",
@@ -67,7 +67,7 @@
     "test:boot:packaged": "node scripts/smoke-boot.mjs --packaged",
     "test:export:desktop": "node scripts/smoke-video-export.mjs",
     "test:export:packaged": "node scripts/smoke-video-export.mjs --packaged",
-    "test:library": "node --test scripts/library-store.test.mjs scripts/public-library.test.mjs tests/user-library.test.mjs",
+    "test:library": "node --test scripts/library-store.test.mjs tests/user-library.test.mjs",
     "test:library:desktop": "node scripts/smoke-library.mjs",
     "build:sidecar": "node scripts/run-python.mjs scripts/build-sidecar.py",
     "build:video-encoder": "node scripts/run-python.mjs scripts/stage-video-encoder.py",
@@ -103,17 +103,17 @@
   },
   "build": {
     "beforePack": "scripts/before-pack.cjs",
-    "appId": "com.github.dhia336.stykanimate-max",
+    "appId": "io.github.dhia336.twiganimate",
     "protocols": [
       {
-        "name": "StykAnimate-Max",
+        "name": "TwigAnimate",
         "schemes": [
-          "stykanimate"
+          "twiganimate"
         ]
       }
     ],
-    "productName": "StykAnimate-Max",
-    "artifactName": "StykAnimate-Max-${version}-${os}-${arch}.${ext}",
+    "productName": "TwigAnimate",
+    "artifactName": "TwigAnimate-${version}-${os}-${arch}.${ext}",
     "toolsets": {
       "appimage": "1.0.3"
     },
@@ -205,19 +205,19 @@
       {
         "ext": "stykmov",
         "mimeType": "application/vnd.stykanimate.movieclip",
-        "name": "StykAnimate-Max movieclip",
+        "name": "TwigAnimate movieclip",
         "role": "Editor"
       },
       {
         "ext": "stkz",
         "mimeType": "application/vnd.stykanimate.figure",
-        "name": "StykAnimate-Max figure",
+        "name": "TwigAnimate figure",
         "role": "Editor"
       },
       {
         "ext": "styk",
         "mimeType": "application/vnd.stykanimate.project",
-        "name": "StykAnimate-Max project",
+        "name": "TwigAnimate project",
         "role": "Editor"
       }
     ],
@@ -226,7 +226,7 @@
         "nsis",
         "portable"
       ],
-      "icon": "desktop/assets/stykanimate.ico",
+      "icon": "desktop/assets/twiganimate.ico",
       "signExecutable": false,
       "extraResources": [
         {
@@ -241,20 +241,20 @@
       ]
     },
     "nsis": {
-      "installerIcon": "desktop/assets/stykanimate.ico",
-      "uninstallerIcon": "desktop/assets/stykanimate.ico",
-      "installerHeaderIcon": "desktop/assets/stykanimate.ico",
+      "installerIcon": "desktop/assets/twiganimate.ico",
+      "uninstallerIcon": "desktop/assets/twiganimate.ico",
+      "installerHeaderIcon": "desktop/assets/twiganimate.ico",
       "include": "desktop/installer.nsh",
-      "artifactName": "StykAnimate-Max-${version}-Setup-${arch}.${ext}",
+      "artifactName": "TwigAnimate-${version}-Setup-${arch}.${ext}",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true
     },
     "portable": {
-      "artifactName": "StykAnimate-Max-${version}-Portable-${arch}.${ext}"
+      "artifactName": "TwigAnimate-${version}-Portable-${arch}.${ext}"
     },
     "mac": {
-      "icon": "desktop/assets/stykanimate.icns",
+      "icon": "desktop/assets/twiganimate.icns",
       "target": [
         "dmg",
         "zip"
@@ -263,12 +263,12 @@
       "hardenedRuntime": true
     },
     "linux": {
-      "icon": "desktop/assets/stykanimate.png",
+      "icon": "desktop/assets/twiganimate.png",
       "target": [
         "AppImage"
       ],
       "category": "Graphics",
-      "executableName": "stykanimate-max",
+      "executableName": "twiganimate",
       "syncDesktopName": true,
       "synopsis": "Stick figure animation"
     },

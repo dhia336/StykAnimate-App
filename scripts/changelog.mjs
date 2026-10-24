@@ -81,7 +81,7 @@ export async function releaseOutputs(directory = root, { env = process.env } = {
     notes: group.notes.filter(note => !note.startsWith('Automatic updates for the Linux AppImage')),
   })).filter(group => group.notes.length);
   const info = { version: release.version, title: release.title, notes: groups.flatMap(group => group.notes), groups };
-  const markdown = `# StykAnimate-Max ${info.version}\n\n${info.title}\n\n${info.groups.map(group => `### ${group.name}\n\n${group.notes.map(note => `- ${note}`).join('\n')}`).join('\n\n')}\n\nAutomatic updates are not configured for StykAnimate-Max. Installers must be updated manually.\n`;
+  const markdown = `# TwigAnimate ${info.version}\n\n${info.title}\n\n${info.groups.map(group => `### ${group.name}\n\n${group.notes.map(note => `- ${note}`).join('\n')}`).join('\n\n')}\n\nAutomatic updates are not configured for TwigAnimate. Installers must be updated manually.\n`;
   return { 'desktop/release-info.json': JSON.stringify(info, null, 2) + '\n', 'release-notes.md': markdown };
 }
 

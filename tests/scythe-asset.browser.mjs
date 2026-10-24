@@ -12,7 +12,7 @@ const errors=[],checks=[];
 try{
  const page=await browser.newPage({viewport:{width:1440,height:1100}});
  page.on('pageerror',e=>errors.push(e.message));
- await page.goto(process.env.STYK_URL??'http://127.0.0.1:47861');
+ await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47861');
  await page.waitForFunction(()=>window.styk?.ready);
  const point=async index=>page.evaluate(index=>{
   const e=styk.editor,g=e.geometry.objects.get(0),p=index<0?g.root:g.segments[index].end;

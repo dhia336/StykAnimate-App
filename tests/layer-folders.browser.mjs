@@ -11,7 +11,7 @@ const settle=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()
 const row=id=>page.locator(`.sheet-layer[data-layer-id="${id}"]:visible`);
 const snapshot=()=>page.evaluate(()=>JSON.stringify(styk.editor.serialize()));
 try {
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(async()=>{const {emptyDocument}=await import('/src/demo.mjs');styk.settingsUI.commit({timelineMode:'advanced'});styk.editor.load(emptyDocument());for(const name of ['Floor','Drawings','Effects'])styk.editor.createLayer(name);});await settle();
   await row('layer-2').locator('.sheet-layer-name').click();
   await row('layer-3').locator('.sheet-layer-name').click({modifiers:['Control']});await settle();

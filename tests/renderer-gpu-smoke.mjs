@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 await mkdir(path.join(root, 'artifacts'), { recursive: true });
-const app = await electron.launch({ args: [root], cwd: root, timeout: 45000, env: { ...process.env, STYK_USER_DATA_DIR: path.join(root, 'artifacts', 'gpu-test-profile') } });
+const app = await electron.launch({ args: [root], cwd: root, timeout: 45000, env: { ...process.env, TWIGANIMATE_USER_DATA_DIR: path.join(root, 'artifacts', 'gpu-test-profile') } });
 try {
   const page = await app.firstWindow(); await page.waitForLoadState('domcontentloaded');
   await page.waitForFunction(() => window.styk?.ready === true, { timeout: 20000 });

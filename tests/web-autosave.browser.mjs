@@ -1,9 +1,9 @@
-// Autosave in the browser build, in a real browser (STYK_BROWSER=chrome|firefox|webkit): the last unsaved work
+// Autosave in the browser build, in a real browser (TWIGANIMATE_BROWSER=chrome|firefox|webkit): the last unsaved work
 // is kept a moment after each edit, offered again after a reload, replaced by a save, written the instant the tab
 // is hidden, and a browser that blocks storage neither breaks the editor nor floods it with messages.
 //
 //   node tests/web-autosave.browser.mjs            build the site into a temp directory first
-//   STYK_WEB_DIR=build/web node tests/...          test an existing build
+//   TWIGANIMATE_WEB_DIR=build/web node tests/...          test an existing build
 import assert from 'node:assert/strict';
 import { mkdtemp, rm } from 'node:fs/promises';
 import os from 'node:os';
@@ -13,7 +13,7 @@ import { buildWeb } from '../scripts/build-web.mjs';
 import { startWebServer } from '../scripts/serve-web.mjs';
 
 const temp = await mkdtemp(path.join(os.tmpdir(), 'styk-autosave-'));
-const existing = process.env.STYK_WEB_DIR && path.resolve(process.env.STYK_WEB_DIR);
+const existing = process.env.TWIGANIMATE_WEB_DIR && path.resolve(process.env.TWIGANIMATE_WEB_DIR);
 const site = await startWebServer({ root: existing ?? (await buildWeb({ output: path.join(temp, 'site') })).output });
 const browser = await launchBrowser();
 const checks = [];

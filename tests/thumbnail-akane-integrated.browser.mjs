@@ -6,7 +6,7 @@ import path from "node:path";
 
 import {corpusPath} from './support/corpus.mjs';
 const source =
-  process.argv[2] || process.env.STYK_AKANE_SOURCE ||
+  process.argv[2] || process.env.TWIGANIMATE_AKANE_SOURCE ||
   corpusPath("Downloads/16 Akane vs Akato Segundo round (3).piv");
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 const page = await browser.newPage({ viewport: { width: 1560, height: 1000 } });
@@ -22,7 +22,7 @@ const check = (label, value) => {
 page.on("pageerror", (error) => errors.push(error.message));
 await mkdir("artifacts", { recursive: true });
 try {
-  await page.goto(process.env.STYK_URL || "http://127.0.0.1:47831");
+  await page.goto(process.env.TWIGANIMATE_URL || "http://127.0.0.1:47831");
   await page.waitForFunction(() => window.styk?.ready && styk.thumbnails);
   await page.evaluate(() => styk.settingsUI.open("interface"));
   await page

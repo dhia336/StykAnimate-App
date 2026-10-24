@@ -62,7 +62,7 @@ Each written frame is posed with the single-frame rules (`applyPathPoint`): orig
 Run from the repository root:
 
 - `node --test tests/motion-path.test.mjs tests/motion-path-falloff.test.mjs`
-- `node tests/motion-path.browser.mjs` against the local app at port 47831 (`STYK_URL` overrides it).
+- `node tests/motion-path.browser.mjs` against the local app at port 47831 (`TWIGANIMATE_URL` overrides it).
 - `node scripts/benchmark-motion-path.mjs` against that same local app.
 
 Unit tests cover tip targeting, batched sampling agreeing with per-target sampling and a full-scene build, body references, relative projection and its hit testing, ghosts of joined components that exclude unrelated figures, and speed colouring. Falloff tests run the same reshape against native keyframes, animation channels and the layer timeline (live preview, one undo step, redo, save, untouched frames outside the influence, exact in-between grabs, cancellation), plus layer holds, switching falloff on, off and resizing mid-drag, camera trails and joint rotation. Browser checks also cover the falloff settings, right-drag message and tooltip, scroll resizing without zooming, removal of the former shortcuts, context-menu suppression, cancellation, stationary right-clicks and undo. Browser checks cover scope, joints, range, speed and relative persistence, numeric input, keyboard opening and dismissal, synchronized toggles, remote dragging with grab offset and Shift, the hover tooltip, the drag ghost, Escape cancellation, double-click to go to a frame, and undo. Screenshots in `artifacts/motion-path-ux/` cover light, dark and compact layouts, limb tips with speed and relative display, and the drag ghost.

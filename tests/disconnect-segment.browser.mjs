@@ -25,7 +25,7 @@ const scene = () => page.evaluate(() => ({count: styk.editor.selectionFrame.obje
   selected: styk.editor.selectedUid, name: styk.editor.figure?.name, types: styk.editor.report.figure_types.length}));
 const canvas = name => page.locator('#viewport').screenshot({path: path.join(out, `${name}.png`)});
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready, null, {timeout: 120000});
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready, null, {timeout: 120000});
   for (const mode of ['advanced', 'simple']) {
     await page.evaluate(mode => {
       styk.settingsUI.commit({timelineMode: mode, showHandles: true}); styk.editor.newDocument();

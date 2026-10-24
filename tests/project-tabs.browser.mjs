@@ -1,12 +1,12 @@
 // Project tabs in the real editor (docs/PROJECT-TABS.md): several projects stay open, one is live.
-// Needs the development server: node scripts/serve.mjs, then STYK_URL=<its origin> node tests/project-tabs.browser.mjs
+// Needs the development server: node scripts/serve.mjs, then TWIGANIMATE_URL=<its origin> node tests/project-tabs.browser.mjs
 import {installProjectSavePicker} from './support/project-save-picker.mjs';
 import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 
-const out = path.resolve('artifacts/project-tabs'), url = process.env.STYK_URL || 'http://127.0.0.1:47831';
+const out = path.resolve('artifacts/project-tabs'), url = process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831';
 await mkdir(out, {recursive: true});
 const browser = await chromium.launch({channel: 'chrome', headless: true});
 const page = await browser.newPage({viewport: {width: 1440, height: 900}, acceptDownloads: true});

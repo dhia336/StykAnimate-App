@@ -6,7 +6,7 @@ const browser = await chromium.launch({channel: 'chrome', headless: true});
 const page = await browser.newPage({viewport: {width: 1440, height: 900}});
 const errors = [];
 page.on('pageerror', error => errors.push(error.message));
-await page.addInitScript(() => localStorage.setItem('stykanimate.editor.settings.v1', JSON.stringify({rendererMode: 'canvas', locale: 'en'})));
+await page.addInitScript(() => localStorage.setItem('twiganimate.editor.settings.v1', JSON.stringify({rendererMode: 'canvas', locale: 'en'})));
 const mode = async name => {
   await page.locator(`.workspace-switch [data-workspace-mode="${name}"]`).click();
   await page.waitForFunction(name => document.querySelector('.workspace').dataset.mode === name, name);
@@ -16,7 +16,7 @@ async function drawSegment(x, y, dx = 65, dy = 30) {
   await page.mouse.move(x + dx, y + dy, {steps: 5}); await page.mouse.up();
 }
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47911');
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47911');
   await page.waitForFunction(() => window.styk?.ready);
   // This flow authors a new figure. Draw restores the selection it was entered
   // with, so explicitly deselect the starter instead of binding it on return.

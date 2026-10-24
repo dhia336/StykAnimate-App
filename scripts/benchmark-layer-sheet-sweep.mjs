@@ -16,7 +16,7 @@ import {buildGeometry,evaluatedFrame,evaluatedNativeFrame} from '../src/pivot/ge
 
 const label=process.argv[2]??'current';
 if(!/^[a-z0-9-]+$/i.test(label))throw new Error('Use an alphanumeric run label.');
-const repeats=Number(process.env.STYK_SWEEP_SAMPLES??11),batch=Number(process.env.STYK_SWEEP_SAMPLE_BATCH??10);
+const repeats=Number(process.env.TWIGANIMATE_SWEEP_SAMPLES??11),batch=Number(process.env.TWIGANIMATE_SWEEP_SAMPLE_BATCH??10);
 if(!Number.isInteger(repeats)||repeats<3||repeats>100||!Number.isInteger(batch)||batch<1||batch>100)
   throw new Error('Choose 3–100 samples and a sampling batch of 1–100 operations.');
 const output=path.resolve('artifacts/performance-sweep/layer-sheet',`${label}.json`);

@@ -116,19 +116,6 @@ test('brush and effect presentation never enter machine definitions', async () =
 });
 
 
-test('support vocabulary localizes presentation while shared service codes remain unchanged', async () => {
-  const shared=await import('../src/support-contract.mjs');
-  const {SUPPORT_CATEGORIES,supportErrorMessage}=await import('../src/support-localization.mjs');
-  const before=JSON.stringify([shared.SUPPORT_CATEGORIES,shared.SUPPORT_STATUSES,shared.SUPPORT_PRIORITIES]);
-  assert.equal(interfaceLocalization.t(SUPPORT_CATEGORIES.bug.messageKey),shared.SUPPORT_CATEGORIES.bug);
-  assert.equal(errorText(supportErrorMessage({code:'invalid_message'})),shared.supportError({code:'invalid_message'}));
-  interfaceLocalization.setPseudo('rtl');
-  try {
-    assert.ok(errorText(supportErrorMessage({code:'invalid_message'})).includes('اختبار'));
-    assert.equal(JSON.stringify([shared.SUPPORT_CATEGORIES,shared.SUPPORT_STATUSES,shared.SUPPORT_PRIORITIES]),before);
-  } finally {interfaceLocalization.setPseudo(null);}
-});
-
 test('import notice presentation leaves stored warnings and recovery records untouched', async () => {
   const {importWarningMessage}=await import('../src/import-notes-localization.mjs');
   const warning={code:'piv_missing_image_data',message:'Original diagnostic'},report={piv_missing_images:[{figure_name:'My figure'}]};
@@ -139,4 +126,3 @@ test('import notice presentation leaves stored warnings and recovery records unt
   assert.equal(JSON.stringify({warning,report}),before);
   assert.equal(importWarningMessage({code:'external',message:'External detail'}).message,'External detail');
 });
-

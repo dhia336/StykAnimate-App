@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {chromium} from './support/playwright.mjs';
 
-const URL=process.env.STYK_URL||'http://127.0.0.1:47831',out='artifacts/playback-range';
+const URL=process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831',out='artifacts/playback-range';
 const browser=await chromium.launch({channel:'chrome',headless:true});
 const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[],checks=[];
 page.on('pageerror',error=>errors.push(error.message));

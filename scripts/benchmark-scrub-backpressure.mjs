@@ -8,7 +8,7 @@ const output='artifacts/scrub-backpressure';await mkdir(output,{recursive:true})
 const browser=await chromium.launch({channel:'chrome',headless:true});const results=[];
 try{for(const gated of [false,true]){
 const page=await browser.newPage({viewport:{width:1500,height:950}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
-await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>styk.ready);
+await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>styk.ready);
 await page.evaluate(async gated=>{
 const {Editor}=await import('/src/editor.mjs'),{createFrame,createObject}=await import('/src/demo.mjs'),{Timeline}=await import('/src/layer-timeline.mjs');
 const e=new Editor();e.selectMany([1,2,3]);const figure=e.createMovieclip({start:0,end:20,replace:false});

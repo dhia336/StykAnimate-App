@@ -48,6 +48,10 @@ test('CATALOG_REQUIREMENTS lists every requirement name the catalog uses', () =>
   assert.ok(CATALOG_REQUIREMENTS.includes('desktop:updates') && CATALOG_REQUIREMENTS.includes('figure'));
 });
 
+test('removed support and privacy actions are not discoverable', () => {
+  for (const id of ['feedback', 'privacy']) assert.equal(COMMAND_BY_ID.has(id), false, id);
+});
+
 test('no two commands claim the same shortcut', () => {
   // Within a scope, the default bindings the catalog shows never collide.
   const shown = new Set(COMMAND_CATALOG.map(hotkeyOf).filter(Boolean));

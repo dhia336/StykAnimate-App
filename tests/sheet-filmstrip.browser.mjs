@@ -7,7 +7,7 @@ const page=await browser.newPage({viewport:{width:1400,height:1000}}),checks=[],
 page.on('pageerror',error=>errors.push(error.message));
 const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('PASS',name);};
 try {
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   check('Hidden mount defers selection reveal and thumbnail work',await page.evaluate(async()=>{
     const {Editor}=await import('/src/editor.mjs'),{createDemo}=await import('/src/demo.mjs'),{SimpleTimeline}=await import('/src/simple-timeline.mjs');
     const report=createDemo();report.keyframes=Array.from({length:240},(_,i)=>structuredClone(report.keyframes[i%24]));

@@ -8,8 +8,8 @@ import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 
-const output=process.env.STYK_WORKFLOW_ARTIFACTS||'artifacts/drawing-workflow',label=process.env.STYK_WORKFLOW_LABEL||'current';
-const url=process.env.STYK_URL||'http://127.0.0.1:47839',software=process.env.STYK_WORKFLOW_SOFTWARE==='1',frames=Number(process.env.STYK_WORKFLOW_FRAMES||24);
+const output=process.env.TWIGANIMATE_WORKFLOW_ARTIFACTS||'artifacts/drawing-workflow',label=process.env.TWIGANIMATE_WORKFLOW_LABEL||'current';
+const url=process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839',software=process.env.TWIGANIMATE_WORKFLOW_SOFTWARE==='1',frames=Number(process.env.TWIGANIMATE_WORKFLOW_FRAMES||24);
 await mkdir(output,{recursive:true});
 const percentile=(values,p)=>{if(!values.length)return null;const sorted=[...values].sort((a,b)=>a-b);return sorted[Math.min(sorted.length-1,Math.floor(p*sorted.length))];};
 const summary=values=>({count:values.length,p50:percentile(values,.5),p95:percentile(values,.95),max:values.length?Math.max(...values):null});

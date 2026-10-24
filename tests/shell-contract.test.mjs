@@ -109,6 +109,15 @@ export const SHELL_CONTRACT = Object.freeze({
 });
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+
+test('desktop bridge has no support or telemetry service APIs', () => {
+  const main = readFileSync(new URL('../desktop/main.cjs', import.meta.url), 'utf8');
+  const preload = readFileSync(new URL('../desktop/preload.cjs', import.meta.url), 'utf8');
+  for (const source of [main, preload]) {
+    assert.doesNotMatch(source, /supportRequest|getTelemetryState|recordTelemetry|support-live|support\/api/i);
+  }
+});
+
 // app.mjs owns the actions map and passes it to modules that register more.
 const actionSources = readActionSources();
 
@@ -328,14 +337,14 @@ test('index.html links one layered stylesheet whose imports all resolve', () => 
   const links = all.filter(element => element.tag === 'link' && element.attrs.rel === 'stylesheet').map(element => element.attrs.href);
   assert.deepEqual(links, ['./src/styles/app.css'], 'src/styles/app.css imports every other sheet');
   // A sheet imported without layer() would be unlayered and beat every layer.
-  for (const sheet of ['src/styles/app.css', 'src/styles/support-bridge.css']) {
+  for (const sheet of ['src/styles/app.css']) {
     const base = new URL(`../${sheet}`, import.meta.url);
     const css = readFileSync(base, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
     const imports = [...css.matchAll(/@import\s+url\("([^"]+)"\)\s*([^;]*);/g)];
     assert.ok(imports.length > 0 && imports.length === (css.match(/@import/g) ?? []).length, `${sheet}: every @import uses url("…")`);
     for (const [, href, layer] of imports) {
       assert.ok(existsSync(new URL(href, base)), `${sheet} imports ${href}, which exists`);
-      if (sheet.endsWith('support-bridge.css') || href.startsWith('./legacy/')) assert.equal(layer.trim(), 'layer(legacy)', `${href} loads into the legacy layer`);
+      if (href.startsWith('./legacy/')) assert.equal(layer.trim(), 'layer(legacy)', `${href} loads into the legacy layer`);
     }
     if (sheet.endsWith('app.css'))
       assert.match(css.trimStart(), /^@layer legacy, reset, tokens, base, layout, components, features, states, utilities;/, 'the layer order is declared before any import');

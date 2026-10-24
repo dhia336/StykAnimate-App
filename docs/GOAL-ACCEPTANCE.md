@@ -6,6 +6,10 @@ behavior and markedly better large-scene interaction. A packaged first slice or 
 green smoke test does **not** complete that objective. This ledger records current
 source progress. Windows 0.3.0 is now built and verified; older releases are preserved.
 
+This inherited acceptance ledger predates the TwigAnimate fork changes. Its
+release and verification claims are historical and do not verify the current
+fork's branding, service removal, or packaging.
+
 Final Windows delivery verification on September 9 passed the packaged native
 WebGPU/import/save/close smoke, two-process settings and Italian locale persistence,
 and all 32 workspace/timeline checks. The final package contains the compact
@@ -28,7 +32,7 @@ results do not transfer to untested later changes.
 
 | Requirement | Current evidence | Remaining acceptance |
 | --- | --- | --- |
-| StykAnimate-Max desktop application | The package and Electron window use the Community name, a fork-specific application ID and distinct icon sources; project formats and the `stykanimate://` protocol remain compatible. | Build and smoke-test the final branded package rather than claiming an older artifact contains these changes. |
+| TwigAnimate desktop application | The package and Electron window use TwigAnimate, app ID `io.github.dhia336.twiganimate`, distinct icon sources and the `twiganimate:` protocol; project formats remain compatible. | Build and smoke-test the final branded package rather than claiming an older artifact contains these changes. |
 | Custom WebGPU canvas | Live editing and prepared playback use WebGPU, retained resources, bounded caches and workers. Actual unavailable-device status and graphics-loss input cancellation/reconnect pass the integrated UX walkthrough. | Final source performance measurements; wider native pixel/platform recovery comparisons are coverage limits. |
 | Clean Figma-style UI and usable movable/resizable panels | Real user layers, contextual inspector, continuous numeric scrubbing, independent settings, docking/floating and compact-width controls have interaction evidence. | Finish the native workflows below and repeat the final integrated visual/focus walkthrough. |
 | Adobe Animate-style Advanced timeline | Independent layer pose keys and scalar channels, permanent Scene/Camera tracks, blank keys, undo and STYK/PIV roundtrips pass 22 actual-app checks; large Akane layer migration and scoped-row interaction also have actual evidence. | Final integrated smoke and stated performance limits; no known missing named track operation. |

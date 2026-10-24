@@ -3,7 +3,7 @@ import {chromium} from '../tests/support/playwright.mjs';
 import {mkdir, writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
-const label = process.argv[2] ?? 'latest', count = Number(process.env.STYK_BENCH_OBJECTS ?? 160);
+const label = process.argv[2] ?? 'latest', count = Number(process.env.TWIGANIMATE_BENCH_OBJECTS ?? 160);
 const output = 'artifacts/onion-performance';
 await mkdir(output, {recursive: true});
 const browser = await chromium.launch({channel: 'chrome', headless: true});
@@ -11,7 +11,7 @@ try {
   const page = await browser.newPage({viewport: {width: 1440, height: 960}}), errors = [];
   page.on('pageerror', error => errors.push(error.message));
   page.on('console', message => { if (message.text().startsWith('ONION BENCH')) console.log(message.text()); });
-  await page.goto(process.env.STYK_URL ?? 'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL ?? 'http://127.0.0.1:47831');
   await page.waitForFunction(() => window.styk?.ready);
   const results = await page.evaluate(async count => {
     const {Editor} = await import('/src/editor.mjs');

@@ -14,7 +14,7 @@ async function seek(tick) { await page.evaluate(tick => styk.editor.seek(tick), 
 async function type(key, value) { await field(key).fill(String(value)); await field(key).press('Enter'); await page.waitForTimeout(100); }
 try {
   await mkdir(out, {recursive: true});
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831');
   await page.waitForFunction(() => window.styk?.ready);
   await page.evaluate(async () => {
     const {emptyDocument, createFrame, createObject} = await import('/src/demo.mjs');

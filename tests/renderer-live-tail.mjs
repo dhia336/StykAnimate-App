@@ -4,22 +4,22 @@ import {mkdir, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {corpusPath} from './support/corpus.mjs';
 const root = process.cwd(), source = process.argv[2] || corpusPath('Downloads/16 Akane vs Akato Segundo round (3).piv');
-const suffix = (process.env.STYK_GPU_SUFFIX || '').replace(/[^a-z0-9-]/gi, '');
-const startTick = Number(process.env.STYK_START_TICK || 1824), endTick = Number(process.env.STYK_END_TICK || 1872);
-const fps = Number(process.env.STYK_PROBE_FPS || 16);
-const stallTrace = process.env.STYK_TRACE_STALL === '1';
-const desktop = process.env.STYK_DESKTOP === '1';
+const suffix = (process.env.TWIGANIMATE_GPU_SUFFIX || '').replace(/[^a-z0-9-]/gi, '');
+const startTick = Number(process.env.TWIGANIMATE_START_TICK || 1824), endTick = Number(process.env.TWIGANIMATE_END_TICK || 1872);
+const fps = Number(process.env.TWIGANIMATE_PROBE_FPS || 16);
+const stallTrace = process.env.TWIGANIMATE_TRACE_STALL === '1';
+const desktop = process.env.TWIGANIMATE_DESKTOP === '1';
 const output = path.join(root, 'artifacts', `renderer-live-tail${suffix}`); await mkdir(output, {recursive: true});
-const desktopApp = desktop ? await electron.launch({args: [root], cwd: root, timeout: 45000, env: {...process.env, STYK_USER_DATA_DIR: path.join(output, 'profile')}}) : null;
+const desktopApp = desktop ? await electron.launch({args: [root], cwd: root, timeout: 45000, env: {...process.env, TWIGANIMATE_USER_DATA_DIR: path.join(output, 'profile')}}) : null;
 const browser = desktop ? null : await chromium.launch({channel: 'chrome', headless: true});
 try {
   const page = desktop ? await desktopApp.firstWindow() : await browser.newPage({viewport: {width: 1600, height: 1000}}), errors = [];
   let resolveStall; const stallPromise = new Promise(resolve => { resolveStall = resolve; });
   if (stallTrace) await page.exposeBinding('stykTraceGap', (_, event) => resolveStall(event));
   page.on('pageerror', error => errors.push(error.message));
-  if (!desktop) await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831');
+  if (!desktop) await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831');
   await page.waitForFunction(() => window.styk?.ready);
-  if (desktop && process.env.STYK_DEFAULT_VIEWPORT !== '1') {
+  if (desktop && process.env.TWIGANIMATE_DEFAULT_VIEWPORT !== '1') {
     await desktopApp.evaluate(({BrowserWindow}) => { const window = BrowserWindow.getAllWindows()[0]; window.setContentSize(1600, 1000); window.show(); window.focus(); });
     await page.waitForTimeout(200);
     const delta = await page.evaluate(() => ({width: 1120 - styk.state.renderer.width, height: 652 - styk.state.renderer.height}));
@@ -40,7 +40,7 @@ try {
       return result;
     };
     const e = styk.editor; e.setFPS(fps); e.markSaved(); styk.state.loop = false; styk.state.loopRange = {startTick, endTick}; e.seek(startTick); styk.fit();
-  }, {startTick, endTick, fps, adaptPrefetch: process.env.STYK_ADAPT_PREFETCH === '1'});
+  }, {startTick, endTick, fps, adaptPrefetch: process.env.TWIGANIMATE_ADAPT_PREFETCH === '1'});
   await page.waitForTimeout(2500);
   const configuration = await page.evaluate(async () => {
     const {cameraMatrix} = await import('/src/renderer.mjs'), renderer = styk.state.renderer;
@@ -74,12 +74,12 @@ try {
     return {view: {...styk.state.view}, workerScale: styk.state.playbackScale, dpr: renderer.dpr, viewport: [renderer.width, renderer.height], fps: styk.editor.report.fps, readyWorker: styk.performance().playback, adapter: renderer.stats.adapter};
   });
   let traceClient, profileClient;
-  if (process.env.STYK_CPU_PROFILE === '1') {
+  if (process.env.TWIGANIMATE_CPU_PROFILE === '1') {
     profileClient = await (desktop ? desktopApp.context() : page.context()).newCDPSession(page);
     await profileClient.send('Profiler.enable'); await profileClient.send('Profiler.setSamplingInterval', {interval: 500});
     await profileClient.send('Profiler.start');
   }
-  if (process.env.STYK_GPU_TRACE === '1') {
+  if (process.env.TWIGANIMATE_GPU_TRACE === '1') {
     traceClient = desktop ? await desktopApp.context().newCDPSession(page) : await browser.newBrowserCDPSession();
     const {categories} = await traceClient.send('Tracing.getCategories');
     await writeFile(path.join(output, 'trace-categories.json'), JSON.stringify(categories, null, 2));
@@ -112,7 +112,7 @@ try {
   const summary = {frames: frames.length, firstTick: frames[0]?.tick, lastTick: frames.at(-1)?.tick, elapsedMs: frames.at(-1)?.at - frames[0]?.at, workerCompileCounts,
     intervals: quantiles(intervals.map(p => p.ms)), queueCompletionCallbacks: quantiles(measurements.queues.map(q => q.elapsed)), uploads: quantiles(measurements.uploads.map(p => p.cpuMs)), preparedCPU: quantiles(frames.map(p => p.cpuMs)),
     largestPacket: Math.max(...measurements.uploads.map(p => p.packetBytes)), slowIntervals: intervals.filter(p => p.ms > 90), longTasks: measurements.longTasks, regular: measurements.regular.map(p => ({tick: p.tick, cpuMs: p.cpuMs}))};
-  await writeFile(path.join(output, 'report.json'), JSON.stringify({environment: desktop ? 'Visible Electron desktop' : 'Headless Chrome', diagnosticAdaptivePrefetch: process.env.STYK_ADAPT_PREFETCH === '1', configuration, summary, measurements, detectedStall, errors, limitation: 'One GPU. onSubmittedWorkDone callback delay includes GPU queue execution and main-thread callback scheduling; it is not a pure GPU timestamp or display scanout measurement. Optional stall mode freezes a bounded Chrome trace and stops playback at the first active rAF gap above120ms.'}, null, 2));
+  await writeFile(path.join(output, 'report.json'), JSON.stringify({environment: desktop ? 'Visible Electron desktop' : 'Headless Chrome', diagnosticAdaptivePrefetch: process.env.TWIGANIMATE_ADAPT_PREFETCH === '1', configuration, summary, measurements, detectedStall, errors, limitation: 'One GPU. onSubmittedWorkDone callback delay includes GPU queue execution and main-thread callback scheduling; it is not a pure GPU timestamp or display scanout measurement. Optional stall mode freezes a bounded Chrome trace and stops playback at the first active rAF gap above120ms.'}, null, 2));
   console.log(JSON.stringify({configuration, summary, errors}, null, 2));
   if (errors.length || (!detectedStall && frames.length !== endTick - startTick) || frames.some((p, i) => p.tick !== startTick + i)) throw new Error('Actual playback failed to present every expected tick.');
 } finally {if (desktopApp) await desktopApp.close(); else await browser.close();}

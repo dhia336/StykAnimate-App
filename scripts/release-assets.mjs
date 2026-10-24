@@ -13,11 +13,11 @@ export async function verifyReleaseAssets(directory, version, platform = 'all') 
   assert.ok(['all', 'win32', 'linux'].includes(platform), 'Choose all, win32 or linux release assets.');
   const names = [];
   if (platform !== 'linux') {
-    const setup = `StykAnimate-Max-${version}-Setup-x64.exe`;
-    names.push(setup, `StykAnimate-Max-${version}-Portable-x64.exe`);
+    const setup = `TwigAnimate-${version}-Setup-x64.exe`;
+    names.push(setup, `TwigAnimate-${version}-Portable-x64.exe`);
   }
   if (platform !== 'win32') {
-    const appimage = `StykAnimate-Max-${version}-linux-x86_64.AppImage`;
+    const appimage = `TwigAnimate-${version}-linux-x86_64.AppImage`;
     names.push(appimage);
   }
   for (const name of names) assert.ok((await stat(path.join(directory, name))).size > 0, `Missing release asset: ${name}`);

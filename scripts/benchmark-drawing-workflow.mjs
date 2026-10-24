@@ -7,7 +7,7 @@ const page=await browser.newPage({viewport:{width:1440,height:1000}});
 const results={scenarios:[]},errors=[];
 page.on('pageerror',error=>errors.push(error.message));
 try{
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(()=>{styk.state.settings.autosaveSeconds=0;});
   await page.locator('[data-workspace-mode="draw"]').click();
   for(const count of [1,500]){
@@ -70,5 +70,5 @@ try{
     }finally{owner.dispose();}
   });
   results.errors=errors;results.environment={cpu:os.cpus()[0]?.model,node:process.version,chrome:await browser.version(),headless:true,viewport:{width:1440,height:1000},date:new Date().toISOString()};
-  const output=process.env.STYK_DRAWING_ARTIFACTS||'artifacts/drawing';await mkdir(output,{recursive:true});await writeFile(output+'/workflow-performance.json',JSON.stringify(results,null,2));console.log(JSON.stringify(results,null,2));
+  const output=process.env.TWIGANIMATE_DRAWING_ARTIFACTS||'artifacts/drawing';await mkdir(output,{recursive:true});await writeFile(output+'/workflow-performance.json',JSON.stringify(results,null,2));console.log(JSON.stringify(results,null,2));
 }finally{await browser.close();}

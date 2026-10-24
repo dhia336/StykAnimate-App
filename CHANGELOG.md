@@ -1,6 +1,7 @@
-# StykAnimate changelog
+# TwigAnimate changelog
 
-What's new in each version of StykAnimate.
+What's new in TwigAnimate. Entries before this fork are retained as upstream
+release history for context.
 
 <!-- Maintainers: follow the writing guide in docs/RELEASING.md before adding entries. -->
 
@@ -8,7 +9,6 @@ What's new in each version of StykAnimate.
 
 ### Added
 
-- StykAnimate is now open source: its code is on GitHub under the GPL-3.0 license.
 - Everyday Props · Pivot 3D: 30 editable everyday objects with working hinges and wheels for your animations.
 - Vehicles · Pivot 3D asset pack with twelve editable vehicles, spinning wheels, steering and opening parts.
 - Named poses for articulated figures, with detailed controls that can be shown when needed.
@@ -21,8 +21,14 @@ What's new in each version of StykAnimate.
 ### Changed
 
 - Ctrl-dragging a node that uses IK stretches it like any other node.
-- A calmer top bar: the menus are in the StykAnimate menu, and your open projects take their place.
-- Added a new animated-figure logo and fork credits for StykAnimate-Max.
+- A calmer top bar: the menus are in the TwigAnimate menu, and your open projects take their place.
+- TwigAnimate now has a distinct product identity as an independently maintained fork.
+- New local library assets are saved in TwigAnimate's Documents folder; the previous StykAnimate library folder is left untouched.
+- Automatic updates are disabled for this fork.
+
+### Removed
+
+- The online community catalogue and in-app support requests are removed; local libraries and project workflows remain available.
 
 ### Fixed
 

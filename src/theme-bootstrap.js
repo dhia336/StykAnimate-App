@@ -5,8 +5,8 @@
     ? value : (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   let theme = resolveTheme('system'), stored = null;
   try {
-    stored = JSON.parse(localStorage.getItem('stykanimate.editor.settings.v1') || 'null');
-    const saved = localStorage.getItem('stykanimate.theme.v1');
+    stored = JSON.parse(localStorage.getItem('twiganimate.editor.settings.v1') || 'null');
+    const saved = localStorage.getItem('twiganimate.theme.v1');
     const value = saved ?? stored?.theme;
     theme = resolveTheme(value);
   } catch { /* Follow the system when stored preferences cannot be read. */ }

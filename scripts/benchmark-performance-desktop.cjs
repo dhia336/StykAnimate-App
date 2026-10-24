@@ -6,19 +6,19 @@ const {writeFile} = require('node:fs/promises');
 const path = require('node:path');
 const os = require('node:os');
 const assert = require('node:assert/strict');
-const actualMemoryBytes=os.totalmem(),memoryHintGiB=Number(process.env.STYK_BENCH_MEMORY_GIB||0);
+const actualMemoryBytes=os.totalmem(),memoryHintGiB=Number(process.env.TWIGANIMATE_BENCH_MEMORY_GIB||0);
 assert.ok(!memoryHintGiB||Number.isFinite(memoryHintGiB)&&memoryHintGiB>=.5&&memoryHintGiB<=128);
 // Policy simulation only: this neither limits physical RAM nor emulates a GPU.
 if(memoryHintGiB)os.totalmem=()=>memoryHintGiB*1073741824;
-const input = process.env.STYK_BENCH_INPUT, output = process.env.STYK_BENCH_OUTPUT;
-assert.ok(input && output && process.env.STYK_USER_DATA_DIR, 'Run through the benchmark driver');
-const sessionCycles=Number(process.env.STYK_BENCH_SESSION_CYCLES||0);
+const input = process.env.TWIGANIMATE_BENCH_INPUT, output = process.env.TWIGANIMATE_BENCH_OUTPUT;
+assert.ok(input && output && process.env.TWIGANIMATE_USER_DATA_DIR, 'Run through the benchmark driver');
+const sessionCycles=Number(process.env.TWIGANIMATE_BENCH_SESSION_CYCLES||0);
 assert.ok(Number.isInteger(sessionCycles)&&sessionCycles>=0&&sessionCycles<=1000);
 if(sessionCycles)app.commandLine.appendSwitch('enable-precise-memory-info');
-if(sessionCycles&&process.env.STYK_BENCH_SESSION_GC==='1')app.commandLine.appendSwitch('js-flags','--expose-gc');
-const exportFormats = (process.env.STYK_BENCH_EXPORT_FORMATS || 'piv,piv,styk').split(',');
+if(sessionCycles&&process.env.TWIGANIMATE_BENCH_SESSION_GC==='1')app.commandLine.appendSwitch('js-flags','--expose-gc');
+const exportFormats = (process.env.TWIGANIMATE_BENCH_EXPORT_FORMATS || 'piv,piv,styk').split(',');
 assert.ok(exportFormats.length <= 3 && exportFormats.every(format => ['piv', 'styk'].includes(format)));
-const playbackFrames=Number(process.env.STYK_BENCH_PLAYBACK_FRAMES||64);
+const playbackFrames=Number(process.env.TWIGANIMATE_BENCH_PLAYBACK_FRAMES||64);
 assert.ok(Number.isInteger(playbackFrames)&&playbackFrames>0&&playbackFrames<=5000);
 const started = performance.now(); let running = false;
 // Let the driver stop a timed-out run through normal backend cleanup.
@@ -48,9 +48,9 @@ async function run(window) {
   await execute("for (const dialog of document.querySelectorAll('dialog[open]')) dialog.close(); styk.editor.markSaved();");
   // A benchmark-only opt-out compares the ordinary transport on identical
   // production bytes. It does not alter document, worker, or rendering settings.
-  if(process.env.STYK_BENCH_PLAYBACK_TRANSPORT === 'document')
+  if(process.env.TWIGANIMATE_BENCH_PLAYBACK_TRANSPORT === 'document')
     await execute("import('/src/playback.mjs').then(({PlaybackCache})=>{PlaybackCache.prototype.stageNativeSnapshot=()=>false;})");
-  if(process.env.STYK_BENCH_WORKER_ADMISSION==='off')
+  if(process.env.TWIGANIMATE_BENCH_WORKER_ADMISSION==='off')
     await execute("import('/src/playback.mjs').then(({PlaybackCache})=>{PlaybackCache.prototype._admitWorkers=function(){if(this.workers.length!==this.workerLimit)this._resizeWorkers(this.workerLimit);};})");
   const imported = await execute(`(async () => {
     const tasks = [], errors = [], observer = new PerformanceObserver(list => tasks.push(...list.getEntries().map(entry => entry.duration)));
@@ -67,13 +67,13 @@ async function run(window) {
   })()`);
   assert.ok(imported.frames > 1); assert.equal(imported.timings.cache_hit, false); assert.deepEqual(imported.errors, []);
   const processes = app.getAppMetrics();
-  const editing = process.env.STYK_BENCH_EDITING === '1' ? await require('./benchmark-editing-desktop.cjs')(window) : null;
-  const seekGpu=process.env.STYK_BENCH_SEEK_GPU?await require('./benchmark-seek-gpu.cjs')(window,
-    {timestamps:process.env.STYK_BENCH_SEEK_GPU==='timed'}):null;
+  const editing = process.env.TWIGANIMATE_BENCH_EDITING === '1' ? await require('./benchmark-editing-desktop.cjs')(window) : null;
+  const seekGpu=process.env.TWIGANIMATE_BENCH_SEEK_GPU?await require('./benchmark-seek-gpu.cjs')(window,
+    {timestamps:process.env.TWIGANIMATE_BENCH_SEEK_GPU==='timed'}):null;
   const playbackMemorySamples=[];
-  const memoryTimer=process.env.STYK_BENCH_PLAYBACK==='1'?setInterval(()=>playbackMemorySamples.push({at:performance.now()-started,
+  const memoryTimer=process.env.TWIGANIMATE_BENCH_PLAYBACK==='1'?setInterval(()=>playbackMemorySamples.push({at:performance.now()-started,
     processes:app.getAppMetrics().map(({pid,type,memory})=>({pid,type,memory}))}),250):null;
-  const playback = process.env.STYK_BENCH_PLAYBACK === '1' ? await execute(`(async () => {
+  const playback = process.env.TWIGANIMATE_BENCH_PLAYBACK === '1' ? await execute(`(async () => {
     const renderer = styk.state.renderer, render = renderer.renderPrepared;
     if (typeof render !== 'function') throw new Error('Playback attribution requires the WebGPU path');
     const presented = [], tasks = [], errors = [], before = structuredClone(styk.performance());
@@ -117,7 +117,7 @@ async function run(window) {
   })()`);
   const health = await execute("fetch('/api/health').then(r => r.json())");
   await writeFile(path.join(output, 'import.png'), (await window.webContents.capturePage()).toPNG());
-  const exports = process.env.STYK_BENCH_EXPORT === '1' ? await execute(`(async () => {
+  const exports = process.env.TWIGANIMATE_BENCH_EXPORT === '1' ? await execute(`(async () => {
     const {DocumentExporter} = await import('/src/document-export.mjs');
     const exporter = new DocumentExporter(), rows = [];
     try {
@@ -137,7 +137,7 @@ async function run(window) {
     } finally {exporter.dispose();}
   })()`) : null;
   const session=sessionCycles?await require('./benchmark-session-memory.cjs')(window,{cycles:sessionCycles,input,
-    alternate:process.env.STYK_BENCH_ALTERNATE_INPUT,output,forcedGC:process.env.STYK_BENCH_SESSION_GC==='1',
+    alternate:process.env.TWIGANIMATE_BENCH_ALTERNATE_INPUT,output,forcedGC:process.env.TWIGANIMATE_BENCH_SESSION_GC==='1',
     choose:file=>{selectedInput=file;},metrics:()=>app.getAppMetrics()}):null;
   await writeFile(path.join(output, 'report.json'), JSON.stringify({readyAt, startupMs, baseline, baselineHealth, imported, processes, digest, health,
     exports, playback, playbackProcesses, playbackMemorySamples, editing, session, seekGpu,

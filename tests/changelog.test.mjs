@@ -42,7 +42,7 @@ test('generates only the newest release, is idempotent, and catches partial/stal
   await prepareReleaseNotes(directory, { env: {} });
   const notes = await readFile(path.join(directory, 'release-notes.md'), 'utf8');
   assert.match(notes, /New feature/);
-  assert.match(notes, /# StykAnimate-Max 0\.10\.0/);
+  assert.match(notes, /# TwigAnimate 0\.10\.0/);
   assert.doesNotMatch(notes, /Pending fix|Old fix/);
   const info = JSON.parse(await readFile(path.join(directory, 'desktop/release-info.json'), 'utf8'));
   assert.deepEqual(info, { version: '0.10.0', title: 'Current release', notes: ['New feature.'], groups: [{name:'Added',notes:['New feature.']}] });

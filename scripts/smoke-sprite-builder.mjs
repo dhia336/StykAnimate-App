@@ -4,7 +4,7 @@ import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 const root=path.resolve(import.meta.dirname,'..'),directory=path.join(root,'artifacts',`sprite-builder-${Date.now()}`),imageFile=path.join(root,'artifacts','sprite-placement','upper-arm.png');
 await mkdir(directory,{recursive:true});await readFile(imageFile);
-const app=await electron.launch({args:[root],cwd:root,timeout:45000,env:{...process.env,STYK_USER_DATA_DIR:path.join(directory,'profile')}});
+const app=await electron.launch({args:[root],cwd:root,timeout:45000,env:{...process.env,TWIGANIMATE_USER_DATA_DIR:path.join(directory,'profile')}});
 const checks=[],errors=[],check=name=>{checks.push(name);console.log(`PASS ${name}`);};
 try {
   const page=await app.firstWindow();page.on('pageerror',error=>errors.push(error.message));await page.waitForFunction(()=>window.styk?.ready);

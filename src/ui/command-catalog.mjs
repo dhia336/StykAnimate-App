@@ -326,9 +326,7 @@ group('help', [
   ['release-notes', english["commands.releaseNotes"], 'file', {labelKey: "commands.releaseNotes", requires: ['desktop:updates'], keywords: ['release notes', 'changelog']}],
   ['check-updates', english["commands.checkUpdates"], 'import', {labelKey: "commands.checkUpdates", requires: ['desktop:updates']}],
   ['restart-update', english["commands.restartUpdate"], 'import', {labelKey: "commands.restartUpdate", requires: ['update-ready']}],
-  ['feedback', english["commands.feedback"], 'message', {labelKey: "commands.feedback", requires: ['desktop:feedback'], keywords: ['feedback', 'support', 'bug']}],
   ['performance', english["menu.performance"], 'activity', {labelKey: 'menu.performance', keywords: ['fps', 'renderer', 'diagnostics']}],
-  ['privacy', english["commands.privacy"], 'lock', {labelKey: "commands.privacy", requires: ['desktop:telemetry'], keywords: ['telemetry']}],
 ]);
 group('app', [
   ['menu', english["commands.menu"], 'more', {...internal, labelKey: "commands.menu"}],

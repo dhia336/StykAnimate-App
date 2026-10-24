@@ -103,9 +103,9 @@ Unchanged embedded STK sources also export byte-for-byte after a service restart
 
 ## Desktop packaging
 
-The Electron launcher may set `STYK_TOOLS_ROOT`, `STYK_BRIDGE_PATH`, and
-`STYK_WEB_ROOT` to staged resources. `--workspace` selects sample discovery root;
-`--static-root` overrides web assets. An optional `STYK_API_TOKEN` or `--token`
+The Electron launcher may set `TWIGANIMATE_TOOLS_ROOT`, `TWIGANIMATE_BRIDGE_PATH`, and
+`TWIGANIMATE_WEB_ROOT` to staged resources. `--workspace` selects sample discovery root;
+`--static-root` overrides web assets. An optional `TWIGANIMATE_API_TOKEN` or `--token`
 requires `Authorization: Bearer <token>` for codec APIs. Health and static
 resources remain available to the launcher. Host and Origin must be local even
 without a token; remote origins and filesystem traversal are rejected.
@@ -208,7 +208,7 @@ The optional [orjson encoder](https://github.com/ijl/orjson) emits UTF-8 bytes
 directly for validated data. Unsupported integer widths and unusual Unicode
 fall back to the original ASCII-escaping serializer; every corpus value is
 compared against the standard encoder. Fingerprints keep their stable standard
-JSON encoding. Set `STYK_DISABLE_FAST_JSON=1` to verify the dependency-free path.
+JSON encoding. Set `TWIGANIMATE_DISABLE_FAST_JSON=1` to verify the dependency-free path.
 The encoded response uses one concatenation allocation instead of several.
 
 ### Native frame transport and validation-only decoding
@@ -304,14 +304,14 @@ the same 2560 MiB (2.5 GiB) estimated pose budget as the Python scanner and fron
 bytes per frame/object, 24 per pose scalar and 64 per joined object. Frame and
 object inventory charges occur before their allocations.
 
-Set `STYK_DISABLE_NATIVE_SCAN=1` to exercise the Python fallback. A missing or
+Set `TWIGANIMATE_DISABLE_NATIVE_SCAN=1` to exercise the Python fallback. A missing or
 incompatible library also falls back; `native_scan.status()` reports the actual
 selected implementation. Release packaging adds the matching library under the
 sidecar's `native` directory. Windows x64 is verified locally; other platform
 binaries must be built and tested on their target OS.
 
 Run `python -m unittest discover -s backend -p test_native_scan.py -v` after
-building. Set `STYK_REQUIRE_NATIVE_SCAN=1` in release checks to fail if the library
+building. Set `TWIGANIMATE_REQUIRE_NATIVE_SCAN=1` in release checks to fail if the library
 is absent. The tests compare both implementations across 1,500 deterministic
 byte mutations, all truncations of a mixed fixture, signed UID boundaries,
 hidden-frame interpolation, a 5,000-object join chain/cycle and exact resource

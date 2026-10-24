@@ -5,14 +5,14 @@ import path from 'node:path';
 
 const root=path.resolve('.'), output=path.join(root,'artifacts/playback-integrity/quality-transition');
 await mkdir(output,{recursive:true});
-const app=await electron.launch({args:[root],cwd:root,env:{...process.env,STYK_USER_DATA_DIR:path.join(output,`profile-${Date.now()}`)}});
+const app=await electron.launch({args:[root],cwd:root,env:{...process.env,TWIGANIMATE_USER_DATA_DIR:path.join(output,`profile-${Date.now()}`)}});
 try {
   const page=await app.firstWindow(),errors=[];
   page.setDefaultTimeout(30000);
   page.on('pageerror',error=>errors.push(error.message));
   await page.waitForFunction(()=>window.styk?.ready);
-  if(process.env.STYK_QUALITY_BASELINE){
-    const body=await readFile(process.env.STYK_QUALITY_BASELINE);
+  if(process.env.TWIGANIMATE_QUALITY_BASELINE){
+    const body=await readFile(process.env.TWIGANIMATE_QUALITY_BASELINE);
     await page.context().route('**/src/app.mjs',route=>route.fulfill({contentType:'text/javascript',body}));
     await page.reload();
   }

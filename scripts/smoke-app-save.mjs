@@ -15,7 +15,7 @@ const targets = Object.fromEntries(['First', 'Second', 'New', 'Pivot', 'Closed']
 const pivot = path.join(appRoot, '..', 'Goku_Broly_Movie_by_Killer1.piv');
 const pivotDigest = createHash('sha256').update(await readFile(pivot)).digest('hex');
 const applications = [], checks = [], errors = [];
-const launch = () => electron.launch({ args: [appRoot], cwd: appRoot, timeout: 45000, env: { ...process.env, STYK_USER_DATA_DIR: profile } });
+const launch = () => electron.launch({ args: [appRoot], cwd: appRoot, timeout: 45000, env: { ...process.env, TWIGANIMATE_USER_DATA_DIR: profile } });
 const documentAt = async filename => await readNativeDocument(filename);
 const record = name => { checks.push(name); console.log(`PASS ${name}`); };
 async function mocks(app) {

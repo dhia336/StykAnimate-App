@@ -18,6 +18,7 @@ export default Object.freeze({
   "appDialogs.nameYourProject": "Name your project",
   "appDialogs.recoveryCopy": "Recovery copy",
   "appDialogs.restoreUnsavedWork": "Restore unsaved work",
+  "appDialogs.savedAt": "{date}",
   "appDialogs.discardCopy": "Discard copy",
   "appDialogs.restore": "Restore",
   "appDialogs.yourChangesWillBeLostIfYouDon": "Your changes will be lost if you don't save them.",

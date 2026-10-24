@@ -22,7 +22,7 @@
  * timeline), and overlays
  * on the Advanced default: figure, joint and polygon inspector, File menu,
  * Insert, onion settings, every Settings tab, Export, the text dialog and the
- * feedback shell (mock desktop bridge).
+ * settings and release-notes dialogs.
  *
  * Determinism: every image gets a fresh browser context at its final size with
  * seeded settings (Canvas 2D renderer, English), the fixed demo document, a
@@ -41,7 +41,7 @@ import path from 'node:path';
 const root = path.resolve(import.meta.dirname, '..');
 const args = parseArgs(process.argv.slice(2));
 const list = (value, fallback) => (value ?? fallback).split(',').map(item => item.trim()).filter(Boolean);
-const url = args.url ?? process.env.STYK_URL ?? 'http://127.0.0.1:47831';
+const url = args.url ?? process.env.TWIGANIMATE_URL ?? 'http://127.0.0.1:47831';
 const out = path.resolve(root, args.out ?? 'artifacts/ui-redesign/snapshots');
 const label = args.label;
 const safe = /^[\w.-]+$/;
@@ -102,17 +102,6 @@ const STATES = [
     page => page.evaluate(tab => window.styk.settingsUI.open(tab), tab), waitFor('.styk-settings[open]'))})),
   {name: 'export-dialog', enter: steps(click('.titlebar [data-action="export"]'), waitFor('#export-dialog[open]'))},
   {name: 'text-dialog', enter: steps(page => page.evaluate(() => { void window.styk.actions['add-text'](); }), waitFor('dialog[open]'))},
-  // The desktop feedback shell and its lazily loaded support styles, through a
-  // mock bridge whose empty private inbox shows the new report form.
-  {name: 'feedback', enter: steps(page => page.evaluate(async () => {
-    const {FeedbackUI} = await import('/src/feedback-ui.mjs');
-    const ok = value => ({ok: true, value});
-    await new FeedbackUI({
-      getSupportContext: async () => ({inboxId: 'snapshot', source: 'desktop', version: '1.0.0', platform: 'win32', drafts: {}, lastThread: ''}),
-      supportRequest: async ({path}) => ok(path === '/config' ? {attachments: true, paused: false} : path.startsWith('/threads?') ? {threads: [], nextCursor: null} : {}),
-      saveSupportState: async () => {},
-    }).open();
-  }), waitFor('.styk-feedback[open] form'))},
 ];
 
 const report = {label, url, commit: git('rev-parse', 'HEAD'), uncommittedFiles: git('status', '--porcelain', '--', 'index.html', 'src').split('\n').filter(Boolean).length,
@@ -169,8 +158,8 @@ async function capture(planned) {
   for (const {theme, timeline, state, size, name} of planned) {
     const context = await browser.newContext({viewport: size, deviceScaleFactor: 1, locale: 'en-US', timezoneId: 'UTC', colorScheme: theme});
     await context.addInitScript(settings => {
-      localStorage.setItem('stykanimate.editor.settings.v1', JSON.stringify(settings));
-      localStorage.setItem('stykanimate.theme.v1', settings.theme);
+      localStorage.setItem('twiganimate.editor.settings.v1', JSON.stringify(settings));
+      localStorage.setItem('twiganimate.theme.v1', settings.theme);
     }, {theme, timelineMode: timeline, rendererMode: 'canvas', locale: 'en', uiScale: 100});
     const page = await context.newPage();
     page.on('pageerror', error => report.errors.push(`${name}: ${error.message}`));

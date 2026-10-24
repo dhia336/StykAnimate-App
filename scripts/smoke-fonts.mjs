@@ -11,7 +11,7 @@ const app = await electron.launch({
   timeout: 45000,
   env: {
     ...process.env,
-    STYK_USER_DATA_DIR: path.join(root, "artifacts", "fonts-desktop-profile"),
+    TWIGANIMATE_USER_DATA_DIR: path.join(root, "artifacts", "fonts-desktop-profile"),
   },
 });
 const checks = [],

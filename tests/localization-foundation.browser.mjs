@@ -10,7 +10,7 @@ page.on('pageerror',e=>errors.push(e.message));
 page.on('console',message=>{if (/^(?:ReferenceError|TypeError|SyntaxError):/.test(message.text())) errors.push(message.text());});
 const check=(name,condition)=>{assert.ok(condition,name);checks.push(name);console.log('PASS',name);};
 try {
-  await page.goto(process.env.STYK_TEST_URL||'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_TEST_URL||'http://127.0.0.1:47831');
   await page.waitForFunction(()=>window.styk?.ready);
   await page.waitForFunction(()=>styk.assets.count.getAttribute('data-i18n')==='counts.figures');
   check('Asset library connects its count after startup without swallowed binding errors',await page.evaluate(()=>styk.assets.count.getAttribute('data-i18n')==='counts.figures'&&styk.assets.count.textContent===styk.localization.t('counts.figures',{count:styk.assets.records.length})));
@@ -301,25 +301,6 @@ try {
     styk.localization.setLocale('en');return results;
   });
   check('Representative script samples have loaded fallback fonts and measurable glyphs',fontEvidence.every(x=>x.loaded&&x.width>0));
-  await page.evaluate(async()=>{
-    const {SupportCenter}=await import('/src/support-center.mjs');
-    const {supportErrorMessage}=await import('/src/support-localization.mjs');
-    window.supportRoot=document.createElement('section');supportRoot.style.cssText='position:fixed;inset:24px;z-index:9999;background:white;overflow:auto';document.body.append(supportRoot);
-    window.supportProbe=new SupportCenter(supportRoot,{api:async path=>path==='/config'?{limits:{fileBytes:8388608}}:{threads:[],nextCursor:null}});
-    await supportProbe.start();supportProbe.notice(supportErrorMessage({code:'invalid_message'}),true);
-    window.supportDraft=supportRoot.querySelector('[name=title]');supportDraft.value='Unsent draft';supportDraft.focus();supportDraft.setSelectionRange(1,5);
-    window.supportCategory=supportRoot.querySelector('[name=category]');supportCategory.value='idea';
-    window.supportFrequency=supportRoot.querySelector('[name=frequency]');supportFrequency.value='Every time';
-    styk.localization.localization.setPseudo('rtl');
-  });
-  check('Support notices and options update in place without changing drafts or service values',await page.evaluate(()=>document.activeElement===supportDraft&&supportDraft.value==='Unsent draft'&&supportDraft.selectionStart===1&&supportDraft.selectionEnd===5&&supportCategory.value==='idea'&&supportFrequency.value==='Every time'&&supportCategory.selectedOptions[0].textContent.includes('اختبار')&&supportRoot.querySelector('.sc-notice').textContent.includes('اختبار')));
-  const supportBusy=await page.evaluate(()=>{
-    const submit=supportRoot.querySelector('[data-create] [type=submit]');const key=submit.getAttribute('data-i18n');
-    supportProbe.setBusy(true,{messageKey:'supportCenter.exporting'});styk.localization.localization.setPseudo('long');const changed=submit.textContent.includes('［');supportProbe.setBusy(false);
-    return changed&&submit.getAttribute('data-i18n')===key&&submit.textContent.includes('［');
-  });
-  check('Support busy captions translate and restore the original submit action',supportBusy);
-  await page.evaluate(()=>{supportProbe.dispose();supportRoot.remove();styk.localization.localization.setPseudo(null);});
   for (const soundCount of [0,1,3]) {
     await page.evaluate(async count=>{
       const {openExportSheet}=await import('/src/export-sheet.mjs');
@@ -788,22 +769,14 @@ try {
   await page.evaluate(()=>styk.localization.localization.setPseudo(null));
   await page.evaluate(async()=>{
     const {UserLibrary}=await import('/src/user-library.mjs');
-    const {SupportCenter}=await import('/src/support-center.mjs');
     const {appendLocalized}=await import('/src/localization-bindings.mjs');
     window.libraryEmptyCaptionRoot=document.createElement('section');appendLocalized(document.body,libraryEmptyCaptionRoot);
     window.libraryEmptyCaptionProbe=Object.create(UserLibrary.prototype);Object.assign(libraryEmptyCaptionProbe,{editor:{selectedObjects:[]},desktop:{listLibrary(){}},source:'mine',folder:'',empty:libraryEmptyCaptionRoot});libraryEmptyCaptionProbe.renderEmpty(false);
-    window.supportPriorityCaptionProbe=Object.create(SupportCenter.prototype);
-    window.supportPriorityCaptionRow={id:'local-caption-fixture',priority:'urgent',title:'Artist report',status:'new',category:'bug',displayName:'Artist',createdAt:'2026-09-01T12:00:00Z'};
-    window.supportPriorityCaptionBytes=JSON.stringify(supportPriorityCaptionRow);
-    window.supportPriorityCaptionCard=supportPriorityCaptionProbe.boardCard(supportPriorityCaptionRow,'2026-10-01');appendLocalized(document.body,supportPriorityCaptionCard);
     styk.localization.localization.setPseudo('rtl');
   });
-  check('Retained library guidance and support priority descriptions resolve nested current-language labels while raw report data stays intact',await page.evaluate(()=>{
-    const t=(key,params)=>styk.localization.t(key,params),priority=supportPriorityCaptionCard.querySelector('.sc-card-priority');
-    return libraryEmptyCaptionRoot.querySelector('.ui-empty-text').textContent===t('userLibrary.selectFiguresOrAMovieclipAndChooseAdd')
-      &&priority.textContent===t('supportMessages.priorities.urgent')&&priority.getAttribute('aria-label')===t('supportCenter.priority',{textContent:{messageKey:'supportMessages.priorities.urgent'}})
-      &&supportPriorityCaptionCard.dataset.priority==='urgent'&&supportPriorityCaptionCard.querySelector('.sc-card-title').textContent==='Artist report'
-      &&JSON.stringify(supportPriorityCaptionRow)===supportPriorityCaptionBytes;
+  check('Retained library guidance resolves in the current language',await page.evaluate(()=>{
+    const t=(key,params)=>styk.localization.t(key,params);
+    return libraryEmptyCaptionRoot.querySelector('.ui-empty-text').textContent===t('userLibrary.selectFiguresOrAMovieclipAndChooseAdd');
   }));
   await page.evaluate(async()=>{
     const {appendLocalized}=await import('/src/localization-bindings.mjs');

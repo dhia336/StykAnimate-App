@@ -5,8 +5,8 @@ import {createHash} from 'node:crypto';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
-const output=path.resolve(process.env.STYK_ZOOM_OUTPUT??'artifacts/zoom-detail');
-const baseline=process.env.STYK_ZOOM_BASELINE;
+const output=path.resolve(process.env.TWIGANIMATE_ZOOM_OUTPUT??'artifacts/zoom-detail');
+const baseline=process.env.TWIGANIMATE_ZOOM_BASELINE;
 const sourceFiles=['src/renderer.mjs','src/renderer-geometry.mjs','src/renderer-raster-cache.mjs','src/renderer-vector-raster.mjs','src/raster-view.mjs','src/playback-worker.mjs','src/drawing-render-dependencies.mjs','tests/renderer-zoom-detail-fixture.mjs','tests/renderer-zoom-detail.browser.mjs'];
 const fingerprints=async root=>Object.fromEntries(await Promise.all(sourceFiles.map(async file=>{
   try{return [file,createHash('sha256').update(await readFile(path.join(root,file))).digest('hex')];}

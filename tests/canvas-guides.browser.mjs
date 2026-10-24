@@ -8,7 +8,7 @@ page.on('pageerror',e=>errors.push(e.message));
 const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('PASS',name);};
 const settings=()=>page.evaluate(()=>styk.state.settings);
 try {
- await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>styk?.ready);
+ await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');await page.waitForFunction(()=>styk?.ready);
  const before=await page.evaluate(()=>({revision:styk.editor.revision,dirty:styk.editor.dirty}));
  await page.locator('#guides-options-button').click();
  for(const name of ['canvasGuideVertical','canvasGuideHorizontal','canvasGrid'])await page.locator(`[data-setting="${name}"]`).check();

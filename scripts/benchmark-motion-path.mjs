@@ -8,7 +8,7 @@ await writeFile('tmp/motion-path-before.mjs',before);
 const baseline=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
 const browser=await chromium.launch({channel:'chrome',headless:true});
 try {
-const page=await browser.newPage();await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');
+const page=await browser.newPage();await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');
 await page.waitForFunction(()=>window.styk?.ready);
 const result=await page.evaluate(async()=>{
  const old=await import('/tmp/motion-path-before.mjs'),now=await import('/src/motion-path.mjs');

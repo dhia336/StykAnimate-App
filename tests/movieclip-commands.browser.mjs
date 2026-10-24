@@ -12,7 +12,7 @@ const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('
 async function openSection(id){const toggle=page.locator(`[data-section-toggle="${id}"]`);if(await toggle.getAttribute('aria-expanded')!=='true')await toggle.click();}
 async function select(tick){await page.evaluate(t=>{styk.editor.seek(t);styk.editor.select(window.clipUid);},tick);await page.getByLabel('Movieclip playback',{exact:true}).waitFor();}
 try{
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(async()=>{
     const {Editor}=await import('/src/editor.mjs');styk.settingsUI.commit({timelineMode:'advanced'});styk.editor.load(new Editor().report);styk.editor.select(1);
     const {buildGeometry,evaluatedFrame,timeline}=await import('/src/pivot/geometry.mjs');

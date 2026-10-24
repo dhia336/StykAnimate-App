@@ -20,7 +20,7 @@ const background = () =>
     );
   });
 try {
-  await page.goto(process.env.STYK_URL || "http://127.0.0.1:47831");
+  await page.goto(process.env.TWIGANIMATE_URL || "http://127.0.0.1:47831");
   await page.waitForFunction(() => styk.ready);
   await page.evaluate(() => {
     const e = styk.editor;

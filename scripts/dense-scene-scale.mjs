@@ -1,6 +1,6 @@
 /** Construct a stress document in memory. Imported PIV bytes are never saved. */
-export async function scaleBenchmarkScene(page,factor=Number(process.env.STYK_DENSE_MULTIPLIER||1)){
-  if(!Number.isInteger(factor)||factor<1||factor>10)throw new Error('STYK_DENSE_MULTIPLIER must be an integer from 1 to 10.');
+export async function scaleBenchmarkScene(page,factor=Number(process.env.TWIGANIMATE_DENSE_MULTIPLIER||1)){
+  if(!Number.isInteger(factor)||factor<1||factor>10)throw new Error('TWIGANIMATE_DENSE_MULTIPLIER must be an integer from 1 to 10.');
   if(factor===1)return;
   await page.evaluate(async factor=>{
     const e=styk.editor,report=structuredClone(e.report);

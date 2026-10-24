@@ -7,8 +7,8 @@ import { verifyReleaseAssets } from '../scripts/release-assets.mjs';
 test('release verification requires the fork-branded installers', async () => {
   const directory = await mkdtemp(path.join(os.tmpdir(), 'styk-release-'));
   try {
-    const name = 'StykAnimate-Max-0.5.0-Setup-x64.exe';
-    for (const file of [name, 'StykAnimate-Max-0.5.0-Portable-x64.exe']) await writeFile(path.join(directory, file), 'fixture');
+    const name = 'TwigAnimate-0.5.0-Setup-x64.exe';
+    for (const file of [name, 'TwigAnimate-0.5.0-Portable-x64.exe']) await writeFile(path.join(directory, file), 'fixture');
     assert.equal((await verifyReleaseAssets(directory, '0.5.0', 'win32')).length, 2);
     await assert.rejects(verifyReleaseAssets(directory, '0.6.0', 'win32'));
     await writeFile(path.join(directory, name), '');
@@ -26,8 +26,8 @@ test('release publishing requires explicit confirmation of this fork only', asyn
 test('public update feed contains no private repository or credentials', async () => {
   const config = JSON.parse(await readFile('package.json', 'utf8'));
   assert.equal(config.build.publish, undefined);
-  assert.equal(config.build.productName, 'StykAnimate-Max');
-  assert.equal(config.build.appId, 'com.github.dhia336.stykanimate-max');
+  assert.equal(config.build.productName, 'TwigAnimate');
+  assert.equal(config.build.appId, 'io.github.dhia336.twiganimate');
   for (const script of ['pack', 'dist', 'dist:win', 'dist:mac', 'dist:linux']) {
     assert.match(config.scripts[script], /--publish never/, `${script} must never auto-publish`);
   }
@@ -38,7 +38,7 @@ test('public update feed contains no private repository or credentials', async (
 
 test('a coordinated release requires verified Windows and Linux assets and excludes unrelated files', async () => {
   const directory = await mkdtemp(path.join(os.tmpdir(), 'styk-platform-release-'));
-  const version = '1.2.0', setup = `StykAnimate-Max-${version}-Setup-x64.exe`, portable = `StykAnimate-Max-${version}-Portable-x64.exe`, appimage = `StykAnimate-Max-${version}-linux-x86_64.AppImage`;
+  const version = '1.2.0', setup = `TwigAnimate-${version}-Setup-x64.exe`, portable = `TwigAnimate-${version}-Portable-x64.exe`, appimage = `TwigAnimate-${version}-linux-x86_64.AppImage`;
   try {
     for (const name of [setup, portable, appimage, 'private.log']) await writeFile(path.join(directory, name), 'fixture');
     const assets = await verifyReleaseAssets(directory, version);

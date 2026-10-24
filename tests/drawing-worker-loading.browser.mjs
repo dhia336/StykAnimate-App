@@ -1,13 +1,13 @@
 import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
-const output=process.env.STYK_LOADING_ARTIFACTS||'artifacts/drawing-preparation-reuse';await mkdir(output,{recursive:true});
+const output=process.env.TWIGANIMATE_LOADING_ARTIFACTS||'artifacts/drawing-preparation-reuse';await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true}),context=await browser.newContext(),page=await context.newPage(),checks=[],errors=[];
 page.on('pageerror',error=>errors.push(error.message));const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('PASS',name);};
 const pattern='**/src/drawing-worker-operations.mjs';let loads=0,releaseLoad,startedLoad;
 try{
  await context.route(pattern,route=>{loads++;return route.abort('failed');});
- await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+ await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
  await page.evaluate(async()=>{
   const {DrawingResources}=await import('/src/drawing-resources.mjs');window.loadingOwner=new DrawingResources({figure_types:[]},{history:false});loadingOwner.busy=true;
   window.prepareSample=()=>loadingOwner.worker.request('prepare-tiles',{tiles:[{tx:0,ty:0,pixels:new Uint8ClampedArray([31,63,95,1]).buffer}]});

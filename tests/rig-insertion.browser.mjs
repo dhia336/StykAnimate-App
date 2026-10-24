@@ -10,7 +10,7 @@ const saved=()=>page.evaluate(()=>JSON.stringify(styk.editor.serialize()));
 const gallery=async()=>{await page.locator('#library-tab').click();await page.locator('.rig-library-examples').click();await settle();};
 const load=async()=>{await page.evaluate(async()=>{styk.builder.leave();const {rigExampleDocument}=await import('/src/rig-examples.mjs');styk.editor.load(rigExampleDocument('sliding-carriage'));styk.editor.select(1,0);});await settle();};
 try{
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47851');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47851');await page.waitForFunction(()=>window.styk?.ready);
   const ids=await page.evaluate(async()=>{const {RIG_EXAMPLES}=await import('/src/rig-examples.mjs');return RIG_EXAMPLES.map(r=>r.id);});
   const additions=[];
   for(const id of ids){

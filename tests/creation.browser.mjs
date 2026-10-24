@@ -11,7 +11,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const out = path.join(appRoot, 'artifacts'), url = process.env.STYK_URL || 'http://127.0.0.1:47831';
+const out = path.join(appRoot, 'artifacts'), url = process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831';
 await mkdir(out, {recursive: true});
 const browser = await chromium.launch({channel: 'chrome', headless: true});
 const context = await browser.newContext({viewport: {width: 1500, height: 940}, acceptDownloads: true});

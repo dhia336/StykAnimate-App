@@ -69,11 +69,11 @@ jobs:
           npm run dist:${{ matrix.target }} -- --x64 --publish never "--config.directories.output=release/$version"
           npm run release:verify -- "release/$version" --platform=${{ matrix.platform }}
           if [ "$RUNNER_OS" = Windows ]; then
-            echo "STYK_PACKAGED_RESOURCES=$GITHUB_WORKSPACE/release/$version/win-unpacked/resources" >> "$GITHUB_ENV"
-            echo "STYK_PACKAGED_EXECUTABLE=$GITHUB_WORKSPACE/release/$version/win-unpacked/StykAnimate-Max.exe" >> "$GITHUB_ENV"
+            echo "TWIGANIMATE_PACKAGED_RESOURCES=$GITHUB_WORKSPACE/release/$version/win-unpacked/resources" >> "$GITHUB_ENV"
+            echo "TWIGANIMATE_PACKAGED_EXECUTABLE=$GITHUB_WORKSPACE/release/$version/win-unpacked/TwigAnimate.exe" >> "$GITHUB_ENV"
           else
-            echo "STYK_PACKAGED_RESOURCES=$GITHUB_WORKSPACE/release/$version/linux-unpacked/resources" >> "$GITHUB_ENV"
-            echo "STYK_PACKAGED_EXECUTABLE=$GITHUB_WORKSPACE/release/$version/linux-unpacked/stykanimate-max" >> "$GITHUB_ENV"
+            echo "TWIGANIMATE_PACKAGED_RESOURCES=$GITHUB_WORKSPACE/release/$version/linux-unpacked/resources" >> "$GITHUB_ENV"
+            echo "TWIGANIMATE_PACKAGED_EXECUTABLE=$GITHUB_WORKSPACE/release/$version/linux-unpacked/twiganimate" >> "$GITHUB_ENV"
           fi
       - name: Verify exact packaged files and desktop behavior
         run: |
@@ -84,7 +84,7 @@ jobs:
           "${display[@]}" npm run test:updates:desktop
           if [ "$RUNNER_OS" = Linux ]; then
             version=$(node -p 'JSON.parse(require("fs").readFileSync("package.json")).version')
-            STYK_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/release/$version/StykAnimate-Max-$version-linux-x86_64.AppImage" xvfb-run -a npm run test:boot:packaged
+            TWIGANIMATE_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/release/$version/TwigAnimate-$version-linux-x86_64.AppImage" xvfb-run -a npm run test:boot:packaged
           fi
       - name: Upload release assets
         uses: actions/upload-artifact@v4

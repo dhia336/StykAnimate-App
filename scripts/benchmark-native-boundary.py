@@ -32,7 +32,7 @@ def main():
         parser.error("--pairs must be between 1 and 20")
     data = args.source.read_bytes()
     sha = lambda value: hashlib.sha256(value).hexdigest()
-    original_env = os.environ.pop("STYK_DISABLE_NATIVE_SCAN", None)
+    original_env = os.environ.pop("TWIGANIMATE_DISABLE_NATIVE_SCAN", None)
     rows, expected = [], None
     try:
         status = fast_decode.native_scan.status()
@@ -40,7 +40,7 @@ def main():
             raise RuntimeError(f"Native comparison requires a built scanner: {status}")
         for pair in range(args.pairs):
             for mode in (["python", "cpp"] if pair % 2 == 0 else ["cpp", "python"]):
-                os.environ["STYK_DISABLE_NATIVE_SCAN"] = "1" if mode == "python" else "0"
+                os.environ["TWIGANIMATE_DISABLE_NATIVE_SCAN"] = "1" if mode == "python" else "0"
                 gc.collect()
                 scans = []
                 original_scan = fast_decode.scan_keyframes
@@ -78,9 +78,9 @@ def main():
         print(json.dumps(report, indent=2))
     finally:
         if original_env is None:
-            os.environ.pop("STYK_DISABLE_NATIVE_SCAN", None)
+            os.environ.pop("TWIGANIMATE_DISABLE_NATIVE_SCAN", None)
         else:
-            os.environ["STYK_DISABLE_NATIVE_SCAN"] = original_env
+            os.environ["TWIGANIMATE_DISABLE_NATIVE_SCAN"] = original_env
 
 
 if __name__ == "__main__":

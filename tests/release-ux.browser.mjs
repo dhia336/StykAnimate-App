@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 import {chromium} from './support/playwright.mjs';
-const output='artifacts/community-release-ux';await mkdir(output,{recursive:true});
+const output='artifacts/twiganimate-release-ux';await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true});
 try {
   const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
   page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
   const inspector=await page.evaluate(async()=>{
     const {inspectorView}=await import('/src/inspector-view.mjs');
     styk.editor.select(styk.editor.frame.objects[0].unique_id);
@@ -28,7 +28,7 @@ try {
   });
   const modal=page.locator('.release-splash');await modal.waitFor();
   assert.equal(await modal.locator('.support-donate, .splash-history').count(),0);
-  assert.ok((await modal.locator('.splash-brand').innerText()).includes('StykAnimate-Max'));
+  assert.ok((await modal.locator('.splash-brand').innerText()).includes('TwigAnimate'));
   assert.equal(await modal.locator('.splash-notes img').count(),0);
   assert.equal(await modal.locator('li').count(),66);
   await page.screenshot({path:output+'/welcome.png'});

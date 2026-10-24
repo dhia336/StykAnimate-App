@@ -1,76 +1,59 @@
-# StykAnimate-Max
+# TwigAnimate
 
-StykAnimate-Max is an independently maintained fork of
-[filippocalippo/StykAnimate-App](https://github.com/filippocalippo/StykAnimate-App),
-maintained by Dhia. It is not an official upstream release and is not affiliated
-with or endorsed by the original maintainers. The upstream name and attribution
-are retained to document the project's origin and compatibility.
+Copyright (C) 2026 Dhia, based on work by Alessio (filippocalippo).
 
-The editor works locally and reads existing StykAnimate, Pivot Animator, and
-Stick Nodes project and figure formats. Their file extensions, MIME types, and
-protocol identifiers remain compatible.
+TwigAnimate is an independently maintained fork of
+[filippocalippo/StykAnimate-App](https://github.com/filippocalippo/StykAnimate-App).
+It is not an official release of, affiliated with, or endorsed by the upstream
+project, Pivot Animator, or Stick Nodes. The original repository and required
+attribution remain part of this project's history.
 
-## Build from source
+**Modifications:** This fork changes the product identity, release configuration,
+and selected application services. These modifications are distributed under
+GPL version 3 or any later version, as permitted by GPL section 5(a).
 
-### Requirements
+The editor works locally. It continues to open and save TwigAnimate project,
+figure, and movieclip files and import compatible Pivot Animator and Stick
+Nodes files. Compatibility-related file extensions and MIME identifiers are
+intentionally retained.
 
-- Node.js 22 or newer
-- Python 3.11 or newer
+## Build and run
 
-### Install dependencies
+Requirements: Node.js 24 and Python 3.12. Install dependencies from the
+repository root:
 
 ```sh
 npm ci
 python -m pip install -r backend/requirements-fast.txt
 ```
 
-### Run the app
+Run the desktop editor with `npm start`. Run the browser editor with
+`npm run serve`, then open <http://127.0.0.1:47831>.
 
-Start the desktop app:
-
-```sh
-npm start
-```
-
-To run the browser version locally:
-
-```sh
-npm run serve
-```
-
-Then open <http://127.0.0.1:47831> in your browser.
-
-### Checks and tests
+## Checks
 
 ```sh
 npm run check
 npm test
+python -m unittest discover -s backend -p "test_*.py"
 ```
 
-Some desktop, browser, packaging, and backend tests need additional tools or
-dependencies. See `package.json` for the available test and build commands.
-For packaging requirements and platform-specific installer instructions, see
-[desktop setup](desktop/README.md). `npm run web:build` creates a local browser
-build; deployment requires the fork maintainer to configure their own hosting.
+Browser, desktop, native packaging, and localization checks have separate
+commands in [package.json](package.json). Platform packaging prerequisites are
+documented in [desktop/README.md](desktop/README.md).
 
-## Updates and releases
+## Releases and updates
 
-Automatic updates are disabled. No fork update feed or published release
-destination is configured. Publishing requires an explicit
-`STYK_RELEASE_REPOSITORY=dhia336/StykAnimate-App` confirmation and authenticated
-GitHub CLI access. Read the [update configuration guide](docs/UPDATES.md) before
-publishing; do not use upstream release infrastructure.
+Automatic updates are disabled. The application does not check an upstream feed,
+and release publishing is guarded for `dhia336/TwigAnimate`. The maintainer must
+rename the GitHub repository, authenticate the GitHub CLI, and explicitly
+configure `TWIGANIMATE_RELEASE_REPOSITORY=dhia336/TwigAnimate` before publishing.
+No update endpoint or release credential is included in this repository. See
+[docs/UPDATES.md](docs/UPDATES.md).
 
-## Upstream services
-
-The app can read the original project's public community library. Optional
-telemetry and user-initiated support requests also use upstream-hosted services.
-Those services are not operated by this fork. No donation or developer-support
-link is configured yet; Dhia can add a personal link when one is available.
-
-## License and attribution
+## License and notices
 
 This project is licensed under the
 [GNU General Public License, version 3 or (at your option) any later version](LICENSE).
-Existing copyright notices, third-party notices, bundled licenses, and upstream
-attribution are preserved. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Do not remove upstream copyright notices or third-party attributions. See
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for bundled components.

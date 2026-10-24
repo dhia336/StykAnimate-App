@@ -8,7 +8,7 @@ const filter = process.argv.find(a => a.startsWith('--filter='))?.slice(9);
 const prepared = process.argv.includes('--prepared');
 const output = path.join(root, 'artifacts', `renderer-corpus${prepared ? '-prepared' : ''}${filter ? '-' + filter.replace(/[^a-z0-9]/ig, '-') : ''}`); await mkdir(output, { recursive: true });
 const fixtures = manifest.fixtures.filter(f => !filter || f.path.toLowerCase().includes(filter.toLowerCase()));
-const app = await electron.launch({ args: [root], cwd: root, timeout: 45000, env: { ...process.env, STYK_USER_DATA_DIR: path.join(output, 'profile') } });
+const app = await electron.launch({ args: [root], cwd: root, timeout: 45000, env: { ...process.env, TWIGANIMATE_USER_DATA_DIR: path.join(output, 'profile') } });
 const browserErrors = [], results = [];
 try {
   const page = await app.firstWindow(); page.on('pageerror', error => browserErrors.push(error.message));

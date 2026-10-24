@@ -1,12 +1,12 @@
 import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
-const out=process.env.STYK_HISTORY_ARTIFACTS||'artifacts/drawing-history';await mkdir(out,{recursive:true});
+const out=process.env.TWIGANIMATE_HISTORY_ARTIFACTS||'artifacts/drawing-history';await mkdir(out,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[],checks=[];
 page.on('pageerror',error=>errors.push(error.message));
 const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('PASS',name);};
 try{
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
   const storage=await page.evaluate(async()=>{
     const {DrawingHistoryDatabase}=await import('/src/drawing-history-database.mjs'),name='stykanimate-history-test-'+crypto.randomUUID(),a=new DrawingHistoryDatabase({name}),b=new DrawingHistoryDatabase({name}),tiny=new DrawingHistoryDatabase({name,maxBytes:1});
     const tiles=[{tx:-100,ty:200,before:null,after:Uint8ClampedArray.from({length:16384},(_,i)=>(i*17)%256)}];

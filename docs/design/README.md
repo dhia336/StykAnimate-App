@@ -49,11 +49,11 @@ node design/app-ui/reference/tools/build.mjs && node design/app-ui/reference/too
 SKIP_STATES=1 SKIP_SWEEP=1 node design/app-ui/reference/tools/shoot.mjs                         # the once-passes only (tasks, tiers, messages, glyphs), on the last states
 node design/app-ui/reference/tools/shoot.mjs 01,13                                              # only the states whose names start so, merged into audit.json
 node design/app-ui/reference/tools/quick.mjs "name|?mode=draw|1280|720"                         # one state for review, no audit
-STYK_BALANCE_DIR=<folder> node design/app-ui/reference/tools/today-tiers.mjs                    # today's app at the tier sizes (served at 127.0.0.1:47880)
-STYK_BALANCE_DIR=<folder> node design/app-ui/reference/tools/ledger.mjs --md docs/design/function-ledger.md   # 852 functions at 1440×900, the tier sizes and inside the sessions; visibility; drawn homes
+TWIGANIMATE_BALANCE_DIR=<folder> node design/app-ui/reference/tools/today-tiers.mjs                    # today's app at the tier sizes (served at 127.0.0.1:47880)
+TWIGANIMATE_BALANCE_DIR=<folder> node design/app-ui/reference/tools/ledger.mjs --md docs/design/function-ledger.md   # 852 functions at 1440×900, the tier sizes and inside the sessions; visibility; drawn homes
 ```
 
-`today-tiers.mjs` and `ledger.mjs` read the function inventories, revision 3's ledger and the task harness from `STYK_BALANCE_DIR` (internal research, not in the repository). The tools need Playwright (a dev dependency) and an installed Chrome. The probes of today's app (`today-six`, `today-labels`, `alltargets`, `bandfolds`), the gallery and its audit, the contrast matrix and the specificity check are not in the repository either.
+`today-tiers.mjs` and `ledger.mjs` read the function inventories, revision 3's ledger and the task harness from `TWIGANIMATE_BALANCE_DIR` (internal research, not in the repository). The tools need Playwright (a dev dependency) and an installed Chrome. The probes of today's app (`today-six`, `today-labels`, `alltargets`, `bandfolds`), the gallery and its audit, the contrast matrix and the specificity check are not in the repository either.
 
 ## Measured results
 

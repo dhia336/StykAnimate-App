@@ -16,12 +16,12 @@ On a Wayland desktop with XWayland available, ordinary startup automatically
 relaunches through X11 so the window can display Vulkan-backed content. No extra
 flags are needed for `npm start` or the packaged app. An explicit
 `--ozone-platform` launch argument takes precedence; Electron's internally
-selected platform does not. `STYK_WAYLAND=1` keeps native Wayland; combine it
-with `STYK_GPU_UNSAFE=0` to use the compatibility renderer.
+selected platform does not. `TWIGANIMATE_WAYLAND=1` keeps native Wayland; combine it
+with `TWIGANIMATE_GPU_UNSAFE=0` to use the compatibility renderer.
 
-- `STYK_GPU_UNSAFE=0` leaves Chromium's own driver allowlist untouched (use it to
+- `TWIGANIMATE_GPU_UNSAFE=0` leaves Chromium's own driver allowlist untouched (use it to
   diagnose a driver problem; the app then uses the compatibility renderer).
-- `STYK_GPU_UNSAFE=1` forces the WebGPU opt-in on any platform.
+- `TWIGANIMATE_GPU_UNSAFE=1` forces the WebGPU opt-in on any platform.
 - The renderer still rejects software adapters (SwiftShader) and falls back to
   Canvas 2D, so a machine without a working Vulkan driver edits and plays back
   correctly, only more slowly. Virtual displays such as Xvfb have no GPU.
@@ -45,7 +45,7 @@ npm run release:verify -- "release/$version" --platform=linux
 ```
 
 The `build:*` scripts run through `scripts/run-python.mjs`, which uses
-`STYK_PYTHON`, then the repository `.venv`, then `python3`/`python`, so a bare
+`TWIGANIMATE_PYTHON`, then the repository `.venv`, then `python3`/`python`, so a bare
 `python` is not required. The native scanner builds into
 `native/bin/linux-x64/` (untracked); Windows keeps its tracked
 `native/bin/x64/`, so a Linux build never dirties or breaks the Windows one.
@@ -63,7 +63,7 @@ user namespaces (Ubuntu 24.04+ AppArmor) without a profile for the app, the
 launcher falls back to `--no-sandbox` rather than failing to start.
 
 The desktop entry registers the document types (`.styk`, `.stkz`, `.stykmov`,
-`.piv`, `.stk`, `.nodes`, `.nodemc`, `.stknds`) and the `stykanimate://` scheme,
+`.piv`, `.stk`, `.nodes`, `.nodemc`, `.stknds`) and the `twiganimate://` scheme,
 and `StartupWMClass=stykanimate` groups the window under its launcher.
 Passing a document path on the command line opens it.
 
@@ -80,7 +80,7 @@ npm run check && npm test                          # unit tests (also on Windows
 python3 -m unittest discover -s backend -p "test_*.py"
 npx playwright install chromium                    # once, for the browser tests
 npm run serve &                                    # the codec and dev host on :47831
-STYK_URL=http://127.0.0.1:47831 node tests/timeline.browser.mjs
+TWIGANIMATE_URL=http://127.0.0.1:47831 node tests/timeline.browser.mjs
 xvfb-run -a npm run test:boot                      # boots the app from source
 xvfb-run -a npm run test:boot:packaged             # boots release/linux-unpacked
 npm run test:web                                   # the web build, end to end
@@ -92,15 +92,15 @@ Chrome is used when present and Playwright's Chromium otherwise, and Electron
 launches drop `ELECTRON_RUN_AS_NODE`
 (terminals started by another Electron app, such as VS Code, export it, and
 Electron then runs the app as plain Node where `app` is undefined). Overrides:
-`STYK_BROWSER_PATH`, `STYK_BROWSER_CHANNEL`, `STYK_BROWSER_GPU=1`.
+`TWIGANIMATE_BROWSER_PATH`, `TWIGANIMATE_BROWSER_CHANNEL`, `TWIGANIMATE_BROWSER_GPU=1`.
 
 Browsers Playwright launches run the editor's Canvas 2D renderer on Linux by default:
-its output can be read back reliably. `STYK_BROWSER_GPU=1` adds the Vulkan/WebGPU
+its output can be read back reliably. `TWIGANIMATE_BROWSER_GPU=1` adds the Vulkan/WebGPU
 switches, which gives the editor a real WebGPU device. Many renderer tests need a
 device (`renderer.device`, `queue`) and only run that way; a few pixel tests need
 the Canvas 2D output. On the development machine (Chromium 153 from Playwright
 1.63, NVIDIA, Wayland) the full browser suite of 289 scripts passes 131 by default
-and about 150 with `STYK_BROWSER_GPU=1`. The failures are not new: run with the GPU
+and about 150 with `TWIGANIMATE_BROWSER_GPU=1`. The failures are not new: run with the GPU
 switches, 140 of the 146 scripts that failed had exactly the same outcome on the original
 code (commit 8ff66d5); of the other six, four hard-code a port only the comparison
 server occupied, one was a timing flake and one now passes. They need private samples, the
@@ -118,10 +118,10 @@ future Electron shows an empty canvas on Linux, start with the extra flags above
 command line (they are merged with the app's) and Settings → Graphics mode → Canvas 2D.
 
 Many profiling scripts need private sample projects. `corpusPath()` finds them under
-your home directory (`Downloads/…`) or in the folder `STYK_CORPUS_DIR` names, and a
+your home directory (`Downloads/…`) or in the folder `TWIGANIMATE_CORPUS_DIR` names, and a
 missing file fails at once with that instruction. Tests that need the Pivot sample
 corpus beside the repository skip with the reason unless it is there or
-`STYK_REQUIRE_FIXTURES=1`.
+`TWIGANIMATE_REQUIRE_FIXTURES=1`.
 
 Known gaps on Linux, all outside the shipping editor's runtime: a share of
 the `tests/*.browser.mjs` scripts are not run by CI and no longer match the current
@@ -153,4 +153,4 @@ Wayland (AMD Ryzen 5 5500, NVIDIA RTX 4070 SUPER, 144 Hz display):
 The 300-figure WebGPU row is the display's refresh rate, not the renderer's limit.
 One machine and one driver: treat the ratio as indicative. If a driver initialises
 WebGPU but cannot present it, Settings → Graphics mode → Canvas 2D (or
-`STYK_GPU_UNSAFE=0`) restores the compatibility renderer.
+`TWIGANIMATE_GPU_UNSAFE=0`) restores the compatibility renderer.

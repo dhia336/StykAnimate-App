@@ -7,7 +7,7 @@ const page=await browser.newPage({viewport:{width:1440,height:960}}),errors=[],c
 const output=process.argv[2]?'artifacts/layer-ownership-supplied':'artifacts/layer-ownership-browser';
 page.on('pageerror',error=>errors.push(error.message));page.setDefaultTimeout(30000);
 try{
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(async()=>{
     const {emptyDocument,createFrame,createObject}=await import('/src/demo.mjs'),{movieclipFigure}=await import('/src/movieclips.mjs'),{presencePlayback}=await import('/src/movieclip-presence.mjs');
     const source=emptyDocument(),report=emptyDocument(),clip=movieclipFigure(2,'Motion',source,{duration:1});report.figure_types.push(clip);

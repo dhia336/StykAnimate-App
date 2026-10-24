@@ -9,7 +9,7 @@
  * linked by hand, with the spec tokens tokens.css does not define yet, until
  * app.css imports them. `--shot <file>` also saves a picture of the sections.
  *
- *   node tests/inspector-kit.browser.mjs            (STYK_URL, default http://127.0.0.1:47914)
+ *   node tests/inspector-kit.browser.mjs            (TWIGANIMATE_URL, default http://127.0.0.1:47914)
  */
 import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
@@ -28,7 +28,7 @@ try {
   const page = await browser.newPage({viewport: {width: 900, height: 1000}});
   page.on('pageerror', error => { throw error; });
   await page.route('**/src/app.mjs', route => route.fulfill({contentType: 'text/javascript', body: ''}));
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47914');
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47914');
   await page.evaluate(async ({sheets, tokens}) => {
     await Promise.all(sheets.map(href => new Promise((resolve, reject) => {
       const link = Object.assign(document.createElement('link'), {rel: 'stylesheet', href});

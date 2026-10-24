@@ -102,7 +102,7 @@ try {
   await page.route("**/src/app.mjs", (route) =>
     route.fulfill({ contentType: "text/javascript", body: "" }),
   );
-  await page.goto(process.env.STYK_URL || "http://127.0.0.1:47831");
+  await page.goto(process.env.TWIGANIMATE_URL || "http://127.0.0.1:47831");
   await setup();
   let before = await state();
   check(

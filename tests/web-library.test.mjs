@@ -9,7 +9,7 @@ let ids = 0, clock = 1000;
 const make = () => new LocalLibrary({backend: new MemoryBackend(), locks: null, now: () => ++clock, randomId: () => `token-${++ids}`});
 const bytesOf = length => new Uint8Array(Array.from({length}, (_, i) => (i * 31 + 7) % 256));
 const save = (library, name, {folder = '', extension = '.stkz', length = 1000, thumbnail = PNG, kind} = {}) =>
-  saveLibraryFile(createBrowserLibraryApi({library, community: null}), new Blob([bytesOf(length)]), {folder, name, extension, thumbnail, kind});
+  saveLibraryFile(createBrowserLibraryApi({library}), new Blob([bytesOf(length)]), {folder, name, extension, thumbnail, kind});
 const names = async (library, folder = '') => (await library.list(folder)).entries.map(entry => `${entry.kind === 'folder' ? '[' : ''}${entry.name}${entry.kind === 'folder' ? ']' : ''}`);
 
 test('an empty library lists nothing, under its own name', async () => {
@@ -36,7 +36,7 @@ test('a saved file lists with its kind, size, preview and unique name', async ()
 test('bytes come back exactly, in the panel\'s own chunks, and reads are independent', async () => {
   const library = make(), length = CHUNK_BYTES * 2 + 123;
   await save(library, 'Big', {length});
-  const api = createBrowserLibraryApi({library, community: null});
+  const api = createBrowserLibraryApi({library});
   const file = await readLibraryFile(api, 'Big.stkz');
   assert.equal(file.name, 'Big.stkz'); assert.equal(file.size, length);
   assert.deepEqual(new Uint8Array(await file.arrayBuffer()), bytesOf(length));
@@ -49,7 +49,7 @@ test('bytes come back exactly, in the panel\'s own chunks, and reads are indepen
 });
 
 test('a save that is cancelled, short or too long leaves nothing behind', async () => {
-  const library = make(), api = createBrowserLibraryApi({library, community: null});
+  const library = make(), api = createBrowserLibraryApi({library});
   const cancelled = await library.beginSave({name: 'Cancelled', extension: '.stkz', size: 10, thumbnail: PNG});
   await library.write(cancelled.token, new ArrayBuffer(4)); await library.cancel(cancelled.token);
   await assert.rejects(library.finish(cancelled.token), /no longer active/);
@@ -161,21 +161,13 @@ test('two writers cannot take the same name at once when the tabs share a lock',
   const library = new LocalLibrary({backend: new MemoryBackend(), locks, now: () => 1, randomId: () => `t${++ids}`});
   const results = await Promise.all(['Same', 'Same', 'Same'].map(name => save(library, name)));
   assert.deepEqual(results.map(result => result.path).sort(), ['Same (2).stkz', 'Same (3).stkz', 'Same.stkz']);
-  assert.ok(held.length >= 3 && held.every(name => name === 'stykanimate-library'));
+  assert.ok(held.length >= 3 && held.every(name => name === 'twiganimate-library'));
 });
 
-test('the browser interface has every call the panel makes, and the community ones go to the community client', async () => {
-  const community = {catalog: async ({refresh}) => ({refresh}), preview: async id => `preview:${id}`, pageFor: id => `https://site.test/?item=${id}`,
-    asset: async id => ({item: {name: 'Shared: Figure', kind: 'figure'}, extension: '.stkz', name: 'Shared: Figure.stkz', bytes: bytesOf(64)})};
-  const opened = [], api = createBrowserLibraryApi({library: make(), community, page: url => opened.push(url)});
+test('the browser interface exposes the local library operations', async () => {
+  const api = createBrowserLibraryApi({library: make()});
   for (const method of ['listLibrary', 'createLibraryFolder', 'getLibraryThumbnail', 'beginLibrarySave', 'writeLibraryChunk', 'finishLibrarySave', 'cancelLibraryTransfer', 'beginLibraryRead', 'readLibraryChunk',
-    'changeLibraryItem', 'trashLibraryItem', 'cacheLibraryThumbnail', 'listPublicLibrary', 'getPublicLibraryPreview', 'readPublicLibraryAsset', 'savePublicLibraryAsset', 'openPublicLibraryPage']) assert.equal(typeof api[method], 'function', method);
-  assert.equal(api.revealLibrary, undefined, 'there is no file manager to reveal a folder in'); assert.equal(api.inBrowser, true);
-  assert.deepEqual(await api.listPublicLibrary(true), {refresh: true}); assert.deepEqual(await api.listPublicLibrary(), {refresh: false});
-  assert.equal(await api.getPublicLibraryPreview('id'), 'preview:id');
-  const read = await api.readPublicLibraryAsset('id'); assert.equal(read.name, 'Shared: Figure.stkz'); assert.ok(read.bytes instanceof ArrayBuffer); assert.equal(read.bytes.byteLength, 64);
-  const saved = await api.savePublicLibraryAsset({id: 'id', folder: '', thumbnail: PNG});
-  assert.deepEqual(saved, {saved: true, path: 'Shared- Figure.stkz'}, 'the site\'s name is made safe as a file name');
-  assert.equal((await api.listLibrary('')).entries[0].name, 'Shared- Figure');
-  await api.openPublicLibraryPage('id'); assert.deepEqual(opened, ['https://site.test/?item=id']);
+    'changeLibraryItem', 'trashLibraryItem', 'cacheLibraryThumbnail']) assert.equal(typeof api[method], 'function', method);
+  assert.equal(api.revealLibrary, undefined, 'there is no file manager to reveal a folder in');
+  assert.equal(api.inBrowser, true);
 });

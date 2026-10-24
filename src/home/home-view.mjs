@@ -9,7 +9,7 @@
  *   projects  the project list (desktop): search, order, grid or list, pins
  *             and folders
  *   learn     the tutorials, with what is done and what comes next
- *   help      shortcuts, what's new, feedback
+ *   help      shortcuts and what's new
  *
  * Sections are drawn again only when what they show changes (render(state,
  * what)). A project's picture loads when its card comes into view.
@@ -370,7 +370,6 @@ export function createHomeView({root, on = {}, document: doc = root.ownerDocumen
     row('help', 'keyboard', 'home.help.shortcuts', 'home.help.shortcutsLine');
     row('command-palette', 'search', 'home.help.commands', 'home.help.commandsLine');
     if (state.news) row('release-notes', 'lightbulb', 'home.help.news', 'home.help.newsLine');
-    if (state.feedback) row('feedback', 'message', 'home.help.feedback', 'home.help.feedbackLine');
     replaceLocalized(help, title, rows);
   }
 
@@ -406,4 +405,3 @@ export function createHomeView({root, on = {}, document: doc = root.ownerDocumen
     destroy() { previews?.disconnect(); },
   };
 }
-

@@ -4,7 +4,7 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {dirname} from 'node:path';
 import os from 'node:os';
 
-const baseline=process.env.STYK_DECODE_BASELINE,output=process.env.STYK_DECODE_BENCHMARK||'artifacts/drawing-decode/benchmark.json';
+const baseline=process.env.TWIGANIMATE_DECODE_BASELINE,output=process.env.TWIGANIMATE_DECODE_BENCHMARK||'artifacts/drawing-decode/benchmark.json';
 const browser=await chromium.launch({channel:'chrome',headless:true}),runs=[],targets=[];
 try{
   for(const revision of [baseline,'working-tree'].filter(Boolean)){
@@ -13,7 +13,7 @@ try{
       const body=execFileSync('git',['show',`${revision}:src/${name}.mjs`],{encoding:'utf8'});
       await context.route(`**/src/${name}.mjs`,route=>route.fulfill({contentType:'text/javascript',body}));
     }
-    const page=await context.newPage();await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+    const page=await context.newPage();await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
     const run={revision,samples:[]};runs.push(run);targets.push({page,run});
   }
   // Alternate revisions per case, reversing order in the middle pass so time

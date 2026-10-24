@@ -1,14 +1,14 @@
 import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
-const output=process.env.STYK_INTEGRITY_ARTIFACTS||'artifacts/drawing-integrity';
+const output=process.env.TWIGANIMATE_INTEGRITY_ARTIFACTS||'artifacts/drawing-integrity';
 await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true});
 const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[],checks=[];
 page.on('pageerror',e=>errors.push(e.message));
 const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('PASS',name);};
 try{
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
   await page.locator('[data-workspace-mode="draw"]').click();await page.evaluate(()=>styk.state.renderer.gpuDrawingReady);await page.locator('[data-draw-action="new"]').first().click();
   await page.evaluate(()=>{styk.state.settings.autosaveSeconds=0;});
   const rect=await page.locator('#viewport').boundingBox(),x=rect.x+rect.width*.25,y=rect.y+rect.height*.4;

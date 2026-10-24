@@ -17,7 +17,7 @@ import {normalizeExportPreferences} from './export-request.mjs';
 
 import { normalizeFingerDraw, normalizeTouchSetting } from './touch/touch-mode.mjs';
 
-export const EDITOR_SETTINGS_KEY = "stykanimate.editor.settings.v1";
+export const EDITOR_SETTINGS_KEY = "twiganimate.editor.settings.v1";
 export const DEFAULT_EDITOR_SETTINGS = Object.freeze({
   locale: "en",
   theme: "system",
@@ -215,7 +215,6 @@ const TABS = [
   ["animation", "play", "time"],
   ["shortcuts", "keyboard", "camera"],
 ];
-const FEEDBACK_TAB = ["feedback", "message", "draw"];
 /** The tabs the sidebar search looks through (Shortcuts has its own search). */
 const SEARCH_TABS = ["interface", "canvas", "animation"];
 const SYMBOL_URL = new URL("../symbol.svg", import.meta.url).href;
@@ -265,9 +264,6 @@ export class EditorSettings {
     onPersist,
     onResetWorkspace,
     localization,
-    onPrivacy,
-    onFeedback,
-    onDonate,
   } = {}) {
     if (value === undefined) {
       try {
@@ -292,16 +288,13 @@ export class EditorSettings {
       ((next) =>
         localStorage.setItem(EDITOR_SETTINGS_KEY, JSON.stringify(next)));
     this.onResetWorkspace = onResetWorkspace;
-    this.onPrivacy = onPrivacy;
-    this.onFeedback = onFeedback;
-    this.onDonate = onDonate;
     this.tab = "interface";
     this.query = "";
     this.chain = Promise.resolve();
     this.pending = null;
     this.timer = null;
     this.error = null;
-    this.tabs = onFeedback ? [...TABS, FEEDBACK_TAB] : TABS;
+    this.tabs = TABS;
     this.dialog = document.createElement("dialog");
     this.dialog.className = "styk-settings";
     localizedAttribute(this.dialog, "aria-label", "settings.editorLabel", {});
@@ -310,7 +303,7 @@ export class EditorSettings {
         ([id, symbol, tint]) =>
           `<button type="button" role="tab" id="styk-settings-tab-${id}" data-tab="${id}" aria-controls="styk-settings-content"><span class="styk-settings-tab-icon" data-tint="${tint}">${icon(symbol)}</span><span data-settings-tab-label ${messageAttributes('settings.' + id, {})}>${escape(this.t('settings.' + id))}</span></button>`,
       )
-      .join("")}</nav><div class="styk-settings-actions"></div></aside><section id="styk-settings-content" class="styk-settings-content" role="tabpanel"></section></div>`);
+      .join("")}</nav></aside><section id="styk-settings-content" class="styk-settings-content" role="tabpanel"></section></div>`);
     appendLocalized(document.body, this.dialog);
     this.content = this.dialog.querySelector(".styk-settings-content");
     this.search = this.dialog.querySelector("[data-settings-search]");
@@ -320,22 +313,6 @@ export class EditorSettings {
     this.compactLayout.addEventListener('change', this.syncTabOrientation);
     this.syncTabOrientation();
     this.hotkeySettings = new HotkeySettings(this);
-    const actions = this.dialog.querySelector('.styk-settings-actions');
-    if (onPrivacy) {
-      const button = document.createElement('button'); button.type = 'button'; button.className = 'styk-settings-privacy'; button.dataset.settingsPrivacy = '';
-      localizedMarkup(button, `${icon('lock')}<span ${messageAttributes('settings.privacy', {})}>${escape(this.say('settings.privacy'))}</span>`);
-      localizedAttribute(button, "title", 'settings.privacy', {}); button.setAttribute('aria-label', button.title);
-      button.onclick = () => { this.close(); void this.onPrivacy(); };
-      appendLocalized(actions, button);
-    }
-    if (onDonate) {
-      const button = document.createElement('button');
-      button.type = 'button'; button.className = 'styk-settings-donate'; button.dataset.settingsDonate = '';
-      localizedMarkup(button, `<span class="styk-settings-donate-badge">${icon('heart')}</span><span class="styk-settings-donate-text"><strong ${messageAttributes('settings.donate', {})}>${escape(this.t('settings.donate'))}</strong><small ${messageAttributes('settings.donateNote', {})}>${escape(this.say('settings.donateNote'))}</small></span>${icon('externalLink')}`);
-      localizedAttribute(button, 'aria-label', 'settings.donate', {});
-      button.onclick = () => Promise.resolve().then(() => this.onDonate()).catch(error => this.showError(error));
-      appendLocalized(actions, button);
-    }
     this.unsubscribeLocale = this.localization.subscribe(() => this.refreshLanguage());
     this.dialog.querySelector(".styk-settings-close").onclick = () =>
       this.close();
@@ -380,8 +357,6 @@ export class EditorSettings {
       event.stopPropagation();
       const tab = event.target.closest("[role=tab]");
       if (tab) this.selectTab(tab.dataset.tab);
-      const feedback = event.target.closest('[data-settings-feedback]');
-      if (feedback) { this.close(); this.onFeedback?.(feedback.dataset.settingsFeedback === 'inbox' ? {view: 'inbox'} : {category: feedback.dataset.settingsFeedback}); }
       if (event.target.closest("[data-scale-reset]")) {
         this.commit({uiScaleMode: 'auto', uiScale: 100});
         this.syncScaleControl();
@@ -446,17 +421,6 @@ export class EditorSettings {
     this.labelSearch();
     for (const button of this.dialog.querySelectorAll('[data-tab]'))
       localizedText(button.querySelector('[data-settings-tab-label]'), 'settings.' + button.dataset.tab, {});
-    const privacy = this.dialog.querySelector('[data-settings-privacy]');
-    if (privacy) {
-      privacy.querySelector('span').textContent = localizedAttribute(privacy, "title", 'settings.privacy', {});
-      privacy.setAttribute('aria-label', privacy.title);
-    }
-    const donate = this.dialog.querySelector('[data-settings-donate]');
-    if (donate) {
-      localizedText(donate.querySelector('strong'), 'settings.donate', {});
-      localizedAttribute(donate, 'aria-label', 'settings.donate', {});
-      localizedText(donate.querySelector('small'), 'settings.donateNote', {});
-    }
     if (!this.dialog.open) return;
     const active = document.activeElement, setting = active?.dataset.setting;
     const draft = active?.value;
@@ -674,13 +638,6 @@ export class EditorSettings {
         ['ctrlSpaceDrag', 'ctrlSpaceDragResult'],
         ['shiftSpaceDrag', 'shiftSpaceDragResult'],
       ].map(([gesture, result]) => `<div class="styk-settings-row"><dt ${messageAttributes('settings.gesture.' + gesture, {})}>${escape(say('settings.gesture.' + gesture))}</dt><dd ${messageAttributes('settings.gesture.' + result, {})}>${escape(say('settings.gesture.' + result))}</dd></div>`).join("")}</dl>`, 'settings-pen-gestures');
-    if (tab === 'feedback')
-      return `<div class="settings-feedback-actions">${[
-        ['bug', 'bug', 'draw'],
-        ['idea', 'lightbulb', 'time'],
-        ['other', 'message', 'select'],
-      ].map(([category, symbol, tint]) => `<button type="button" class="settings-feedback-tile" data-settings-feedback="${category}" data-tint="${tint}"><span class="settings-feedback-art"><span class="settings-feedback-icon">${icon(symbol)}</span></span><span class="settings-feedback-body"><strong ${messageAttributes('settings.feedback.' + category, {})}>${escape(say('settings.feedback.' + category))}</strong><small ${messageAttributes(interfaceText("settings.settingsFeedbackNote", {category: category}), {})}>${escape(say(interfaceText("settings.settingsFeedbackNote", {category: category})))}</small><span class="settings-feedback-go">${escape(say("settings.feedback.start"))}${icon('chevronRight')}</span></span></button>`).join('')}</div>`
-        + `<div class="styk-settings-card settings-feedback-private"><span class="settings-feedback-lock">${icon('lock')}</span>${this.text(say("settings.feedback.private"), say("settings.feedback.privateNote"))}<button type="button" class="ui-button" data-size="sm" data-settings-feedback="inbox" ${messageAttributes("settings.feedback.myReports", {})}>${escape(say("settings.feedback.myReports"))}</button></div>`;
     return "";
   }
   /**

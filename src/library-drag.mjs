@@ -2,9 +2,8 @@ import {messageError} from './localized-error.mjs';
 import {localizedText, appendLocalized} from './localization-bindings.mjs';
 import {t as interfaceText} from './localization.mjs';
 
-export const LIBRARY_DRAG_TYPE = 'application/x-stykanimate-library-asset';
-// A card of My library (a path) or of the public library (an id).
-const CARD = '[data-library-path], [data-public-id]';
+export const LIBRARY_DRAG_TYPE = 'application/x-twiganimate-library-asset';
+const CARD = '[data-library-path]';
 
 export function canMoveLibraryItem(item, folder) {
   if (typeof folder !== 'string' || !item?.path) return false;

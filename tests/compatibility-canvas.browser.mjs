@@ -14,7 +14,7 @@ try {
     await page.addInitScript(failure => Object.defineProperty(navigator, 'gpu', {value: failure === 'unavailable' ? undefined : {
       requestAdapter: async () => ({requestDevice: async () => {throw new Error('D3D12 create command queue failed with DXGI_ERROR_DEVICE_REMOVED (0x887A0005)');}}),
     }}), failure);
-    await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831');
+    await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831');
     await page.waitForFunction(() => window.styk?.ready);
     assert.equal(await page.evaluate(() => styk.state.renderer.context.getContextAttributes().willReadFrequently), true,
       'Fallback must request a software-oriented Canvas surface after GPU failure');

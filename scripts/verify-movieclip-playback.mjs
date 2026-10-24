@@ -7,8 +7,8 @@ import path from 'node:path';
 
 import {corpusPath} from '../tests/support/corpus.mjs';
 const source = process.argv[2] || corpusPath('Downloads/16 Akane vs Akato Segundo round (2).piv');
-const clip = process.argv[3] || corpusPath('Documents/StykAnimate/library/Flash aura.stykmov');
-const output = path.resolve(process.env.STYK_PROBE_OUTPUT || 'artifacts/akane-flash-aura');
+const clip = process.argv[3] || corpusPath('Documents/TwigAnimate/library/Flash aura.stykmov');
+const output = path.resolve(process.env.TWIGANIMATE_PROBE_OUTPUT || 'artifacts/akane-flash-aura');
 await mkdir(output, {recursive: true});
 const digest = async file => createHash('sha256').update(await readFile(file)).digest('hex');
 const original = await Promise.all([source, clip].map(digest));
@@ -16,14 +16,14 @@ const browser = await chromium.launch({channel: 'chrome', headless: true});
 const result = {source, clip, errors: [], runs: []};
 try {
   const page = await browser.newPage({viewport: {width: 1440, height: 950}});
-  if (process.env.STYK_PROBE_BASELINE) for (const name of ['renderer', 'prepared-frames']) {
-    const body = await readFile(path.join(process.env.STYK_PROBE_BASELINE, `${name}.before.mjs`), 'utf8');
+  if (process.env.TWIGANIMATE_PROBE_BASELINE) for (const name of ['renderer', 'prepared-frames']) {
+    const body = await readFile(path.join(process.env.TWIGANIMATE_PROBE_BASELINE, `${name}.before.mjs`), 'utf8');
     await page.route(`**/src/${name}.mjs`, route => route.fulfill({body, contentType: 'text/javascript'}));
   }
   page.on('pageerror', error => {result.errors.push(error.message); console.log('PAGE ERROR', error.message);});
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831');
   await page.waitForFunction(() => window.styk?.ready);
-  if (process.env.STYK_PROBE_MODE) await page.evaluate(mode => styk.settingsUI.commit({timelineMode: mode}), process.env.STYK_PROBE_MODE);
+  if (process.env.TWIGANIMATE_PROBE_MODE) await page.evaluate(mode => styk.settingsUI.commit({timelineMode: mode}), process.env.TWIGANIMATE_PROBE_MODE);
   await page.evaluate(() => styk.editor.markSaved());
   await page.locator('#file-input').setInputFiles(source);
   await page.waitForFunction(name => !styk.state.importing && styk.editor.name === name, path.basename(source, '.piv'), {timeout: 180000});
@@ -66,7 +66,7 @@ try {
       return ok;
     };
   }, (await readFile(clip)).toString('base64'));
-  const middle = Number(process.env.STYK_PROBE_TICK || Math.floor(result.scene.ticks / 2));
+  const middle = Number(process.env.TWIGANIMATE_PROBE_TICK || Math.floor(result.scene.ticks / 2));
   const start = Math.max(0, middle - 8), end = Math.min(result.scene.ticks, middle + 24);
   async function run(name, first = start, last = end) {
     await page.evaluate(({first, last}) => {
@@ -101,7 +101,7 @@ try {
   await run('replay-insertion', middle, end);
   await page.evaluate(() => styk.editor.undo()); await run('undo-insertion');
   await page.evaluate(() => styk.editor.redo()); await run('redo-insertion');
-  if (process.env.STYK_PROBE_FULL === '1') {
+  if (process.env.TWIGANIMATE_PROBE_FULL === '1') {
     await run('full-animation', 0, result.scene.ticks);
     await run('full-replay', 0, result.scene.ticks);
   }

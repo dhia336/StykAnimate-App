@@ -3,7 +3,7 @@
 // and lifting the fingers afterwards selects and moves nothing.
 //
 //   node tests/canvas-pinch.browser.mjs           serve a fresh build of the site
-//   STYK_URL=http://127.0.0.1:47839 node tests/...   test a running app instead
+//   TWIGANIMATE_URL=http://127.0.0.1:47839 node tests/...   test a running app instead
 import assert from 'node:assert/strict';
 import { mkdtemp, rm } from 'node:fs/promises';
 import os from 'node:os';
@@ -13,7 +13,7 @@ import { buildWeb } from '../scripts/build-web.mjs';
 import { startWebServer } from '../scripts/serve-web.mjs';
 
 const temp = await mkdtemp(path.join(os.tmpdir(), 'styk-pinch-'));
-const remote = process.env.STYK_URL;
+const remote = process.env.TWIGANIMATE_URL;
 const site = remote ? { origin: remote, close: async () => {} } : await startWebServer({ root: (await buildWeb({ output: path.join(temp, 'site') })).output });
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 const checks = [];

@@ -16,7 +16,7 @@ async function settings() {
   await page.locator('#menu [data-action=settings]').click();
 }
 try {
-  await page.goto(process.env.STYK_TEST_URL || 'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_TEST_URL || 'http://127.0.0.1:47831');
   await page.waitForFunction(() => window.styk?.ready && styk.localization && styk.settingsUI);
   check('Actual app starts in English despite Italian browser preferences',await page.evaluate(() => styk.state.settings.locale === 'en' && styk.localization.localization.locale === 'en' && document.documentElement.lang === 'en'));
   // Arrange a small real native document; the edit itself uses the visible field.

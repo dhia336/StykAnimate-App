@@ -3,14 +3,14 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {chromium} from './support/playwright.mjs';
 import backend from '../desktop/backend.cjs';
-const service = process.env.STYK_URL ? null : await backend.startBackend({appRoot:process.cwd()});
+const service = process.env.TWIGANIMATE_URL ? null : await backend.startBackend({appRoot:process.cwd()});
 const out=path.resolve('artifacts');await mkdir(out,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true,args:['--disable-gpu']});
 const page=await browser.newPage({viewport:{width:1480,height:960}}),errors=[],checks=[];
 page.on('pageerror',error=>errors.push(error.message));
 const check=(label)=>checks.push(label);
 try{
-  await page.goto(process.env.STYK_URL??service.origin);await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??service.origin);await page.waitForFunction(()=>window.styk?.ready);
   await page.locator('#file-input').setInputFiles(path.resolve('../Pivot Animator v5/Animations/tween_pendulum.piv'));
   await page.waitForFunction(()=>styk.editor.name==='tween_pendulum');
   await page.evaluate(()=>{styk.editor.selectFrame(1);styk.timeline.setMode('frames');styk.timeline._setSelectedFrames([1,2],2)});

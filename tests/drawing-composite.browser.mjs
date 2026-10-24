@@ -2,14 +2,14 @@ import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
-const output=process.env.STYK_COMPOSITE_ARTIFACTS||'artifacts/drawing-worker-composite/browser',baseline=process.env.STYK_COMPOSITE_BASELINE,checks=[],errors=[];await mkdir(output,{recursive:true});
+const output=process.env.TWIGANIMATE_COMPOSITE_ARTIFACTS||'artifacts/drawing-worker-composite/browser',baseline=process.env.TWIGANIMATE_COMPOSITE_BASELINE,checks=[],errors=[];await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage({viewport:{width:1440,height:1000}});
 page.on('pageerror',error=>errors.push(error.message));const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('PASS',name);};
 try{
   if(baseline)for(const file of ['src/drawing-controller.mjs','src/drawing-resources.mjs']){
     const body=execFileSync('git',['show',`${baseline}:${file}`],{encoding:'utf8'});await page.route(`**/${file}`,route=>route.fulfill({contentType:'text/javascript',body}));
   }
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);await page.locator('[data-workspace-mode="draw"]').click();
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);await page.locator('[data-workspace-mode="draw"]').click();
   const immediate=await page.evaluate(async()=>{
     const {emptyDocument}=await import('/src/demo.mjs'),{TileStore}=await import('/src/drawing-tiles.mjs');
     const e=styk.editor,d=styk.drawing;e.load(emptyDocument());e.report.canvas_width=640;e.report.canvas_height=480;e.createDrawingLayer();styk.state.settings.autosaveSeconds=0;

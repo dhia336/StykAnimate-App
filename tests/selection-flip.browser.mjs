@@ -5,7 +5,7 @@ import {builderFixture} from '../scripts/builder-benchmark-fixture.mjs';
 const browser = await chromium.launch({channel: 'chrome', headless: true});
 try {
   const page = await browser.newPage({viewport: {width: 1440, height: 1000}});
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47841');
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47841');
   await page.waitForFunction(() => window.styk?.ready);
   const report = builderFixture(4);
   report.figure_types[0].segments.forEach((s, i) => {s.parent_id = [0,1,1,1][i]; s.length = 90; s.angle_rad = [-1.5,-.7,.5,1][i]; s.thickness = 5;});

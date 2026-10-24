@@ -14,7 +14,7 @@ const point=index=>page.evaluate(async index=>{
  const p=worldToScreen(world,{report:editor.report,frame:editor.frame,view:state.view});const r=document.querySelector('#viewport').getBoundingClientRect();return {x:r.x+p.x,y:r.y+p.y};
 },index);
 try {
- await page.goto(process.env.STYK_URL||'http://127.0.0.1:47841');await page.waitForFunction(()=>window.styk?.ready);
+ await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47841');await page.waitForFunction(()=>window.styk?.ready);
  for(const mode of ['single-select','toggle-select','selection-select','shift-select','toggle-rig']) {
   await page.evaluate(f=>{styk.builder?.leave();styk.editor.load(f);styk.editor.select(1,-1);styk.builder.enter();styk.state.builderBranch=false;},fixture);
   await page.locator('.rail-quick [data-action=zoom-selection]').click();await page.locator('[data-tool=select]').click();await settle();

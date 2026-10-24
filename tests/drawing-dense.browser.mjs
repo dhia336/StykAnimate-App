@@ -1,11 +1,11 @@
 import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
-const out=process.env.STYK_DENSE_ARTIFACTS||'artifacts/drawing-dense';await mkdir(out,{recursive:true});
+const out=process.env.TWIGANIMATE_DENSE_ARTIFACTS||'artifacts/drawing-dense';await mkdir(out,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
 page.on('pageerror',e=>errors.push(e.message));
 try{
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
   const result=await page.evaluate(async()=>{
     const {DrawingResources}=await import('/src/drawing-resources.mjs'),{createDrawingFigure}=await import('/src/drawing-model.mjs'),{strokeRegion}=await import('/src/drawing-stroke-region.mjs'),{levelStore}=await import('/src/drawing-raster.mjs');
     const figure=createDrawingFigure({celId:'dense-preview'}),owner=new DrawingResources({figure_types:[figure]},{onError:e=>{throw e;}});owner.busy=true;

@@ -2,7 +2,7 @@ import {messageError} from './localized-error.mjs';
 // Recovery bytes and tiny display/capacity metadata have separate stores.
 // Listing never materializes project bytes. Each tab owns one key; saves cannot
 // clear another tab's work. Web Locks keep live copies out of recovery offers.
-const NAME='stykanimate-recovery', STORE='documents', META='metadata', VERSION=2;
+const NAME='twiganimate-recovery', STORE='documents', META='metadata', VERSION=2;
 export const MAX_RECOVERY_COPIES=8, MAX_RECOVERY_BYTES=512*1024*1024;
 const sizeOf=record=>record?.data instanceof ArrayBuffer ? record.data.byteLength : record?.blob?.size ?? 0;
 const metadata=(record,id)=>({id,name:record.name,savedAt:record.savedAt,token:record.token,size:sizeOf(record)});
@@ -116,7 +116,7 @@ export class BrowserRecoverySession{
   claim(id){
     if(!this.locks?.request)return Promise.resolve(()=>{});
     return new Promise((resolve,reject)=>{
-      this.locks.request('stykanimate-recovery:'+id,{ifAvailable:true},lock=>{
+      this.locks.request('twiganimate-recovery:'+id,{ifAvailable:true},lock=>{
         if(!lock){resolve(null);return;}
         return new Promise(release=>resolve(release));
       }).catch(reject);

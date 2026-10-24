@@ -12,7 +12,7 @@ const settle = () => page.evaluate(() => new Promise(resolve => requestAnimation
 const clip = () => page.evaluate(() => styk.editor.getCameraMotions().find(c => c.type === 'follow'));
 const undo = () => page.evaluate(() => styk.editor._undo.length);
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
   await page.evaluate(async () => {
     const {createDemo} = await import('/src/demo.mjs');
     styk.state.settings.autosaveSeconds = 0; styk.settingsUI.commit({timelineMode: 'advanced'}); styk.editor.load(createDemo());

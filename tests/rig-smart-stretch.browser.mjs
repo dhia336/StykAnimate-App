@@ -10,7 +10,7 @@ const openRig=async()=>{const toggle=page.locator('[data-section-toggle="rig-con
 const select=async id=>{await page.evaluate(id=>styk.editor.select(1,styk.editor.figure.segments.findIndex(s=>s.segment_id===id)),id);await settle();};
 const value=async(id,v)=>{await page.locator(`#${id}`).fill(String(v));await page.locator(`#${id}`).press('Tab');await settle();};
 try{
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47851');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47851');await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(async()=>{
     const {rigExampleDocument}=await import('/src/rig-examples.mjs'),e=styk.editor;
     e.load(rigExampleDocument('telescoping-panels'));e.select(1,0);e.setRigBehavior({stretch:null});styk.builder.enter();e.select(1,0);

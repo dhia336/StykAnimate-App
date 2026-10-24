@@ -5,7 +5,7 @@ await mkdir('artifacts/onion-scene-opacity',{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true});
 try{
   const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   const result=await page.evaluate(async rendererModule=>{
     const {createRenderer}=await import(rendererModule),{buildGeometry}=await import('/src/pivot/geometry.mjs');
     const {emptyDocument,createFrame,createObject}=await import('/src/demo.mjs');
@@ -64,7 +64,7 @@ try{
       }finally{renderer.destroy();}
     }
     return {rows,gpuErrors};
-  },process.env.STYK_ONION_RENDERER??'/src/renderer.mjs');
+  },process.env.TWIGANIMATE_ONION_RENDERER??'/src/renderer.mjs');
   for(const row of result.rows){
     if(row.png){await writeFile(`artifacts/onion-scene-opacity/${row.backend}.png`,Buffer.from(row.png.split(',')[1],'base64'));delete row.png;continue;}
     assert.ok(row.actual.every((v,i)=>Math.abs(v-row.expected[i])<=2),JSON.stringify(row));

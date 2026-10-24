@@ -26,9 +26,9 @@ test('Legacy, malformed and missing theme settings default to system', () => {
 });
 
 test('System appearance is resolved during browser and native bootstrap', async () => {
-  for (const values of [{}, new Error('Storage denied'), {'stykanimate.theme.v1':'system'}])
+  for (const values of [{}, new Error('Storage denied'), {'twiganimate.theme.v1':'system'}])
     assert.equal(boot(values, undefined, true).dataset.theme, 'dark');
-  assert.equal(boot({'stykanimate.theme.v1':'light'}, undefined, true).dataset.theme, 'light');
+  assert.equal(boot({'twiganimate.theme.v1':'light'}, undefined, true).dataset.theme, 'light');
   const result = boot({}, () => ({}), true);
   await result.window.stykInitialEditorSettings;
   assert.equal(result.dataset.theme, 'dark');
@@ -36,14 +36,14 @@ test('System appearance is resolved during browser and native bootstrap', async 
 
 test('Browser bootstrap restores the saved appearance without waiting for modules', () => {
   for (const values of [
-    {'stykanimate.theme.v1':'dark'},
-    {'stykanimate.editor.settings.v1':'{"theme":"dark"}'},
+    {'twiganimate.theme.v1':'dark'},
+    {'twiganimate.editor.settings.v1':'{"theme":"dark"}'},
   ]) {
     const {dataset,meta}=boot(values);
     assert.equal(dataset.theme,'dark');
     assert.equal(meta.content,'#0a0b0f');
   }
-  for (const values of [{},new Error('Storage denied'),{'stykanimate.editor.settings.v1':'invalid'}])
+  for (const values of [{},new Error('Storage denied'),{'twiganimate.editor.settings.v1':'invalid'}])
     assert.equal(boot(values).dataset.theme,'light');
 });
 
@@ -58,7 +58,7 @@ test('Native preferences win on a new backend origin before revealing the worksp
   assert.equal(result.dataset.theme,'dark');
   assert.equal(result.meta.content,'#0a0b0f');
   assert.ok(!('themePending' in result.dataset));
-  const light=boot({'stykanimate.theme.v1':'dark'}, () => ({theme:'light'}));
+  const light=boot({'twiganimate.theme.v1':'dark'}, () => ({theme:'light'}));
   await light.window.stykInitialEditorSettings;
   assert.equal(light.dataset.theme,'light');
 });

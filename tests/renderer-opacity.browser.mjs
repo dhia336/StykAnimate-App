@@ -6,10 +6,10 @@ import {execFileSync} from 'node:child_process';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 const source=process.argv[2],ticks=process.argv.slice(3).map(Number);
-const output=path.resolve('artifacts/renderer-opacity',process.env.STYK_PROBE_LABEL||'current');
+const output=path.resolve('artifacts/renderer-opacity',process.env.TWIGANIMATE_PROBE_LABEL||'current');
 await mkdir(output,{recursive:true});
-const ref=process.env.STYK_BASELINE_REF||'HEAD',files=new Map();
-const app=await electron.launch({args:[process.cwd()],env:{...process.env,STYK_USER_DATA_DIR:path.join(output,'profile')}});
+const ref=process.env.TWIGANIMATE_BASELINE_REF||'HEAD',files=new Map();
+const app=await electron.launch({args:[process.cwd()],env:{...process.env,TWIGANIMATE_USER_DATA_DIR:path.join(output,'profile')}});
 try {
   const page=await app.firstWindow(),errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.context().route('**/baseline/**',async route=>{

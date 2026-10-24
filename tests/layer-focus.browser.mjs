@@ -18,7 +18,7 @@ const point = (uid, part = 'root') => page.evaluate(({uid, part}) => {
 const clickFigure = async uid => { const p = await point(uid); await page.mouse.click(p.x, p.y); await settle(); };
 
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
   await page.evaluate(async () => {
     const {emptyDocument, createFrame, createObject} = await import('/src/demo.mjs');
     const {worldToScreen} = await import('/src/renderer.mjs');

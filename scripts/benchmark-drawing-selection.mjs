@@ -6,7 +6,7 @@ import {dirname} from 'node:path';
 
 // An optional Git baseline is served into a fresh browser context; the worktree
 // stays untouched. Both versions receive identical input and renderer settings.
-const baseline=process.env.STYK_SELECTION_BASELINE,output=process.env.STYK_SELECTION_BENCHMARK||'artifacts/drawing-selection/benchmark.json';
+const baseline=process.env.TWIGANIMATE_SELECTION_BASELINE,output=process.env.TWIGANIMATE_SELECTION_BENCHMARK||'artifacts/drawing-selection/benchmark.json';
 const modules=['drawing-controller','drawing-pixels','drawing-resources','drawing-selection','drawing-transform','drawing-worker','drawing-raster'];
 const browser=await chromium.launch({channel:'chrome',headless:true}),runs=[];
 try{
@@ -16,7 +16,7 @@ try{
       const body=execFileSync('git',['show',`${revision}:src/${name}.mjs`],{encoding:'utf8',maxBuffer:8*1024*1024});
       await context.route(`**/src/${name}.mjs`,route=>route.fulfill({contentType:'text/javascript',body}));
     }
-    const page=await context.newPage();await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+    const page=await context.newPage();await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
     await page.locator('[data-workspace-mode="draw"]').click();
     const samples=await page.evaluate(async()=>{
       const {emptyDocument}=await import('/src/demo.mjs'),samples=[];

@@ -94,11 +94,11 @@ jobs:
         run: |
           xvfb-run -a npm run test:boot:packaged
           version=$(node -p 'JSON.parse(require("fs").readFileSync("package.json")).version')
-          STYK_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/release/StykAnimate-Max-$version-linux-x86_64.AppImage" xvfb-run -a npm run test:boot:packaged
+          TWIGANIMATE_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/release/TwigAnimate-$version-linux-x86_64.AppImage" xvfb-run -a npm run test:boot:packaged
       - name: Export video with the bundled encoder
         run: xvfb-run -a npm run test:export:packaged
       - name: Verify Community updates stay disabled
-        run: STYK_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/release/linux-unpacked/stykanimate-max" xvfb-run -a npm run test:updates:desktop
+        run: TWIGANIMATE_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/release/linux-unpacked/twiganimate" xvfb-run -a npm run test:updates:desktop
       - name: Upload the build evidence
         uses: actions/upload-artifact@v4
         with:

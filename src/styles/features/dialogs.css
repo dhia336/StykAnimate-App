@@ -49,17 +49,7 @@
   .about-identity > img { display: block; inline-size: 80px; block-size: 80px; border-radius: 20px; box-shadow: 0 0 0 1px var(--line-1); }
   .about-identity-copy { display: grid; gap: var(--space-2); min-inline-size: 0; }
   .about-identity-copy p { margin: 0; }
-  /* ---- Privacy (privacy-ui.mjs) and What's new (support-ui.mjs), the desktop app's first-run dialogs ---- */
-  /* The title takes the focus for screen readers only: it is not a control, so it shows no ring. */
-  .styk-privacy h2:focus { outline: none; }
-  /* Accept and Reject stay equal: two soft pills of one size. */
-  .styk-privacy .privacy-choice {
-    block-size: var(--control-lg); border: 0; border-radius: var(--radius-pill); background: var(--surface-well);
-    color: var(--text-1); font: var(--type-button); box-shadow: none;
-  }
-  .styk-privacy .privacy-choice:where(:hover) { background: var(--surface-pressed); }
-  .styk-privacy .privacy-choice:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
-  .styk-privacy .privacy-choice-note { font: var(--type-small); color: var(--text-3); }
+  /* ---- What's new (support-ui.mjs), the desktop app's release-notes dialog ---- */
   /* What's new reads like the site's changelog page: a blue eyebrow over a tight display title with the name in
    * blue, the version as a blue pill, then each group as a coloured pill whose bullets share its colour. */
   dialog.release-splash {
@@ -137,7 +127,7 @@
     content: ""; position: absolute; inset-inline-start: 3px; inset-block-start: 0.62em; inline-size: 6px; block-size: 6px; border-radius: 50%; background: var(--note-dot);
   }
 
-  /* Start animating is the dialog's one main action: the primary pill. Support sits beside it as the soft one. */
+  /* Start animating is the dialog's one main action: the primary pill. */
   .release-splash .splash-footer {
     display: flex; flex-shrink: 0; align-items: center; justify-content: space-between; gap: var(--space-3);
     padding: clamp(var(--space-2-5), 2dvh, var(--space-4)) var(--space-5) clamp(var(--space-2-5), 2dvh, var(--space-4)) var(--_x); border-block-start: 1px solid var(--line-1);
@@ -147,10 +137,4 @@
     border-radius: var(--radius-pill); background: var(--primary); color: var(--on-primary); font: var(--type-button); box-shadow: var(--primary-shadow);
   }
   .release-splash .splash-footer .button:where(:hover) { background: var(--primary-hover); }
-  .release-splash .support-donate {
-    display: inline-flex; align-items: center; gap: var(--space-2); block-size: var(--control-lg); padding: 0 var(--space-4); border-radius: var(--radius-pill);
-    background: var(--surface-well); color: var(--text-1); font: var(--type-button); text-decoration: none;
-  }
-  .release-splash .support-donate:where(:hover) { background: var(--surface-pressed); }
-  .release-splash .support-donate svg { inline-size: 16px; block-size: 16px; fill: var(--tint-fx); }
 }

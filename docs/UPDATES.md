@@ -1,6 +1,6 @@
 # Fork releases and updates
 
-StykAnimate-Max does not check the upstream release channel and does not
+TwigAnimate does not check the upstream release channel and does not
 publish through Electron Builder. Automatic updates are intentionally disabled
 until this fork has an owned release feed, verified credentials, and tested
 installers. Installing or building the app does not contact the upstream release
@@ -11,7 +11,7 @@ repository.
 The release publisher is guarded to accept only this fork repository:
 
 ```powershell
-$env:STYK_RELEASE_REPOSITORY = "dhia336/StykAnimate-App"
+$env:TWIGANIMATE_RELEASE_REPOSITORY = "dhia336/TwigAnimate"
 gh auth status --hostname github.com
 npm run release:publish
 ```
@@ -19,7 +19,7 @@ npm run release:publish
 Before publishing, follow [the release preparation guide](RELEASING.md), build and
 verify the platform artifacts, and check that the GitHub CLI is authenticated to an
 account with release-write access to this fork. The publisher creates or updates
-draft releases in `dhia336/StykAnimate-App` only; it rejects unset or different
+draft releases in `dhia336/TwigAnimate` only; it rejects unset or different
 repository values and never targets the upstream repository.
 
 The package has no `publish` provider, and the desktop runtime supplies an

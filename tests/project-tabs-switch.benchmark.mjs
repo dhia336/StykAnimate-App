@@ -1,5 +1,5 @@
 // Project tabs on real projects (docs/PROJECT-TABS.md): what switching costs and what a resting project holds.
-//   STYK_URL=<dev server> node tests/project-tabs-switch.benchmark.mjs <a.piv> <b.piv> [rounds]
+//   TWIGANIMATE_URL=<dev server> node tests/project-tabs-switch.benchmark.mjs <a.piv> <b.piv> [rounds]
 // Reports, per switch: the time until the project in front is editable (its scene drawn), until playback is
 // prepared around the playhead, the longest main-thread task, and the JS heap with one and two projects open.
 import {chromium} from './support/playwright.mjs';
@@ -8,7 +8,7 @@ import path from 'node:path';
 
 const [first, second] = process.argv.slice(2, 4), rounds = Number(process.argv[4] ?? 6);
 if (!first || !second) throw new Error('Name two project files.');
-const url = process.env.STYK_URL || 'http://127.0.0.1:47831', out = path.resolve('artifacts/project-tabs');
+const url = process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831', out = path.resolve('artifacts/project-tabs');
 await mkdir(out, {recursive: true});
 const browser = await chromium.launch({channel: 'chrome', headless: true, args: ['--enable-precise-memory-info', '--js-flags=--expose-gc']});
 const page = await browser.newPage({viewport: {width: 1440, height: 900}});

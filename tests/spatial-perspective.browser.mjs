@@ -5,7 +5,7 @@ const out='artifacts/spatial-perspective';await mkdir(out,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true});
 try{
  const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto(process.env.STYK_URL??'http://127.0.0.1:47851');await page.waitForFunction(()=>window.styk?.ready);
+ await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47851');await page.waitForFunction(()=>window.styk?.ready);
  const source=process.argv[2]?JSON.parse(await readFile(process.argv[2],'utf8')):null;
  await page.evaluate(async doc=>{
   for(const d of document.querySelectorAll('dialog[open]'))d.close();

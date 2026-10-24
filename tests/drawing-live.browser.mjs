@@ -2,16 +2,16 @@ import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
-const output=process.env.STYK_LIVE_ARTIFACTS||'artifacts/drawing-live',checks=[],errors=[];await mkdir(output,{recursive:true});
-const previewDelayMs=Number(process.env.STYK_PREVIEW_DELAY_MS||0),baseline=process.env.STYK_LIVE_BASELINE,software=process.env.STYK_LIVE_SOFTWARE==='1';
+const output=process.env.TWIGANIMATE_LIVE_ARTIFACTS||'artifacts/drawing-live',checks=[],errors=[];await mkdir(output,{recursive:true});
+const previewDelayMs=Number(process.env.TWIGANIMATE_PREVIEW_DELAY_MS||0),baseline=process.env.TWIGANIMATE_LIVE_BASELINE,software=process.env.TWIGANIMATE_LIVE_SOFTWARE==='1';
 const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage({viewport:{width:1440,height:1000}});
 page.on('pageerror',error=>errors.push(error.message));const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('PASS',name);};
 try{
  // Apply the same disabled HTTP cache policy to comparison revisions.
  await page.context().route('**/*',route=>route.continue());
- if(baseline)for(const name of process.env.STYK_LIVE_MODULES?.split(',')??['drawing-preview-cache','drawing-worker-operations','renderer']){const body=execFileSync('git',['show',`${baseline}:src/${name}.mjs`],{encoding:'utf8'});await page.context().route(`**/src/${name}.mjs`,route=>route.fulfill({contentType:'text/javascript',body}));}
+ if(baseline)for(const name of process.env.TWIGANIMATE_LIVE_MODULES?.split(',')??['drawing-preview-cache','drawing-worker-operations','renderer']){const body=execFileSync('git',['show',`${baseline}:src/${name}.mjs`],{encoding:'utf8'});await page.context().route(`**/src/${name}.mjs`,route=>route.fulfill({contentType:'text/javascript',body}));}
  if(software)await page.addInitScript(()=>Object.defineProperty(navigator,'gpu',{value:undefined}));
- await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+ await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
  // This suite covers the stroke worker and worker-preview presenter, the
  // Canvas path and WebGPU fallback; GPU tiles have their own suite.
  await page.evaluate(()=>styk.state.renderer.setGpuDrawing?.(false));await page.locator('[data-workspace-mode="draw"]').click();

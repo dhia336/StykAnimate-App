@@ -7,7 +7,7 @@ const browser=await chromium.launch({channel:'chrome',headless:true});
 const page=await browser.newPage({viewport:{width:1500,height:1000}}),errors=[];
 page.on('pageerror',e=>errors.push(e.message));
 try {
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831');
   await page.waitForFunction(()=>window.styk?.ready);
   const snapshot=()=>page.evaluate(()=>({name:styk.editor.figure.name,spatial:Boolean(styk.editor.figure._styk?.spatialMesh||styk.editor.figure.segments.some(s=>s._stykRig?.spatial)),frames:styk.editor.report.keyframes.length,objects:styk.editor.frame.objects.length,ticks:styk.editor.totalTicks,dirty:styk.editor.dirty,
     tracks:Object.fromEntries(Object.entries(styk.editor.report._styk.layerSheet.tracks).map(([id,t])=>[id,{end:t.end,keys:t.keys.map(k=>k.tick)}]))}));

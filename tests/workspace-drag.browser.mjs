@@ -9,7 +9,7 @@ const browser = await chromium.launch({channel: 'chrome', headless: true});
 const page = await browser.newPage({viewport: {width: 1440, height: 900}});
 const errors = [];
 page.on('pageerror', error => errors.push(error.message));
-await page.addInitScript(() => localStorage.setItem('stykanimate.editor.settings.v1', JSON.stringify({rendererMode: 'canvas', locale: 'en'})));
+await page.addInitScript(() => localStorage.setItem('twiganimate.editor.settings.v1', JSON.stringify({rendererMode: 'canvas', locale: 'en'})));
 const settle = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 const box = selector => page.locator(selector).boundingBox();
 const placement = id => page.evaluate(id => styk.workspace.layout.modes[document.querySelector('.workspace').dataset.mode].panels.find(panel => panel.id === id), id);
@@ -28,7 +28,7 @@ async function centered() {
   assert.ok(rail.y >= viewport.y && rail.y + rail.height <= viewport.y + viewport.height);
 }
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47911');
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47911');
   await page.waitForFunction(() => window.styk?.ready); await settle();
   await centered();
   let viewport = await box('#viewport');

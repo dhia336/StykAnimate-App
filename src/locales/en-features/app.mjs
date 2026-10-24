@@ -1,5 +1,4 @@
 export default Object.freeze({
-  "app.sendFeedback": "Send feedback",
   "app.ready": "Ready",
   "app.toolOptions": "Tool options",
   "app.drag": "Drag",
@@ -34,9 +33,9 @@ export default Object.freeze({
   "app.finishOrCancelTheExportBeforePlaying": "Finish or cancel the export before playing.",
   "app.fps": "— fps",
   "app.preview": "PREVIEW",
-  "app.stykanimate": "{value}{name} — StykAnimate-Max",
+  "app.stykanimate": "{value}{name} — TwigAnimate",
   "app.rigExamples": "Rig examples",
-  "app.openStykanimatePivotOrStickNodesProjectsFigures": "Open StykAnimate-Max, Pivot or Stick Nodes projects, figures and movie clips.",
+  "app.openStykanimatePivotOrStickNodesProjectsFigures": "Open TwigAnimate, Pivot or Stick Nodes projects, figures and movie clips.",
   "app.finishOrCancelThePolygonFirst": "Finish or cancel the polygon first.",
   "app.joints": "{length} joints",
   "app.noClosedRegionHereCloseTheOutlineAt": "No closed region here. Close the outline at its joints first.",

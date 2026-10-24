@@ -1,22 +1,13 @@
 {
-  // A self-hosted StykAnimate-Max web build. No upstream custom domain or release destination is configured.
-  // The Worker answers only /community/*, proxying the upstream community-library service.
+  // A self-hosted TwigAnimate web build. No upstream custom domain or release destination is configured.
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "stykanimate-max",
-  "main": "worker.js",
+  "name": "twiganimate",
   "compatibility_date": "2026-09-10",
   "workers_dev": true,
   "assets": {
     "directory": "../build/web",
     "binding": "ASSETS",
-    "not_found_handling": "404-page",
-    // Everything else is served straight from the CDN without running the Worker.
-    "run_worker_first": ["/community/*"]
-  },
-  // Existing public community-library service; this is not a Community web-hosting destination.
-  "vars": {
-    "SITE_URL": "https://stykanimate.com",
-    "FILES_URL": "https://files.stykanimate.com"
+    "not_found_handling": "404-page"
   },
   "observability": { "enabled": false }
 }

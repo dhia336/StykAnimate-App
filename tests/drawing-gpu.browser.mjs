@@ -6,14 +6,14 @@ import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 
-const output=process.env.STYK_GPU_ARTIFACTS||'artifacts/drawing-gpu',checks=[],errors=[];
+const output=process.env.TWIGANIMATE_GPU_ARTIFACTS||'artifacts/drawing-gpu',checks=[],errors=[];
 await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage({viewport:{width:1440,height:1000}});
 page.on('pageerror',error=>errors.push(error.message));
 const check=(name,value,detail)=>{assert.ok(value,`${name}${detail?` ${JSON.stringify(detail)}`:''}`);checks.push(name);console.log('PASS',name);};
 const settle=()=>page.waitForFunction(()=>!styk.drawing.gesture&&!styk.drawing.operation,null,{timeout:30000});
 try{
-  await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');await page.waitForFunction(()=>window.styk?.ready);
   await page.locator('[data-workspace-mode="draw"]').click();
   await page.evaluate(()=>styk.state.renderer.gpuDrawingReady);
   check('the WebGPU renderer owns GPU drawing residency',await page.evaluate(()=>Boolean(styk.state.renderer.drawingGpu)));

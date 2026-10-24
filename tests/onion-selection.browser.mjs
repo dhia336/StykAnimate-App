@@ -15,7 +15,7 @@ async function ghosts(expected, name) {
 }
 const renderedOrder = () => page.evaluate(() => styk.editor.geometry.objects.get(0).drawables.filter(d => d.seg).map(d => d.seg.segment_id));
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831');
   await page.waitForFunction(() => window.styk?.ready);
   await page.evaluate(async () => {
     const {emptyDocument, createObject, createFrame} = await import('/src/demo.mjs');

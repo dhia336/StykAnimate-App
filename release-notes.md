@@ -1,4 +1,4 @@
-# StykAnimate-Max 1.2.5
+# TwigAnimate 1.2.5
 
 Layer folders, camera follow and smoother editing
 
@@ -59,4 +59,4 @@ Layer folders, camera follow and smoother editing
 - Quicker preparation for playback and exports.
 - APNG and PNG sequence exports use less memory.
 
-Automatic updates are not configured for StykAnimate-Max. Installers must be updated manually.
+Automatic updates are not configured for TwigAnimate. Installers must be updated manually.

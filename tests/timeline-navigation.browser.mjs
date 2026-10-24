@@ -1,5 +1,5 @@
 /** Advanced timeline navigation: zoom anchors, following the playhead, room under the last layer and edge scrolling.
- * Run with `node tests/timeline-navigation.browser.mjs` against `npm run serve` (STYK_URL overrides the address). */
+ * Run with `node tests/timeline-navigation.browser.mjs` against `npm run serve` (TWIGANIMATE_URL overrides the address). */
 import assert from 'node:assert/strict';
 import {chromium} from './support/playwright.mjs';
 
@@ -15,7 +15,7 @@ const slider = async value => { await page.locator('#timeline-zoom').fill(String
 const seek = async tick => { await page.evaluate(tick => styk.editor.seek(tick), tick); await settle(); };
 
 try {
-  await page.goto(process.env.STYK_URL ?? 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL ?? 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
   await page.evaluate(async () => {
     const {emptyDocument} = await import('/src/demo.mjs');
     styk.settingsUI.commit({timelineMode: 'advanced', theme: 'light'}); styk.editor.load(emptyDocument());

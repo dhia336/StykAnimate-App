@@ -14,11 +14,11 @@ await writeFile(path.join(profile, 'telemetry-state.json'), JSON.stringify({
   consent: { analytics: false, diagnostics: false, policyVersion: '2026-09-10', updatedAt: Date.now() },
 }));
 const application = await electron.launch({
-  executablePath: process.env.STYK_PACKAGED_EXECUTABLE,
-  args: process.env.STYK_PACKAGED_EXECUTABLE ? [] : [root],
+  executablePath: process.env.TWIGANIMATE_PACKAGED_EXECUTABLE,
+  args: process.env.TWIGANIMATE_PACKAGED_EXECUTABLE ? [] : [root],
   cwd: root,
   timeout: 45000,
-  env: { ...process.env, STYK_USER_DATA_DIR: profile },
+  env: { ...process.env, TWIGANIMATE_USER_DATA_DIR: profile },
 });
 try {
   const page = await application.firstWindow();
@@ -26,20 +26,20 @@ try {
   const splash = page.locator('.release-splash');
   await splash.waitFor({ state: 'visible' });
   assert.ok((await splash.innerText()).includes(`Version ${version}`));
-  assert.ok((await splash.innerText()).includes('StykAnimate-Max'));
+  assert.ok((await splash.innerText()).includes('TwigAnimate'));
   assert.equal(await splash.locator('.support-donate, .splash-history').count(), 0);
   await page.screenshot({ path: path.join(output, 'startup.png') });
 
   const initial = await page.evaluate(() => window.stykDesktop.getUpdateState());
   assert.equal(initial.status, 'unavailable');
-  assert.match(initial.message, /not configured for StykAnimate-Max/);
+  assert.match(initial.message, /not configured for TwigAnimate/);
   assert.equal((await page.evaluate(() => window.stykDesktop.checkForUpdates())).status, 'unavailable');
 
   await splash.getByRole('button', { name: 'Close welcome screen' }).click();
   await (await openAppMenu(page, 'help')).locator('[data-action="check-updates"]').click();
   const notice = page.locator('.update-notice');
   await notice.waitFor({ state: 'visible' });
-  assert.match(await notice.innerText(), /Automatic updates are not configured for StykAnimate-Max/);
+  assert.match(await notice.innerText(), /Automatic updates are not configured for TwigAnimate/);
   assert.equal(await notice.locator('.primary').isVisible(), false);
   await page.screenshot({ path: path.join(output, 'updates-unavailable.png') });
 

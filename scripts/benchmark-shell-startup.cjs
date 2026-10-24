@@ -7,8 +7,8 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const backendModule = require('../desktop/backend.cjs');
 const launch = backendModule.startBackend;
-const output = process.env.STYK_SHELL_OUTPUT, mode = process.env.STYK_SHELL_MODE || 'delayed';
-assert.ok(output && process.env.STYK_USER_DATA_DIR);
+const output = process.env.TWIGANIMATE_SHELL_OUTPUT, mode = process.env.TWIGANIMATE_SHELL_MODE || 'delayed';
+assert.ok(output && process.env.TWIGANIMATE_USER_DATA_DIR);
 const started = performance.now();
 let codecStartedMs, codecReadyMs, codecSignal, codecAborted=false, report, running=false;
 backendModule.startBackend = async options => {

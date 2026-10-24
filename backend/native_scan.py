@@ -60,13 +60,13 @@ def build_directory(root=ROOT, platform_name=None, arch=None):
 
 def _load():
     global _library, _attempted, _status
-    if os.environ.get("STYK_DISABLE_NATIVE_SCAN") == "1":
+    if os.environ.get("TWIGANIMATE_DISABLE_NATIVE_SCAN") == "1":
         return None
     with _lock:
         if _attempted:
             return _library
         _attempted = True
-        explicit = os.environ.get("STYK_NATIVE_SCAN_LIBRARY")
+        explicit = os.environ.get("TWIGANIMATE_NATIVE_SCAN_LIBRARY")
         candidates = [Path(explicit)] if explicit else [
             build_directory() / library_name(),
             Path(getattr(sys, "_MEIPASS", ROOT)) / "native" / library_name(),
@@ -99,8 +99,8 @@ def _load():
 
 def status():
     _load()
-    return dict(_status) if os.environ.get("STYK_DISABLE_NATIVE_SCAN") != "1" else {
-        "available": False, "reason": "disabled by STYK_DISABLE_NATIVE_SCAN"}
+    return dict(_status) if os.environ.get("TWIGANIMATE_DISABLE_NATIVE_SCAN") != "1" else {
+        "available": False, "reason": "disabled by TWIGANIMATE_DISABLE_NATIVE_SCAN"}
 
 
 def _metadata(figures):

@@ -33,8 +33,8 @@ from urllib.parse import parse_qs, quote, unquote, urlsplit
 sys.dont_write_bytecode = True
 APP = Path(__file__).resolve().parents[1]
 WORKSPACE = APP.parent
-TOOLS = Path(os.environ.get("STYK_TOOLS_ROOT", APP / "codecs")).resolve()
-BRIDGE = Path(os.environ.get("STYK_BRIDGE_PATH", APP / "codecs/codec_bridge.py")).resolve()
+TOOLS = Path(os.environ.get("TWIGANIMATE_TOOLS_ROOT", APP / "codecs")).resolve()
+BRIDGE = Path(os.environ.get("TWIGANIMATE_BRIDGE_PATH", APP / "codecs/codec_bridge.py")).resolve()
 sys.path.insert(0, str(TOOLS))
 import piv_codec
 import import_wire
@@ -46,7 +46,7 @@ from work_control import checkpoint
 # Optional compiled serializer. Source checkouts discover the same local wheels
 # used by the desktop build; a plain Python installation remains supported.
 _fast_json = None
-if os.environ.get("STYK_DISABLE_FAST_JSON") != "1":
+if os.environ.get("TWIGANIMATE_DISABLE_FAST_JSON") != "1":
     build_dependencies = APP / "build" / "python-build-deps"
     if build_dependencies.is_dir():
         sys.path.append(str(build_dependencies))
@@ -1113,8 +1113,8 @@ def main() -> int:
     parser.add_argument("--host", default="127.0.0.1", choices=["127.0.0.1", "localhost"])
     parser.add_argument("--port", default=47831, type=int)
     parser.add_argument("--workspace", type=Path, default=WORKSPACE)
-    parser.add_argument("--static-root", type=Path, default=Path(os.environ.get("STYK_WEB_ROOT", APP)))
-    parser.add_argument("--token", default=os.environ.get("STYK_API_TOKEN", ""))
+    parser.add_argument("--static-root", type=Path, default=Path(os.environ.get("TWIGANIMATE_WEB_ROOT", APP)))
+    parser.add_argument("--token", default=os.environ.get("TWIGANIMATE_API_TOKEN", ""))
     parser.add_argument("--exit-on-stdin-close", action="store_true",
                         help="stop when the parent closes standard input (set by the desktop app)")
     args = parser.parse_args()

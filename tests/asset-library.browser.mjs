@@ -15,7 +15,7 @@ const check = (name, value = true) => {
 };
 await mkdir("artifacts", { recursive: true });
 try {
-  await page.goto(process.env.STYK_URL || "http://127.0.0.1:47831");
+  await page.goto(process.env.TWIGANIMATE_URL || "http://127.0.0.1:47831");
   await page.waitForFunction(() => window.styk?.ready && window.styk.assets);
   await page.evaluate(async () => {
     const {createDemo} = await import('/src/demo.mjs');

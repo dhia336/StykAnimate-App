@@ -11,7 +11,7 @@ import {unpackNativeFrameResponse,materializeNativeFrames} from '../src/import-w
 import {corpusPath} from './support/corpus.mjs';
 const app=path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const output=path.join(app,'artifacts/import-wire-akane');await mkdir(output,{recursive:true});
-const source=process.env.STYK_WIRE_SOURCE||corpusPath('Downloads/16 Akane vs Akato Segundo round (3).piv');
+const source=process.env.TWIGANIMATE_WIRE_SOURCE||corpusPath('Downloads/16 Akane vs Akato Segundo round (3).piv');
 const files=['validated.wire','expected-header.json','expected-frames.jsonl'].map(name=>path.join(output,name));
 const script=String.raw`
 import json,sys,time,hashlib

@@ -3,7 +3,7 @@ import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
-const out=path.resolve('artifacts'),url=process.env.STYK_URL||'http://127.0.0.1:47831';
+const out=path.resolve('artifacts'),url=process.env.TWIGANIMATE_URL||'http://127.0.0.1:47831';
 await mkdir(out,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true});
 const page=await browser.newPage({viewport:{width:1560,height:1000},acceptDownloads:true});

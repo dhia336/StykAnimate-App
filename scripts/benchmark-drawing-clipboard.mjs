@@ -6,14 +6,14 @@ import {dirname} from 'node:path';
 
 // Isolate the affine kernel from PNG inflation and UI publication. Both versions
 // use identical source bytes, budgets, filters and three fresh worker runs.
-const baseline=process.env.STYK_CLIPBOARD_BASELINE,output=process.env.STYK_CLIPBOARD_BENCHMARK||'artifacts/drawing-clipboard/benchmark.json';
+const baseline=process.env.TWIGANIMATE_CLIPBOARD_BASELINE,output=process.env.TWIGANIMATE_CLIPBOARD_BENCHMARK||'artifacts/drawing-clipboard/benchmark.json';
 const browser=await chromium.launch({channel:'chrome',headless:true}),runs=[];
 try{
   for(const revision of [baseline,'working-tree'].filter(Boolean)){
     const context=await browser.newContext({viewport:{width:1440,height:1000}});
     const body=revision==='working-tree'?await readFile('src/drawing-transform.mjs','utf8'):execFileSync('git',['show',`${revision}:src/drawing-transform.mjs`],{encoding:'utf8'});
     await context.route('**/src/drawing-transform-benchmark.mjs',route=>route.fulfill({contentType:'text/javascript',body}));
-    const page=await context.newPage();await page.goto(process.env.STYK_URL||'http://127.0.0.1:47839');
+    const page=await context.newPage();await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47839');
     const samples=await page.evaluate(async()=>{
       const code=`
         import {TileStore} from '${location.origin}/src/drawing-tiles.mjs';

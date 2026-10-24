@@ -4,7 +4,7 @@ import {mkdir,writeFile} from 'node:fs/promises';
 const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage(),errors=[];
 page.on('pageerror',e=>errors.push(e.message));
 try{
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47851');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47851');await page.waitForFunction(()=>window.styk?.ready);
   const result=await page.evaluate(async()=>{
     const {createRenderer}=await import('/src/renderer.mjs'),{compilePlaybackPacket}=await import('/src/playback-worker.mjs'),{rigExampleDocument,RIG_EXAMPLES}=await import('/src/rig-examples.mjs'),{buildGeometry}=await import('/src/pivot/geometry.mjs'),{exportSVG}=await import('/src/svg-export.mjs');
     const canvas=document.createElement('canvas');document.body.append(canvas);const renderer=await createRenderer(canvas);renderer.resize(640,460,1);const results=[];

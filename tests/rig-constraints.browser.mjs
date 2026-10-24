@@ -9,7 +9,7 @@ const settle=()=>page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requ
 // Rig is a titled section: it opens by itself while the part has a rig, else from its title.
 const openRig=async()=>{const toggle=page.locator('[data-section-toggle="rig-controls"]');if(await toggle.getAttribute('aria-expanded')==='false')await toggle.click();};
 try{
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47851');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47851');await page.waitForFunction(()=>window.styk?.ready);
   const rigs=await page.evaluate(async()=>{const m=await import('/src/rig-examples.mjs');return m.RIG_EXAMPLES.map(r=>({id:r.id,control:r.control}));});
   for(const r of rigs){
     await page.evaluate(async r=>{const {rigExampleDocument}=await import('/src/rig-examples.mjs');styk.editor.load(rigExampleDocument(r.id));styk.editor.select(1,r.control-1);styk.builder.enter();styk.editor.select(1,r.control-1);},r);await settle();
@@ -75,7 +75,7 @@ try{
   const imports=[];
   for(const filename of ['glass-cube-3d.styk','perspective-tunnel-3d.stkz']){
     const importPage=await browser.newPage();importPage.on('pageerror',e=>errors.push(e.message));
-    await importPage.goto(process.env.STYK_URL??'http://127.0.0.1:47851');await importPage.waitForFunction(()=>window.styk?.ready);
+    await importPage.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47851');await importPage.waitForFunction(()=>window.styk?.ready);
     await importPage.locator('#file-input').setInputFiles(path.resolve('artifacts/connector-3d-rigs',filename));
     await importPage.waitForFunction(()=>styk.editor.report.figure_types.some(f=>f.segments.some(s=>s._stykRig?.connector)));
     imports.push({filename,connectors:await importPage.evaluate(()=>styk.editor.report.figure_types.flatMap(f=>f.segments).filter(s=>s._stykRig?.connector).length)});

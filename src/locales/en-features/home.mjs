@@ -1,7 +1,7 @@
 export default Object.freeze({
   "home.home": "Home",
   "home.untitled": "Untitled animation",
-  "home.welcome": "Welcome to StykAnimate-Max",
+  "home.welcome": "Welcome to TwigAnimate",
   "home.welcomeBack": "Welcome back",
   "home.ledeFirst": "Start a new animation, or take the two-minute tour first.",
   "home.lede": "Pick up a project, start something new or learn a new trick.",
@@ -82,8 +82,6 @@ export default Object.freeze({
   "home.help.commandsLine": "Find anything the app can do",
   "home.help.news": "What's new",
   "home.help.newsLine": "The latest changes",
-  "home.help.feedback": "Send feedback",
-  "home.help.feedbackLine": "Tell us what to fix or add",
   "commands.home": "Home",
   "settings.startup": "Startup",
   "settings.showHomeOnStartup": "Show Home when the app starts",

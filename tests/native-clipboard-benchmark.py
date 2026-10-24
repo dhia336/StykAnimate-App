@@ -297,7 +297,7 @@ def main():
         "metricBoundaries": {"operationWallMs": "QPC at original common Copy/Paste method entry to its native return; includes native serialization, internal clipboard file I/O and synchronous UI work.",
             "operationToSuccessfulPresentMs": "Same entry to first naturally observed matching main-window S_OK Present after method return. Null if no such presentation occurs; physical scanout is not measured."},
         "isolation": "Only owned copied source/profile/process. Native APPDATA prefix must equal owned profile/Pivot Animator before Copy/Paste; user's internal clipboard and Windows clipboard stay untouched.",
-        "limitations": ["Preparation only until explicit Root lease and --run plus STYK_GPU_SLOT=native-clipboard.",
+        "limitations": ["Preparation only until explicit Root lease and --run plus TWIGANIMATE_GPU_SLOT=native-clipboard.",
             "One process; untouched source reloaded before each case outside measurement. OS caches uncontrolled.",
             "Native Copy serializes an internal .dat file. Current Node app baseline keeps its staged clipboard in memory and excludes rendering; boundaries are not equivalent.",
             "Native timeline Paste resets working-frame Undo; no native timeline Undo equivalence is asserted.",
@@ -310,7 +310,7 @@ def main():
         (args.output / "instrumentation.js").write_text(instrumentation(config), encoding="utf-8")
         (args.output / "plan.json").write_text(json.dumps(plan, indent=2), encoding="utf-8")
     if args.run:
-        if os.environ.get("STYK_GPU_SLOT") != "native-clipboard": raise RuntimeError("No isolated native clipboard lease guard")
+        if os.environ.get("TWIGANIMATE_GPU_SLOT") != "native-clipboard": raise RuntimeError("No isolated native clipboard lease guard")
         print(json.dumps({"status": run(args, plan)["status"]})); return
     print(json.dumps(plan, indent=2))
 

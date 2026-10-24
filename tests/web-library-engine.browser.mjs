@@ -1,29 +1,23 @@
-// The browser primitives the library depends on, in each engine (STYK_BROWSER=chrome|firefox|webkit), without booting
-// the editor: IndexedDB holding binary files, data that survives a reload, chunked reads and moves, SHA-256, streamed
-// downloads through the editor's own origin, WebP decoding and the PNG conversion of a poster. This is the check that
+// The browser primitives the library depends on, in each engine (TWIGANIMATE_BROWSER=chrome|firefox|webkit), without booting
+// the editor: IndexedDB holding binary files, data that survives a reload, chunked reads and moves. This is the check that
 // runs in WebKit, whose Windows build cannot start the whole editor (it has no OffscreenCanvas).
 //
 //   node tests/web-library-engine.browser.mjs     build the site into a temp directory first
-//   STYK_WEB_DIR=build/web node tests/...         test an existing build
+//   TWIGANIMATE_WEB_DIR=build/web node tests/...         test an existing build
 import assert from 'node:assert/strict';
 import { mkdtemp, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { BROWSER, launchBrowser } from './support/cross-browser.mjs';
-import { startCommunitySite } from './support/community-site.mjs';
 import { buildWeb } from '../scripts/build-web.mjs';
 import { startWebServer } from '../scripts/serve-web.mjs';
 
 const temp = await mkdtemp(path.join(os.tmpdir(), 'styk-engine-'));
-const existing = process.env.STYK_WEB_DIR && path.resolve(process.env.STYK_WEB_DIR);
-const community = await startCommunitySite();
-const site = await startWebServer({ root: existing ?? (await buildWeb({ output: path.join(temp, 'site') })).output, upstream: community.upstream });
+const existing = process.env.TWIGANIMATE_WEB_DIR && path.resolve(process.env.TWIGANIMATE_WEB_DIR);
+const site = await startWebServer({ root: existing ?? (await buildWeb({ output: path.join(temp, 'site') })).output });
 const browser = await launchBrowser();
 const checks = [];
 const check = (name, condition) => { assert.ok(condition, `[${BROWSER}] ${name}`); checks.push(name); console.log('PASS', `[${BROWSER}]`, name); };
-
-const figure = Buffer.from(Array.from({ length: 700 * 1024 }, (_, i) => (i * 131 + 17) % 251));
-community.publish([{ id: 'aaaaaaaaaa', kind: 'figure', name: 'Engine Figure', bytes: figure, tags: ['t'] }]);
 
 try {
   const context = await browser.newContext();
@@ -37,7 +31,7 @@ try {
   const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
   const saved = await page.evaluate(async ([thumbnail]) => {
     const { LocalLibrary, createBrowserLibraryApi } = await import('/src/web-library.mjs');
-    const library = new LocalLibrary(), api = createBrowserLibraryApi({ library, community: null });
+    const library = new LocalLibrary(), api = createBrowserLibraryApi({ library });
     // The panel's own save and read loops (src/library-files.mjs), written out so this test loads only the library.
     const saveLibraryFile = async (api, blob, options) => {
       const transfer = await api.beginLibrarySave({ ...options, size: blob.size });
@@ -86,28 +80,11 @@ try {
   check('The autosave copy is stored and read back byte for byte', recovery.written === true && recovery.same && recovery.name === 'Autosaved animation' && recovery.fresh);
   check('and clearing it leaves nothing to offer', recovery.cleared === true && recovery.after === null);
 
-  const dl = await page.evaluate(async () => {
-    const { CommunityLibrary } = await import('/src/community-library.mjs');
-    const client = new CommunityLibrary({ proxy: '/community' });
-    const catalog = await client.catalog(), poster = await client.preview('aaaaaaaaaa'), asset = await client.asset('aaaaaaaaaa');
-    let sum = 0; for (const byte of asset.bytes) sum = (sum + byte) % 65521;
-    // The poster becomes the PNG the library keeps, through the browser's own image decoder.
-    const image = new Image(); image.src = poster; await image.decode();
-    const canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas'); canvas.width = canvas.height = 4; canvas.getContext('2d').drawImage(image, 0, 0, 4, 4);
-    return { ids: catalog.items.map((item) => item.id), poster: poster.slice(0, 23), size: asset.bytes.length, sum, name: asset.name, decoded: image.naturalWidth, png: canvas.toDataURL('image/png').slice(0, 22), hash: (await crypto.subtle.digest('SHA-256', new Uint8Array(4))).byteLength };
-  });
-  check('The community catalogue is read through the editor\'s own origin', dl.ids.join() === 'aaaaaaaaaa');
-  check('A 700 KB file is streamed down and checked against its SHA-256', dl.size === figure.length && dl.name === 'Engine Figure.stkz' && dl.hash === 32);
-  const expectedSum = figure.reduce((total, byte) => (total + byte) % 65521, 0);
-  check('and arrives byte for byte', dl.sum === expectedSum);
-  check('A WebP poster decodes here and converts to a PNG for the library', dl.poster === 'data:image/webp;base64,' && dl.decoded === 1 && dl.png === 'data:image/png;base64,');
-  check('The site counted the download once', community.state.counted.join() === 'aaaaaaaaaa');
   check('Nothing threw', errors.length === 0 || (console.error(errors), false));
   await context.close();
   console.log(`\n[${BROWSER}] ${checks.length} checks passed`);
 } finally {
   await browser.close();
   await site.close();
-  await community.close();
   await rm(temp, { recursive: true, force: true });
 }

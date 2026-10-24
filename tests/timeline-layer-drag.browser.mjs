@@ -21,7 +21,7 @@ async function dragOver(from,to,{at=.75,x=70}={}){
 }
 const drag=async(from,to,options)=>{await dragOver(from,to,options);await page.mouse.up();await settle();};
 try{
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   // A fresh profile opens What's new over the editor; a reload gets past it.
   await page.reload();await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(async()=>{const {emptyDocument}=await import('/src/demo.mjs');styk.settingsUI.commit({timelineMode:'advanced'});styk.editor.load(emptyDocument());for(let index=2;index<=30;index++)styk.editor.createLayer(`L${index}`);});await settle();

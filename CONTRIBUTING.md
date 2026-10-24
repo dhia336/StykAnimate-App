@@ -1,11 +1,11 @@
-# Contributing to StykAnimate-Max
+# Contributing to TwigAnimate
 
-Thanks for helping improve StykAnimate-Max. This guide covers how to report problems, suggest ideas and send changes.
+Thanks for helping improve TwigAnimate. This guide covers how to report problems, suggest ideas and send changes.
 
 ## Ask, report or suggest
 
-- **Questions, bugs and ideas:** use this fork's [GitHub issues](https://github.com/dhia336/StykAnimate-App/issues). Select the appropriate template and include your app version, operating system (or browser), steps to reproduce, and expected result. A small `.styk` or `.piv` file that shows the problem helps; only share files you are allowed to share.
-- **Security problems:** never in a public issue; see [SECURITY.md](SECURITY.md).
+- **Questions, bugs and ideas:** contact the maintainer at `<MY_CONTACT>`. Include your app version, operating system (or browser), steps to reproduce, and expected result. A small `.styk` or `.piv` file that shows the problem helps; only share files you are allowed to share.
+- **Security problems:** never in a public issue; contact `<MY_CONTACT>` and see [SECURITY.md](SECURITY.md).
 
 ## Development setup
 
@@ -42,8 +42,8 @@ Interface strings live in `src/locales/`. See [docs/TRANSLATING.md](docs/TRANSLA
 
 ## AI coding assistants
 
-[AGENTS.md](AGENTS.md) holds the working rules for coding agents. They are the same expectations as above, written for tools. You are responsible for any pull request you open, including code an assistant wrote: review and test it yourself.
+Review your changes and test them before opening a pull request.
 
 ## License of contributions
 
-StykAnimate-Max is licensed under the [GNU GPL, version 3 or later](LICENSE). By submitting a contribution, you agree that it is licensed under the same terms, and you confirm you have the right to submit it. Don't include code, artwork, figures, fonts or sounds you don't have the rights to share under the GPL.
+TwigAnimate is licensed under the [GNU GPL, version 3 or later](LICENSE). By submitting a contribution, you agree that it is licensed under the same terms, and you confirm you have the right to submit it. Don't include code, artwork, figures, fonts or sounds you don't have the rights to share under the GPL.

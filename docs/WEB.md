@@ -1,8 +1,8 @@
-# Web build (Cloudflare)
+# Browser build and optional deployment
 
 The editor also runs as a static website. It is the same code as the desktop app
 plus an in-browser Pivot codec; nothing about a project is sent to a server.
-This fork does not have an official hosted editor domain.
+No hosted editor domain, deployment account, API service, or update feed is configured.
 
 ```bash
 npm ci
@@ -12,31 +12,26 @@ npm run web:preview     # build, then serve build/web on http://127.0.0.1:47850
 npm run test:web        # end to end in a real browser, under the production headers
 ```
 
-## Deploying
+## Optional deployment
 
-The fork's Cloudflare Worker is named `stykanimate-max` (`web/wrangler.jsonc`).
-No custom domain is configured. If a maintainer chooses to deploy it, deployment goes
-to the Cloudflare account selected by Wrangler and its workers.dev hostname. The Worker
-script (`web/worker.js`) runs only for `/community/*` and proxies the upstream public
-community-library service (see [The community library window](#the-community-library-window)).
+The static Cloudflare configuration is named `twiganimate` (`web/wrangler.jsonc`);
+it serves built assets only. No account credentials or custom domain are included.
+Only deploy after selecting a Cloudflare account you control and configuring its
+domain and access locally.
 
 ```bash
 npm ci --prefix web                   # once: installs the pinned wrangler
 npx --prefix web wrangler login       # or set CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID
 npm run web:deploy -- --dry-run         # build, verify, let wrangler validate the config
 npm run web:deploy                      # deploy
-STYK_WEB_URL=https://... npm run test:web   # run the end-to-end test against the deployment
+TWIGANIMATE_WEB_URL=https://... npm run test:web   # run the end-to-end test against the deployment
 npx --prefix web wrangler rollback --config web/wrangler.jsonc   # go back to the previous version
 ```
 
 `web:deploy` refuses to deploy a site that fails `web:verify`, and deploys what is built from
 the working tree: build from a clean checkout of the commit you mean to publish. Cloudflare
-applies `web/_headers` to every static response.
-
-The original project's marketing site and community-library service are maintained
-upstream and are not this fork's hosting or release destination. Static app pages
-allow indexing; `/community/*` API responses remain `noindex` and excluded
-in `robots.txt`.
+applies `web/_headers` to every static response. No API proxy or upstream service is part of
+this deployment.
 
 The reusable `web-verify.yml` workflow builds and tests the production files on
 Windows and Linux. Windows must export real MP4/AAC sound; Linux verifies a clear
@@ -113,7 +108,7 @@ downloads only its changed file, waits for the old window to close and replaces 
 old cache. Chrome's own installability check reports no errors for the served
 site. Not verified: install and offline use in Safari or Firefox, and installing on a phone.
 
-## Autosave and the libraries in the browser
+## Autosave and the local library in the browser
 
 **Autosave.** A moment after each edit (2.5 s by default, Settings → Recovery), and at once when the
 tab is hidden (a phone may discard a background tab without warning), the project is written to
@@ -152,30 +147,6 @@ pressure: an installed app asks the browser to keep it (`navigator.storage.persi
 not, and Safari removes a website's script-written data after 7 days without a visit unless the
 site is added to the Home Screen. Export what matters (Save downloads a project).
 
-**Community library** (`src/community-library.mjs`) is the browser twin of `desktop/public-library.cjs`
-with the same rules and messages; `tests/community-library.test.mjs` runs both against the same
-indexes and requires the same answers.
-
-## The community library window
-
-The upstream library API sends no CORS headers, so a browser cannot read it directly.
-Rather than loosen that service, the editor asks its own origin and `web/worker.js` passes
-on exactly three shapes of request, GET only, and refuses everything else:
-
-| Request | Goes to |
-| --- | --- |
-| `/community/content` | `SITE_URL/api/v1/content` |
-| `/community/files/index/<version>.json` and `/community/files/i/<id>/<name>` | `FILES_URL/…` (the public file host) |
-| `/community/get/<id>?k=i/<id>/<name>.stkz` | the site's counting route; its redirect is followed here, only to the site's own hosts |
-
-`SITE_URL` and `FILES_URL` are variables in `wrangler.jsonc`. Answers are size-bounded (by header and
-by counting bytes), carry `nosniff`, a sandboxing CSP and no cookies, and immutable files are cached at
-the edge. The page's own CSP is unchanged because the requests are same-origin. The service worker
-never touches `/community/*`. The site counts one download per person per asset: the first download
-goes through the counting route and is remembered in `localStorage`, later ones read the public file.
-`scripts/serve-web.mjs` runs the same Worker code locally, against the real site or a stand-in
-(`tests/support/community-site.mjs`).
-
 ## Browsers
 
 The 1.2 candidate workflow runs real browsers through
@@ -185,7 +156,7 @@ The 1.2 candidate workflow runs real browsers through
 | --- | --- | --- | --- |
 | Editor starts and unsupported features are explained | yes | yes | yes |
 | Autosave, restore, clear on save, flush on hide, blocked storage | yes | yes | yes |
-| My library and community catalogue, verified downloads and previews | yes | yes | yes |
+| My library | yes | yes | yes |
 | Native/Pivot round trips, images and video export | yes | not covered by this suite | not covered by this suite |
 | Offline startup, saving, export and safe version replacement | yes | not covered by this suite | not covered by this suite |
 
@@ -267,7 +238,6 @@ Differences from the desktop codec, all deliberate:
 | Install as an app, start with no network | Yes, a service worker stores the editor and the Pivot runtime |
 | Autosave and crash recovery | Yes, IndexedDB (see [below](#autosave-and-the-libraries-in-the-browser)) |
 | My library | Yes, in the browser's own storage (IndexedDB) |
-| Community library | Yes, through the editor's own origin |
 | System fonts | Where the browser offers local fonts (Chromium); otherwise open a font file |
 | Feedback, telemetry, updates | Not present |
 | Phones and tablets | The touch interface: layouts, gestures and sheets made for fingers and pens ([docs/TOUCH.md](TOUCH.md)) |

@@ -8,7 +8,7 @@ const browser = await chromium.launch({channel: 'chrome', headless: true});
 try {
   const page = await browser.newPage({viewport: {width: 1440, height: 960}}), errors = [], gestures = [];
   page.on('pageerror', error => errors.push(error.message));
-  await page.goto(process.env.STYK_URL ?? 'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL ?? 'http://127.0.0.1:47831');
   await page.waitForFunction(() => window.styk?.ready);
   for (const onionMode of ['keyframes', 'frames']) {
     await page.evaluate(async onionMode => {

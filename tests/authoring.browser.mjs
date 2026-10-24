@@ -1,6 +1,6 @@
 import {installProjectSavePicker} from './support/project-save-picker.mjs';
 import {readNativeDocument} from '../scripts/read-native-document.mjs';
-/** Bounded application authoring flows. Requires the local app at STYK_URL. */
+/** Bounded application authoring flows. Requires the local app at TWIGANIMATE_URL. */
 import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir, readFile, writeFile} from 'node:fs/promises';
@@ -9,7 +9,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const out = path.join(appRoot, 'artifacts'), url = process.env.STYK_URL || 'http://127.0.0.1:47831';
+const out = path.join(appRoot, 'artifacts'), url = process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831';
 await mkdir(out, {recursive: true});
 const browser = await chromium.launch({channel: 'chrome', headless: true});
 const context = await browser.newContext({viewport: {width: 1500, height: 940}, acceptDownloads: true});
@@ -88,7 +88,7 @@ try {
   check('Timeline reverse undo restores all keys', await value(() => styk.editor.report.keyframes.map(f => f.objects[0].root_x).join(',')) === '30,70,110');
   await blur();
   check('Tiny video fixture has exactly three output ticks', await value(() => styk.editor.totalTicks) === 3);
-  if (process.env.STYK_SKIP_VIDEO !== '1') {
+  if (process.env.TWIGANIMATE_SKIP_VIDEO !== '1') {
   await page.locator('[data-action="export"]').first().click();
   const videoPath = await saveDownload(() => page.locator('[data-action="export-video"]').click(), 'authoring-three-frames.webm');
   check('WebM export downloads a nonempty file', (await readFile(videoPath)).byteLength > 100);
@@ -107,7 +107,7 @@ try {
   check('Downloaded WebM decodes at project dimensions', mediaProbe.width === 160 && mediaProbe.height === 100);
   check('Downloaded WebM contains all three requested frames', mediaProbe.decodedFrames === 3);
   } catch (error) { findings.push(`WebM decode/frame verification failed: ${error.message}`); mediaProbe = {error: error.message, bytes: (await readFile(videoPath)).byteLength}; }
-  } else findings.push('WebM flow explicitly skipped by STYK_SKIP_VIDEO.');
+  } else findings.push('WebM flow explicitly skipped by TWIGANIMATE_SKIP_VIDEO.');
 
   await value(() => styk.editor.markSaved());
   const sourcePath = path.resolve(appRoot, '../Pivot Animator v5/Animations/tween_pendulum.piv');

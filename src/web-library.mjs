@@ -93,7 +93,7 @@ export class MemoryBackend {
 const settle = request => new Promise((resolve, reject) => { request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); });
 
 export class IndexedDbBackend {
-  constructor({factory = globalThis.indexedDB, name = 'stykanimate-library'} = {}) { this.factory = factory; this.name = name; this.opening = null; }
+  constructor({factory = globalThis.indexedDB, name = 'twiganimate-library'} = {}) { this.factory = factory; this.name = name; this.opening = null; }
   open() {
     this.opening ??= new Promise((resolve, reject) => {
       if (!this.factory) { reject(messageError(new Error(''), "errors.webLibrary.thisBrowserDoesNotAllowTheLibraryTo", {})); return; }
@@ -155,7 +155,7 @@ export class LocalLibrary {
   /** One step of storage. Writes take a lock shared by every tab, so two tabs cannot save the same name at once. */
   async run(work, {write = false} = {}) {
     const step = () => this.backend.transaction(work, {write}).catch(error => { throw friendly(error); });
-    return write && this.locks?.request ? this.locks.request('stykanimate-library', step) : step();
+    return write && this.locks?.request ? this.locks.request('twiganimate-library', step) : step();
   }
   async folderExists(tx, folder) {
     if (folder === '') return;
@@ -239,15 +239,6 @@ export class LocalLibrary {
       return {saved: true, path};
     }, {write: true});
   }
-  /** Saves bytes that are already here (a community asset), through the same rules. */
-  async saveBytes({folder = '', name, extension, kind, thumbnail, bytes}) {
-    folder = checkPath(folder);
-    if (!EXTENSIONS.has(extension)) throw messageError(new Error(''), "errors.webLibrary.unsupportedLibraryFormat", {});
-    if (bytes.byteLength > MAX_FILE_BYTES) throw messageError(new Error(''), "errors.webLibrary.thisAssetIsTooLargeForTheLibrary", {});
-    return this.commit({folder, name: validName(safeName(name)), extension, thumbnail: checkThumbnail(thumbnail),
-      kind: kind === 'set' ? 'set' : extension === '.stykmov' ? 'movieclip' : 'figure', data: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)});
-  }
-
   // -- Reading.
   async beginRead(path) {
     path = checkPath(path);
@@ -322,10 +313,9 @@ export class LocalLibrary {
 }
 
 /**
- * The interface the Library panel calls, over the browser's own library and the community library.
- * `page(url)` opens a web page (a new tab in the browser).
+ * The interface the Library panel calls over the browser's own library.
  */
-export function createBrowserLibraryApi({library, community, page = url => globalThis.open(url, '_blank', 'noopener')}) {
+export function createBrowserLibraryApi({library}) {
   return {
     // The panel words its removal and folder actions for a place with no recycle bin and no file manager.
     inBrowser: true,
@@ -341,16 +331,5 @@ export function createBrowserLibraryApi({library, community, page = url => globa
     changeLibraryItem: options => library.change(options),
     trashLibraryItem: path => library.trash(path),
     cacheLibraryThumbnail: options => library.cacheThumbnail(options),
-    listPublicLibrary: refresh => community.catalog({refresh: refresh === true}),
-    getPublicLibraryPreview: id => community.preview(id),
-    readPublicLibraryAsset: async id => {
-      const {name, bytes} = await community.asset(id);
-      return {name, bytes: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)};
-    },
-    savePublicLibraryAsset: async ({id, folder = '', thumbnail} = {}) => {
-      const {item, extension, bytes} = await community.asset(id);
-      return library.saveBytes({folder: typeof folder === 'string' ? folder : '', name: item.name, extension, kind: item.kind, thumbnail, bytes});
-    },
-    openPublicLibraryPage: async id => { page(community.pageFor(id)); },
   };
 }

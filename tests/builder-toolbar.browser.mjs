@@ -14,7 +14,7 @@ const serialize=()=>page.evaluate(()=>JSON.stringify(styk.editor.serialize()));
 const row=name=>page.getByRole('menuitem',{name,exact:true});
 page.on('pageerror',e=>errors.push(e.message));
 try {
- await page.goto(process.env.STYK_URL||'http://127.0.0.1:47841');await page.waitForFunction(()=>window.styk?.ready);
+ await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47841');await page.waitForFunction(()=>window.styk?.ready);
  await page.locator('[data-workspace-mode="rig"]').click();await settle();
  // No second row: nothing sits between the stage header and the canvas; Test rig and Done sit in the band.
  assert.equal(await page.locator('#builder-bar').count(),0);

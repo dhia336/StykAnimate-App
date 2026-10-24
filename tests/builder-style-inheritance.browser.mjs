@@ -6,7 +6,7 @@ const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
 page.on('pageerror',e=>errors.push(e.message));
 const settle=()=>page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
 try {
- await page.goto(process.env.STYK_URL||'http://127.0.0.1:47841');await page.waitForFunction(()=>window.styk?.ready);
+ await page.goto(process.env.TWIGANIMATE_URL||'http://127.0.0.1:47841');await page.waitForFunction(()=>window.styk?.ready);
  await page.locator('[data-workspace-mode="rig"]').click();await settle();
  const target=await page.evaluate(async()=>{
    const {worldToScreen}=await import('/src/renderer.mjs');const {editor:e,state}=styk;

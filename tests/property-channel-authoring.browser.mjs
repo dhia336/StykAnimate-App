@@ -12,7 +12,7 @@ const mode=async value=>{
   await page.waitForFunction(value=>styk.state.settings.timelineMode===value,value);
 };
 try {
-  await page.goto(process.env.STYK_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47831');await page.waitForFunction(()=>window.styk?.ready);
   await mode('advanced');
   await page.evaluate(async()=>{
     const {emptyDocument,createFrame,createObject}=await import('/src/demo.mjs');const report=emptyDocument();

@@ -4,16 +4,16 @@ import {mkdir, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 const source = process.argv[2];
 if (!source) throw new Error('Provide a PIV project path.');
-const output = path.resolve('artifacts/renderer-recovery', process.env.STYK_PROBE_LABEL || 'current');
+const output = path.resolve('artifacts/renderer-recovery', process.env.TWIGANIMATE_PROBE_LABEL || 'current');
 await mkdir(output, {recursive: true});
-const desktop = process.env.STYK_PROBE_DESKTOP === '1';
-const host = desktop ? await electron.launch({args:[process.cwd()], env:{...process.env, STYK_USER_DATA_DIR:path.join(output,'profile')}})
+const desktop = process.env.TWIGANIMATE_PROBE_DESKTOP === '1';
+const host = desktop ? await electron.launch({args:[process.cwd()], env:{...process.env, TWIGANIMATE_USER_DATA_DIR:path.join(output,'profile')}})
   : await chromium.launch({channel:'chrome',headless:true});
 const page = desktop ? await host.firstWindow() : await host.newPage({viewport:{width:1400,height:950}});
 const errors=[], runs=[];
 page.on('pageerror', error=>errors.push(error.message));
 try {
-  if (!desktop) await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831');
+  if (!desktop) await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831');
   await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(()=>{for(const dialog of document.querySelectorAll('dialog[open]'))dialog.close();styk.editor.markSaved();});
   await page.locator('#file-input').setInputFiles(source);

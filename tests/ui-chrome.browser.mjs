@@ -4,12 +4,12 @@
  * real layout, its More options popover, and the quick actions rows
  * (src/ui/quick-actions.mjs) over the command registry. Serve the repository
  * (node scripts/serve.mjs --port 47832) and run
- * `node tests/ui-chrome.browser.mjs`; STYK_URL overrides the address.
+ * `node tests/ui-chrome.browser.mjs`; TWIGANIMATE_URL overrides the address.
  */
 import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 
-const base = `${process.env.STYK_URL || 'http://127.0.0.1:47832'}/tests/fixtures/ui-chrome.html`;
+const base = `${process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47832'}/tests/fixtures/ui-chrome.html`;
 const browser = await chromium.launch({channel: 'chrome', headless: true});
 const errors = [];
 const step = async (name, run) => {

@@ -17,7 +17,7 @@ try {
       e.load(report);e.selectFrame(1);
     }
     e.select(rootUid,-1); styk.timeline.setZoom(26); styk.timeline._scrollToX(0);
-  },Number(process.env.STYK_TEST_IMPORT_VERSION)||null); await settle();
+  },Number(process.env.TWIGANIMATE_TEST_IMPORT_VERSION)||null); await settle();
   const group=await page.evaluate(()=>styk.timeline.tracks.filter(t=>t.kind==='assembly').map(t=>({id:t.id,name:t.name})));
   assert.equal(group.length,1); const id=group[0].id;
   assert.equal(await page.evaluate(()=>styk.timeline.tracks.length),1,'collapsed group hides individual parts');

@@ -345,7 +345,7 @@ export function createAppDialogs(ctx) {
     for(const record of records){
       const option=document.createElement('option'),name=document.createTextNode(record.name || ''),time=document.createTextNode('');option.value=record.id;
       if(!record.name)localizedText(name,'app.untitled');
-      localizedText(time,'supportMessages.date',{date:{format:'date',value:record.savedAt,options:{dateStyle:'short',timeStyle:'short'}}});
+      localizedText(time,'appDialogs.savedAt',{date:{format:'date',value:record.savedAt,options:{dateStyle:'short',timeStyle:'short'}}});
       appendLocalized(option,name,' · ',time);appendLocalized(select,option);
     }
     wrap.prepend(select);appendLocalized(label, wrap);appendLocalized(body, label, translatedElement(paragraph(interfaceText("appDialogs.restoreOpensThisCopyAsAnEditedProject")), "appDialogs.restoreOpensThisCopyAsAnEditedProject", {}));

@@ -7,7 +7,7 @@ const directory='artifacts/skateboard-360',browser=await chromium.launch({channe
 const errors=[],checks=[];
 try{
  const page=await browser.newPage({viewport:{width:1440,height:1100}});page.on('pageerror',e=>errors.push(e.message));
- await page.goto(process.env.STYK_URL??'http://127.0.0.1:47861');await page.waitForFunction(()=>window.styk?.ready);
+ await page.goto(process.env.TWIGANIMATE_URL??'http://127.0.0.1:47861');await page.waitForFunction(()=>window.styk?.ready);
  const snapshot=()=>page.evaluate(()=>{
   const e=styk.editor,g=e.geometry.objects.get(0);return {doc:e.serialize(),undo:e._undo.length,root:{...g.root},vertices:[...g.joints.values()].map(p=>({...p}))};
  });

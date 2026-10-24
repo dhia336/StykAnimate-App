@@ -26,8 +26,8 @@ npm run verify:sidecar
 npm run build:video-encoder
 $releaseVersion = (Get-Content package.json | ConvertFrom-Json).version
 npm run dist:win -- --x64 "--config.directories.output=release/$releaseVersion"
-$env:STYK_PACKAGED_RESOURCES = Join-Path $PWD "release/$releaseVersion/win-unpacked/resources"
-$env:STYK_PACKAGED_EXECUTABLE = Join-Path $PWD "release/$releaseVersion/win-unpacked/StykAnimate-Max.exe"
+$env:TWIGANIMATE_PACKAGED_RESOURCES = Join-Path $PWD "release/$releaseVersion/win-unpacked/resources"
+$env:TWIGANIMATE_PACKAGED_EXECUTABLE = Join-Path $PWD "release/$releaseVersion/win-unpacked/TwigAnimate.exe"
 npm run verify:package
 npm run test:boot:packaged
 npm run test:export:packaged

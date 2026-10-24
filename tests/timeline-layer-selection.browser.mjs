@@ -13,7 +13,7 @@ const row = id => page.locator(`.sheet-layer[data-layer-id="${id}"]:visible .she
 const selected = () => page.evaluate(() => styk.timeline.ids.toSorted());
 const checks = [];
 try {
-  await page.goto(process.env.STYK_URL ?? 'http://127.0.0.1:47831/'); await page.waitForFunction(() => window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL ?? 'http://127.0.0.1:47831/'); await page.waitForFunction(() => window.styk?.ready);
   await page.evaluate(async () => {
     const {emptyDocument, createFrame, createObject} = await import('/src/demo.mjs');
     const report = emptyDocument(), figure = report.figure_types[0];

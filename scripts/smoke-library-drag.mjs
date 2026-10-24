@@ -10,7 +10,7 @@ await writeFile(path.join(profile, 'telemetry-state.json'), JSON.stringify({deci
 const check = (name, value = true) => { assert.ok(value, name); checks.push(name); console.log('PASS', name); };
 let app, page;
 try {
-  app = await electron.launch({args: [root], cwd: root, timeout: 45000, env: {...process.env, STYK_USER_DATA_DIR: profile, STYK_LIBRARY_DIR: path.join(run, 'library')}});
+  app = await electron.launch({args: [root], cwd: root, timeout: 45000, env: {...process.env, TWIGANIMATE_USER_DATA_DIR: profile, TWIGANIMATE_LIBRARY_DIR: path.join(run, 'library')}});
   app.process().stderr.on('data', data => process.stderr.write(data));
   page = await app.firstWindow(); page.on('pageerror', error => errors.push(error.message));
   await page.waitForFunction(() => window.styk?.ready);

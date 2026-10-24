@@ -24,13 +24,13 @@
  * enforces; M3a enforces that playback mutations stay at least 90% below the
  * measured pre-M3a baseline.
  *
- *   STYK_URL=http://127.0.0.1:47913 node tests/playback-quiet.browser.mjs
+ *   TWIGANIMATE_URL=http://127.0.0.1:47913 node tests/playback-quiet.browser.mjs
  */
 import assert from 'node:assert/strict';
 import {mkdir, writeFile} from 'node:fs/promises';
 import {chromium} from './support/playwright.mjs';
 
-const URL = process.env.STYK_URL || 'http://127.0.0.1:47831';
+const URL = process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831';
 const PLAY_MS = 2000;
 const TIME_DISPLAY_HZ = 5;
 // Draws per animation frame: the new frame, the repaint after its chrome pass, and a quarter for the readout's passes

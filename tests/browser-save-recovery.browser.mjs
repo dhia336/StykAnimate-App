@@ -1,5 +1,5 @@
 // Project save acknowledgements and recovery ownership through the real editor.
-// Uses the static browser build by default; STYK_URL can target a source server.
+// Uses the static browser build by default; TWIGANIMATE_URL can target a source server.
 import assert from 'node:assert/strict';
 import {mkdtemp, rm} from 'node:fs/promises';
 import os from 'node:os';
@@ -9,7 +9,7 @@ import {buildWeb} from '../scripts/build-web.mjs';
 import {startWebServer} from '../scripts/serve-web.mjs';
 
 const temp = await mkdtemp(path.join(os.tmpdir(), 'styk-save-recovery-'));
-const site = process.env.STYK_URL ? {origin:process.env.STYK_URL, close:async()=>{}}
+const site = process.env.TWIGANIMATE_URL ? {origin:process.env.TWIGANIMATE_URL, close:async()=>{}}
   : await startWebServer({root:(await buildWeb({output:path.join(temp,'site')})).output});
 const browser = await launchBrowser();
 const checks=[], errors=[];
@@ -155,7 +155,7 @@ try{
   const legacyContext=await browser.newContext(),legacy=await legacyContext.newPage();
   legacy.on('pageerror',error=>errors.push(error.message));await legacy.goto(site.origin+'/mark.svg');
   await legacy.evaluate(()=>new Promise((resolve,reject)=>{
-    const request=indexedDB.open('stykanimate-recovery',1);
+    const request=indexedDB.open('twiganimate-recovery',1);
     request.onupgradeneeded=()=>request.result.createObjectStore('documents');
     request.onerror=()=>reject(request.error);
     request.onsuccess=()=>{const db=request.result,tx=db.transaction('documents','readwrite');

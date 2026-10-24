@@ -18,7 +18,7 @@ const release = async key => { await page.mouse.up(); if (key) await page.keyboa
 const position = (id, offset = 55) => page.locator(`[data-clip="${id}"]`).evaluate((node, offset) => {const box = node.getBoundingClientRect();return {x:box.x + offset, y:box.y + 40};}, offset);
 const trackCenter = id => page.locator(`.audio-track[data-track="${id}"]`).evaluate(node => {const box = node.getBoundingClientRect();return box.y + box.height / 2;});
 try {
-  await page.goto(process.env.STYK_URL ?? 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL ?? 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
   await page.evaluate(async () => {
     const {emptyDocument, createFrame, createObject} = await import('/src/demo.mjs'), report = emptyDocument(); report.fps = 12;
     report.keyframes = Array.from({length:8}, (_, i) => createFrame([createObject(report.figure_types[0], 1, 220 + i * 20, 250)], 24));

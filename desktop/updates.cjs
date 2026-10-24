@@ -6,7 +6,7 @@ const { messageError } = require('./localization.cjs');
 // receives only status, never installer paths or a configurable download URL.
 function updateAvailabilityDetails() {
   return {
-    message: 'Automatic updates are not configured for StykAnimate-Max.',
+    message: 'Automatic updates are not configured for TwigAnimate.',
     messageKey: 'desktop.updates.forkUpdatesNotConfigured',
   };
 }

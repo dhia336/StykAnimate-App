@@ -11,7 +11,7 @@ const output = path.join(root, 'artifacts', 'worker-video-renderer');
 await mkdir(output, { recursive: true });
 const app = await electron.launch({
   args: [root], cwd: root, timeout: 45000,
-  env: { ...process.env, STYK_USER_DATA_DIR: path.join(output, `profile-${Date.now()}`) },
+  env: { ...process.env, TWIGANIMATE_USER_DATA_DIR: path.join(output, `profile-${Date.now()}`) },
 });
 try {
   const page = await app.firstWindow(), checks = [], errors = [];
@@ -20,7 +20,7 @@ try {
   await app.evaluate(({ ipcMain, dialog }) => {
     globalThis.__workerVideoEvents = [];
     globalThis.__workerVideoSaves = [];
-    for (const channel of ['styk:video-begin', 'styk:video-cancel', 'styk:vfw-begin', 'styk:vfw-cancel']) {
+    for (const channel of ['twiganimate:video-begin', 'twiganimate:video-cancel', 'twiganimate:vfw-begin', 'twiganimate:vfw-cancel']) {
       const original = ipcMain._invokeHandlers.get(channel);
       ipcMain.removeHandler(channel);
       ipcMain.handle(channel, (event, ...args) => {
@@ -169,9 +169,9 @@ try {
     }
   }
   const events = await app.evaluate(() => globalThis.__workerVideoEvents);
-  assert.ok(events.filter(event => event.channel === 'styk:video-cancel').length >= 1);
-  assert.ok(events.filter(event => event.channel === 'styk:vfw-cancel').length >= 2);
-  assert.equal(events.findLast(event => event.channel === 'styk:video-begin').value.bitrate, 250000);
+  assert.ok(events.filter(event => event.channel === 'twiganimate:video-cancel').length >= 1);
+  assert.ok(events.filter(event => event.channel === 'twiganimate:vfw-cancel').length >= 2);
+  assert.equal(events.findLast(event => event.channel === 'twiganimate:video-begin').value.bitrate, 250000);
   assert.deepEqual(errors, []);
   checks.push('Native encoder cleanup is acknowledged and the selected WebM bitrate reaches the actual encoder');
   const workers = await page.evaluate(() => globalThis.__sceneExportWorkers);

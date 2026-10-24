@@ -14,7 +14,7 @@ const page=await browser.newPage({viewport:{width:1600,height:1000}}),errors=[];
 page.on('pageerror',error=>errors.push(error.message));
 page.setDefaultTimeout(180000);
 try {
-  await page.goto(process.env.STYK_URL ?? 'http://127.0.0.1:47831');
+  await page.goto(process.env.TWIGANIMATE_URL ?? 'http://127.0.0.1:47831');
   await page.waitForFunction(()=>window.styk?.ready);
   await page.evaluate(mode=>{styk.settingsUI.commit({timelineMode:mode});styk.editor.markSaved();},mode);
   await page.locator('#file-input').setInputFiles(source);

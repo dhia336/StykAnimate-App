@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 const browser=await chromium.launch({channel:'chrome',headless:true});
 try{
- const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(process.env.STYK_TEST_URL||'http://127.0.0.1:47832');await page.waitForFunction(()=>window.styk?.ready);
+ const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(process.env.TWIGANIMATE_TEST_URL||'http://127.0.0.1:47832');await page.waitForFunction(()=>window.styk?.ready);
  const parity=await page.evaluate(async()=>{
   const {emptyDocument,createFrame,createObject}=await import('/src/demo.mjs'),{createVfx}=await import('/src/vfx.mjs'),{drawExportScene,drawExportSceneTiled,exportFrameGeometry}=await import('/src/export-frame-core.mjs'),{VfxGPU}=await import('/src/vfx-gpu.mjs');
   const paint={type:'linear',angle:35,stops:[{offset:0,color:[255,80,40],opacity:.6},{offset:.4,color:[100,255,90],opacity:1},{offset:1,color:[70,140,255],opacity:.8}]};

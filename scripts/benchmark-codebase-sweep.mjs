@@ -106,13 +106,13 @@ if (mode !== 'desktop') {
   const jobs = [
     ['animation-modes', ['--expose-gc', 'scripts/benchmark-animation-modes.mjs', label]],
     ['animation-locality', ['--expose-gc', 'scripts/benchmark-animation-locality.mjs', '.', path.join(output, 'animation-locality.json')]],
-    ['animation-memory', ['--expose-gc', 'scripts/benchmark-animation-memory.mjs'], {STYK_BENCH_OUT: path.join(output, 'animation-memory')}],
+    ['animation-memory', ['--expose-gc', 'scripts/benchmark-animation-memory.mjs'], {TWIGANIMATE_BENCH_OUT: path.join(output, 'animation-memory')}],
     ['connected-transactions', ['scripts/benchmark-connected-transactions.mjs']],
     ['builder', ['scripts/benchmark-builder.mjs', label]],
     ['node-selection', ['scripts/benchmark-node-selection.mjs']],
     ['rig-constraints', ['--expose-gc', 'scripts/benchmark-rig-constraints.mjs']],
     ['movieclips', ['scripts/benchmark-movieclips.mjs']],
-    ['audio', ['scripts/benchmark-audio.mjs'], {STYK_BENCH_OUT: path.join(output, 'audio')}],
+    ['audio', ['scripts/benchmark-audio.mjs'], {TWIGANIMATE_BENCH_OUT: path.join(output, 'audio')}],
     ['telemetry', ['scripts/benchmark-telemetry.mjs']],
     ['drawing-filters', ['--expose-gc', 'scripts/benchmark-drawing-filter-sweep.mjs', path.join(output, 'drawing-filters.json')]],
     ['drawing-fill-4k', ['--expose-gc', 'scripts/benchmark-drawing-fill.mjs', '--sample', new URL('../src/drawing-fill.mjs', import.meta.url).href, 'uniform4k']],
@@ -148,8 +148,8 @@ if (mode !== 'kernels') {
     report.fixtures.push({figures: count, frames: 120, bytes: bytes.byteLength,
       sha256: createHash('sha256').update(bytes).digest('hex')});
     await run(`desktop-${count}`, ['scripts/benchmark-performance-desktop.mjs', fixture, `${label}-${count}`, '3'],
-      {STYK_BENCH_PLAYBACK: '1', STYK_BENCH_PLAYBACK_FRAMES: '120', STYK_BENCH_EDITING: '0',
-        STYK_BENCH_EXPORT: '1', STYK_BENCH_EXPORT_FORMATS: 'styk'});
+      {TWIGANIMATE_BENCH_PLAYBACK: '1', TWIGANIMATE_BENCH_PLAYBACK_FRAMES: '120', TWIGANIMATE_BENCH_EDITING: '0',
+        TWIGANIMATE_BENCH_EXPORT: '1', TWIGANIMATE_BENCH_EXPORT_FORMATS: 'styk'});
   }
 }
 const after = await performanceSourceHashes();

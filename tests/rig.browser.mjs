@@ -1,4 +1,4 @@
-/** Actual canvas Rig tool gestures and native exports. Requires local STYK_URL. */
+/** Actual canvas Rig tool gestures and native exports. Requires local TWIGANIMATE_URL. */
 import {chromium} from './support/playwright.mjs';
 import assert from 'node:assert/strict';
 import {mkdir, readFile, writeFile} from 'node:fs/promises';
@@ -45,7 +45,7 @@ async function saveExport(kind, filename) {
 }
 
 try {
-  await page.goto(process.env.STYK_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
+  await page.goto(process.env.TWIGANIMATE_URL || 'http://127.0.0.1:47831'); await page.waitForFunction(() => window.styk?.ready);
   check('Rig regression initializes the actual WebGPU editor', await page.evaluate(() => styk.state.renderer.stats.backend === 'WebGPU'));
   await page.evaluate(async () => {
     const {emptyDocument, createObject, createFrame} = await import('/src/demo.mjs');

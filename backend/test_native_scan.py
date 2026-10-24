@@ -24,7 +24,7 @@ class NativeScanTests(unittest.TestCase):
     def setUpClass(cls):
         status = native_scan.status()
         if not status["available"]:
-            if os.environ.get("STYK_REQUIRE_NATIVE_SCAN") == "1":
+            if os.environ.get("TWIGANIMATE_REQUIRE_NATIVE_SCAN") == "1":
                 raise AssertionError(f"Native scanner required: {status}")
             raise unittest.SkipTest(f"Build scripts/build-frame-scan.py to test C++: {status}")
 
@@ -102,7 +102,7 @@ class NativeScanTests(unittest.TestCase):
         exact = 512 + 512 + 3 * 24
         self.assertTrue(self.compare(source, budget=exact))
         self.assertFalse(self.compare(source, budget=exact-1))
-        with mock.patch.dict(os.environ, {"STYK_DISABLE_NATIVE_SCAN": "1"}):
+        with mock.patch.dict(os.environ, {"TWIGANIMATE_DISABLE_NATIVE_SCAN": "1"}):
             self.assertFalse(native_scan.status()["available"])
             self.assertIsNone(native_scan.scan_keyframes(server.FastReader(source), FIGURES, 2, max_pose_bytes=BUDGET))
             self.assertEqual(fast_decode.scan_keyframes(server.FastReader(source), FIGURES, 2),

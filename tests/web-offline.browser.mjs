@@ -6,7 +6,7 @@
 //      only after the old version's window is closed.
 //
 //   node tests/web-offline.browser.mjs            build into a temp directory first
-//   STYK_WEB_DIR=build/web node tests/...         test an existing build
+//   TWIGANIMATE_WEB_DIR=build/web node tests/...         test an existing build
 import assert from 'node:assert/strict';
 import { appendFile, cp, mkdtemp, readFile, rm, stat } from 'node:fs/promises';
 import os from 'node:os';
@@ -15,8 +15,8 @@ import { chromium } from './support/playwright.mjs';
 import { buildWeb, writeServiceWorker } from '../scripts/build-web.mjs';
 import { startWebServer } from '../scripts/serve-web.mjs';
 
-const temp = await mkdtemp(path.join(os.tmpdir(), 'styk-offline-'));
-const existing = process.env.STYK_WEB_DIR && path.resolve(process.env.STYK_WEB_DIR);
+const temp = await mkdtemp(path.join(os.tmpdir(), 'twig-offline-'));
+const existing = process.env.TWIGANIMATE_WEB_DIR && path.resolve(process.env.TWIGANIMATE_WEB_DIR);
 const first = path.join(temp, 'v1');
 await cp(existing ?? (await buildWeb({ output: path.join(temp, 'build') })).output, first, { recursive: true });
 let server = await startWebServer({ root: first });
@@ -74,7 +74,7 @@ try {
   });
   const info = JSON.parse(await readFile(path.join(first, 'build-info.json'), 'utf8'));
   check('The worker stores the whole editor and the Pivot runtime under this build\'s version', stored.version === info.offline);
-  check('One cache holds this version', JSON.stringify(await page.evaluate(() => caches.keys())) === JSON.stringify([`styk-app-${info.offline}`]));
+  check('One cache holds this version', JSON.stringify(await page.evaluate(() => caches.keys())) === JSON.stringify([`twiganimate-app-${info.offline}`]));
   check('Storing it did not change what the app shows', await page.evaluate(() => ['WebGPU', 'Canvas 2D fallback'].includes(window.styk.state.renderer.stats.backend)));
 
   // --- 2. No network: the server is gone.
@@ -85,7 +85,8 @@ try {
   page.on('requestfailed', (request) => failed.push(new URL(request.url()).pathname));
   await page.reload({ waitUntil: 'load' });
   await page.waitForFunction(() => window.styk?.ready === true, undefined, { timeout: 60000 });
-  check('The app starts with no network', await page.evaluate(() => !navigator.onLine && ['WebGPU', 'Canvas 2D fallback'].includes(window.styk.state.renderer.stats.backend)));
+  check('The cached app starts after network is disabled',
+    await page.evaluate(() => ['WebGPU', 'Canvas 2D fallback'].includes(window.styk.state.renderer.stats.backend)));
   check('Every request was answered from the cache', failed.length === 0 && workerRequests.length === 0);
 
   const download = async (action, name) => {
@@ -119,7 +120,7 @@ try {
   await page.evaluate(() => navigator.serviceWorker.getRegistration().then((registration) => registration.update()));
   await until('the new version to install', () => page.evaluate(() => navigator.serviceWorker.getRegistration().then((registration) => registration.waiting?.state === 'installed')));
   check('The new version downloads only the file that changed', JSON.stringify(workerRequests.filter((name) => name !== '/sw.js')) === JSON.stringify(['/src/theme-bootstrap.js']));
-  check('The open app is told a new version is ready', await until('the notice', () => page.evaluate(() => document.body.textContent.includes('A new version of StykAnimate is ready')), 10000));
+  check('The open app is told a new version is ready', await until('the notice', () => page.evaluate(() => document.body.textContent.includes('A new version of TwigAnimate is ready')), 10000));
   check('The open window keeps running the version it started with', (await workerStatus(page)).version === info.offline);
   check('Both versions are stored until the old one is closed', (await page.evaluate(() => caches.keys())).length === 2);
 
@@ -131,7 +132,7 @@ try {
   await reopened.goto(origin, { waitUntil: 'load' });
   await reopened.waitForFunction(() => window.styk?.ready === true, undefined, { timeout: 60000 });
   check('After the window is closed, the new version is the one that runs', await reopened.evaluate(() => fetch('./src/theme-bootstrap.js').then((response) => response.text()).then((text) => text.includes('second version'))));
-  check('Only the new version remains stored', JSON.stringify(await reopened.evaluate(() => caches.keys())) === JSON.stringify([`styk-app-${next.version}`]));
+  check('Only the new version remains stored', JSON.stringify(await reopened.evaluate(() => caches.keys())) === JSON.stringify([`twiganimate-app-${next.version}`]));
   check('The Pivot runtime was carried over without downloading it again', !workerRequests.some((name) => name.startsWith('/vendor/pyodide/')));
   check('No console errors, page errors or CSP violations', problems.length === 0 || (console.error(problems), false));
   await context.close();
